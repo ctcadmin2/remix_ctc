@@ -1,0 +1,257 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = "native"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Language {
+  en
+  ro
+}
+
+enum Role {
+  admin
+  user
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String    @unique
+  hash      String
+  language  Language  @default(en)
+  role      Role      @default(user)
+  active    Boolean?  @default(false)
+  createdAt DateTime? @default(now()) @db.Date
+  updatedAt DateTime? @updatedAt @db.Date
+}
+
+model Setting {
+  id    Int      @id @default(autoincrement())
+  name  String   @unique
+  value String[]
+  type  String
+  multi Boolean
+}
+
+model Vehicle {
+  id           Int          @id @default(autoincrement())
+  registration String?
+  vin          String       @unique
+  category     String?
+  active       Boolean      @default(true)
+  nickname     String?
+  documents    Document[]
+  creditNotes  CreditNote[]
+  repairs      Repair[]
+  createdAt    DateTime?    @default(now()) @db.Date
+  updatedAt    DateTime?    @updatedAt @db.Date
+}
+
+model CreditNote {
+  id         Int         @id @default(autoincrement())
+  orderNr    Int?
+  number     String
+  amount     Int
+  currency   String      @default("EUR")
+  paid       Boolean     @default(false)
+  start      String?
+  end        String?
+  week       Int?
+  notes      String?
+  vehicleId  Int?
+  vehicle    Vehicle?    @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  invoiceId  Int?
+  invoice    Invoice?    @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  attachment Attachment?
+  createdAt  DateTime?   @default(now()) @db.Date
+  updatedAt  DateTime?   @updatedAt @db.Date
+}
+
+model Company {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  registration         String?
+  vatNumber            String
+  vatValid             Boolean                @default(false)
+  accRon               String?
+  accEur               String?
+  address              String?
+  country              String
+  bank                 String?
+  capital              Float?
+  email                String?
+  phone                String?
+  Invoices             Invoice[]
+  createdAt            DateTime?              @default(now()) @db.Date
+  updatedAt            DateTime?              @updatedAt @db.Date
+  NationalExpense      NationalExpense[]
+  InternationalExpense InternationalExpense[]
+}
+
+model Invoice {
+  id               Int             @id @default(autoincrement())
+  number           String
+  date             DateTime        @db.Date
+  amount           Int
+  currency         String          @default("EUR")
+  vatRate          Int             @default(0)
+  orders           Order[]
+  creditNotes      CreditNote[]
+  clientId         Int
+  client           Company         @relation(fields: [clientId], references: [id])
+  identification   Identification?
+  identificationId Int?
+  createdAt        DateTime?       @default(now()) @db.Date
+  updatedAt        DateTime?       @updatedAt @db.Date
+}
+
+model Identification {
+  id              Int     @id @default(autoincrement())
+  buyer           String?
+  indentification String?
+  transport       String?
+  Invoice         Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId       Int     @unique
+}
+
+model Order {
+  id          Int     @id @default(autoincrement())
+  description String
+  value       Int
+  quantity    Int
+  total       Int
+  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId   Int
+}
+
+model NationalExpense {
+  id          Int         @id @default(autoincrement())
+  number      String
+  date        DateTime    @db.Date
+  description String
+  amount      Int
+  paidBy      String?
+  supplierId  Int
+  supplier    Company     @relation(fields: [supplierId], references: [id])
+  attachment  Attachment?
+  createdAt   DateTime?   @default(now()) @db.Date
+  updatedAt   DateTime?   @updatedAt @db.Date
+}
+
+model InternationalExpense {
+  id          Int         @id @default(autoincrement())
+  number      String
+  date        DateTime    @db.Date
+  description String
+  amount      Int
+  currency    String      @default("EUR")
+  paidBy      String?
+  supplierId  Int
+  supplier    Company     @relation(fields: [supplierId], references: [id])
+  attachment  Attachment?
+  createdAt   DateTime?   @default(now()) @db.Date
+  updatedAt   DateTime?   @updatedAt @db.Date
+}
+
+model TripExpense {
+  id          Int         @id @default(autoincrement())
+  intNr       Int         @unique
+  number      String
+  date        DateTime?   @db.Date
+  description String?
+  amount      Int
+  currency    String      @default("EUR")
+  amountEur   Int
+  card        Boolean     @default(true)
+  attachment  Attachment?
+  createdAt   DateTime    @default(now()) @db.Date
+  updatedAt   DateTime    @updatedAt @db.Date
+}
+
+model Employee {
+  id        Int        @id @default(autoincrement())
+  firstName String
+  lastName  String
+  cnp       Int        @unique
+  activ     Boolean
+  payments  Payment[]
+  documents Document[]
+  createdAt DateTime   @default(now()) @db.Date
+  updatedAt DateTime   @updatedAt @db.Date
+}
+
+model Payment {
+  id             Int             @id @default(autoincrement())
+  totalRon       Int
+  totalEur       Int?
+  month          String
+  indemnisations Indemnisation[]
+  employee       Employee        @relation(fields: [employeeId], references: [id])
+  employeeId     Int
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Document {
+  id          Int         @id @default(autoincrement())
+  description String
+  expire      DateTime?   @db.Date
+  comment     String?
+  Employee    Employee?   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeeId  Int?
+  attachment  Attachment?
+  createdAt   DateTime    @default(now()) @db.Date
+  updatedAt   DateTime    @updatedAt @db.Date
+  Vehicle     Vehicle?    @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicleId   Int?
+}
+
+model Indemnisation {
+  id        Int       @id @default(autoincrement())
+  perDay    Int
+  days      Int
+  avans     Int
+  rest      Int
+  type      String
+  Payment   Payment?  @relation(fields: [paymentId], references: [id])
+  paymentId Int?
+  createdAt DateTime? @default(now()) @db.Date
+  updatedAt DateTime? @updatedAt @db.Date
+}
+
+model Repair {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @db.Date
+  km        Int
+  comment   String
+  vehicleId Int
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+}
+
+model Attachment {
+  id                     Int                   @id @default(autoincrement())
+  type                   String
+  name                   String
+  creditNote             CreditNote?           @relation(fields: [creditNoteId], references: [id], onDelete: Cascade)
+  creditNoteId           Int?                  @unique
+  nationalExpense        NationalExpense?      @relation(fields: [nationalExpenseId], references: [id], onDelete: Cascade)
+  nationalExpenseId      Int?                  @unique
+  internationalExpense   InternationalExpense? @relation(fields: [internationalExpenseId], references: [id], onDelete: Cascade)
+  internationalExpenseId Int?                  @unique
+  tripExpense            TripExpense?          @relation(fields: [tripExpenseId], references: [id], onDelete: Cascade)
+  tripExpenseId          Int?                  @unique
+  document               Document?             @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId             Int?                  @unique
+  createdAt              DateTime?             @default(now()) @db.Date
+  updatedAt              DateTime?             @updatedAt @db.Date
+}

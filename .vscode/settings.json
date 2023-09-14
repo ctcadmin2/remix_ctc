@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  "typescript.suggest.paths": false,
+  "npm-intellisense.importQuotes": "'",
+  "npm-intellisense.importLinebreak": ";\r\n",
+  "npm-intellisense.importDeclarationType": "const",
+  "npm-intellisense.showBuildInLibs": true,
+  "npm-intellisense.scanDevDependencies": true,
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+}
