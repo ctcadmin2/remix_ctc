@@ -1,7 +1,15 @@
-import type { LoaderFunction, V2_MetaFunction } from "@remix-run/node";
+import "@mantine/core/styles.css";
+
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
+import { cssBundleHref } from "@remix-run/css-bundle";
 import { json } from "@remix-run/node";
 import {
   Link,
+  Links,
   LiveReload,
   Meta,
   Outlet,
@@ -14,18 +22,15 @@ import {
 } from "@remix-run/react";
 import {
   MantineProvider,
-  createEmotionCache,
   AppShell,
   Burger,
   Button,
   Container,
   Group,
-  Header,
-  Navbar,
   Paper,
   Title,
+  ColorSchemeScript,
 } from "@mantine/core";
-import { StylesPlaceholder } from "@mantine/remix";
 import { useDisclosure } from "@mantine/hooks";
 
 import LinksGroup from "./components/LinksGroup/LinksGroup";
@@ -43,12 +48,16 @@ import {
 } from "remix-utils";
 import { theme } from "./theme";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "CTC Admin 2" },
     { viewport: "width=device-width,initial-scale=1" },
   ];
 };
+
+export const links: LinksFunction = () => [
+  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+];
 
 interface LoaderData {
   csrf: string;
@@ -86,8 +95,6 @@ const navLinks = [
   { label: "Companies", path: "companies" },
   { label: "Settings", path: "settings" },
 ];
-
-createEmotionCache({ key: "mantine" });
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -148,85 +155,96 @@ export default function App() {
   return (
     <html lang="en">
       <head>
-        <StylesPlaceholder />
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
+        />
         <Meta />
+        <Links />
+        <ColorSchemeScript />
       </head>
 
       <body>
-        <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+        <MantineProvider theme={theme}>
           <Notifications />
           <AppShell
-            navbarOffsetBreakpoint={user ? "sm" : undefined}
-            navbar={
-              user ? (
-                <Navbar
-                  height={"85vh"}
-                  style={{ marginTop: "16px" }}
-                  p="md"
-                  hiddenBreakpoint={"sm"}
-                  hidden={!opened}
-                  width={{ sm: 250 }}
-                  withBorder
-                >
-                  {links}
-                </Navbar>
-              ) : undefined
-            }
-            header={
-              <Header p="md" height={60} fixed>
-                <Group position="apart" grow>
-                  <Group position="apart">
-                    <Burger
-                      opened={opened}
-                      onClick={toggle}
-                      // className={classes.burger}
-                      size="md"
-                      display={!user ? "none" : "inline"}
-                    />
-                    <Title order={3} weight={"bolder"}>
-                      CTCAdmin 2
-                    </Title>
-                  </Group>
-                  <Group position="right">
-                    <Button>Language</Button>
-
-                    {user && (
-                      <Button
-                        type="submit"
-                        onClick={() =>
-                          submit(null, { method: "post", action: "/logout" })
-                        }
-                      >
-                        Logout
-                      </Button>
-                    )}
-                    {!user && (
-                      <Button component={Link} to={linkPath.to}>
-                        {linkPath.name}
-                      </Button>
-                    )}
-                  </Group>
-                </Group>
-              </Header>
-            }
+            header={{ height: { base: 60, md: 70, lg: 80 } }}
+            navbar={{
+              width: { base: 200, md: 300, lg: 400 },
+              breakpoint: "sm",
+              collapsed: { mobile: !opened },
+            }}
+            padding="md"
+            // navbarOffsetBreakpoint={user ? "sm" : undefined}
+            // navbar={
+            // }
           >
-            <Paper
-              shadow="sm"
-              radius="md"
-              p="xl"
+            <AppShell.Header>
+              <Group position="apart" grow>
+                <Group position="apart">
+                  <Burger
+                    opened={opened}
+                    onClick={toggle}
+                    size="md"
+                    hiddenFrom="sm"
+                    display={!user ? "none" : "inline"}
+                  />
+                  <Title order={3} weight={"bolder"}>
+                    CTCAdmin 2
+                  </Title>
+                </Group>
+                <Group position="right">
+                  <Button>Language</Button>
+
+                  {user && (
+                    <Button
+                      type="submit"
+                      onClick={() =>
+                        submit(null, { method: "post", action: "/logout" })
+                      }
+                    >
+                      Logout
+                    </Button>
+                  )}
+                  {!user && (
+                    <Button component={Link} to={linkPath.to}>
+                      {linkPath.name}
+                    </Button>
+                  )}
+                </Group>
+              </Group>
+            </AppShell.Header>
+
+            <AppShell.Navbar
+              p="md"
+              h={"85vh"}
+              style={{ marginTop: "16px" }}
+              hidden={!opened}
+              w={{ sm: 250 }}
               withBorder
-              style={{ height: "85vh" }}
             >
-              <Container fluid px={0}>
-                <AuthenticityTokenProvider token={csrf}>
-                  <Outlet />
-                </AuthenticityTokenProvider>
-              </Container>
-            </Paper>
+              {links}
+            </AppShell.Navbar>
+            <AppShell.Main>
+              <Paper
+                shadow="sm"
+                radius="md"
+                p="xl"
+                withBorder
+                style={{ height: "85vh" }}
+              >
+                <Container fluid px={0}>
+                  <AuthenticityTokenProvider token={csrf}>
+                    <Outlet />
+                  </AuthenticityTokenProvider>
+                </Container>
+              </Paper>
+            </AppShell.Main>
           </AppShell>
+          <Scripts />
+          <LiveReload />
         </MantineProvider>
-        <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

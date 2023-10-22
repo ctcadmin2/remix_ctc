@@ -60,7 +60,7 @@ const Multi = ({ name, value }: { name: string; value: string[] }) => {
       <Input.Wrapper
         label={name}
         py={"sm"}
-        sx={{ flexDirection: "column", flexFlow: "row nowrap" }}
+        style={{ flexDirection: "column", flexFlow: "row nowrap" }}
       >
         {value.map((v, i) => (
           <Badge

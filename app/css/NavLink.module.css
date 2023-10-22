@@ -1,0 +1,10 @@
+.link {
+  font-weight: 500;
+  padding: var(--mantine-spacing-xs);
+  font-size: var(--mantine-fontSpace-lg);
+  color: var(--mantine-color-gray-7);
+  &:hover {
+    background-color: var(--mantine-color-gray-0);
+    color: var(--mantine-color-black);
+  }
+}

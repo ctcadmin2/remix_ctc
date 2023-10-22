@@ -1,6 +1,6 @@
-import type { MantineThemeOverride } from "@mantine/core";
+import { createTheme, type MantineThemeOverride } from "@mantine/core";
 
-export const theme: MantineThemeOverride = {
+export const theme: MantineThemeOverride = createTheme({
   components: {
     InputWrapper: {
       styles: () => ({
@@ -64,4 +64,4 @@ export const theme: MantineThemeOverride = {
       }),
     },
   },
-};
+});

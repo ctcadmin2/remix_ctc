@@ -64,7 +64,7 @@ const DataGrid = ({ data, columns, total, perPage }: Props) => {
       recordsPerPage={perPage}
       paginationText={() => <NewPageButton />}
       emptyState={
-        <Stack align="center" spacing="xs" sx={{ pointerEvents: "all" }}>
+        <Stack align="center" spacing="xs" style={{ pointerEvents: "all" }}>
           <NewPageButton />
         </Stack>
       }

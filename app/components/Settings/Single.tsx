@@ -32,11 +32,11 @@ const Single = ({ name, value }: { name: string; value: string }) => {
 
   return (
     <Box
-      sx={(theme) => ({
+      style={{
         textAlign: "center",
-        paddingTop: theme.spacing.sm,
-        paddingBottom: theme.spacing.sm,
-      })}
+        paddingTop: "var(--mantine-spacing-sm)",
+        paddingBottom: "var(--mantine-spacing-sm)",
+      }}
     >
       <TextInput
         ref={ref}
