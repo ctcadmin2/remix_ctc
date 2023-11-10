@@ -21,9 +21,14 @@ import {
 } from "~/utils/session.server";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import { useState } from "react";
-import type { ActionFunction, ActionArgs } from "@remix-run/server-runtime";
-import { verifyAuthenticityToken, redirectBack } from "remix-utils";
+import type {
+  ActionFunction,
+  ActionFunctionArgs,
+} from "@remix-run/server-runtime";
 import { zfd } from "zod-form-data";
+import { redirectBack } from "remix-utils/redirect-back";
+import { CSRFError } from "remix-utils/csrf/server";
+import { csrf } from "~/utils/csrf.server";
 
 export type Invoice = Prisma.InvoiceGetPayload<{
   select: {
@@ -124,13 +129,23 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json(data);
 };
 
-export const action: ActionFunction = async ({ request }: ActionArgs) => {
+export const action: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
   const session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
+
+  try {
+    await csrf.validate(request);
+  } catch (error) {
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
+  }
 
   const { id } = schema.parse(await request.formData());
 
@@ -166,7 +181,7 @@ const Invoices = () => {
     },
     {
       accessor: "date",
-      textAlignment: "center",
+      textAlign: "center",
       render: ({ date }) =>
         Intl.DateTimeFormat("en-US", {
           day: "2-digit",
@@ -177,7 +192,7 @@ const Invoices = () => {
 
     {
       accessor: "value",
-      textAlignment: "center",
+      textAlign: "center",
       render: ({ amount, currency }) =>
         Intl.NumberFormat("en-US", {
           style: "currency",
@@ -188,11 +203,11 @@ const Invoices = () => {
     {
       accessor: "company.name",
       title: "Client",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "actions",
-      textAlignment: "center",
+      textAlign: "center",
       title: <SearchInput />,
       render: (row) => {
         return (

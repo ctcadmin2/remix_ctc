@@ -12,7 +12,7 @@ import {
 import { useForm } from "@mantine/form";
 import SettingList from "~/lists/SettingList";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 const VehicleForm = () => {
   const { vehicle, categories } = useLoaderData();

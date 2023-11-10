@@ -1,4 +1,5 @@
-import "@mantine/core/styles.css";
+import "@mantine/core/styles.layer.css";
+import "mantine-datatable/styles.layer.css";
 
 import type {
   LinksFunction,
@@ -6,6 +7,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { cssBundleHref } from "@remix-run/css-bundle";
+import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 import { json } from "@remix-run/node";
 import {
   Link,
@@ -35,18 +37,11 @@ import { useDisclosure } from "@mantine/hooks";
 
 import LinksGroup from "./components/LinksGroup/LinksGroup";
 import { Notifications, showNotification } from "@mantine/notifications";
-import {
-  authenticator,
-  commitSession,
-  getSession,
-} from "./utils/session.server";
+import { authenticator, getSession } from "./utils/session.server";
 import type { User } from "@prisma/client";
 import { useEffect, useState } from "react";
-import {
-  AuthenticityTokenProvider,
-  createAuthenticityToken,
-} from "remix-utils";
 import { theme } from "./theme";
+import { csrf } from "./utils/csrf.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -69,12 +64,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await authenticator.isAuthenticated(request);
 
   const session = await getSession(request.headers.get("cookie"));
-  const token = createAuthenticityToken(session);
+  let [token, cookieHeader] = await csrf.commitToken();
+
   const toastMessage = session.get("toastMessage") || null;
 
   return json<LoaderData>(
     { csrf: token, user, toastMessage },
-    { headers: { "Set-Cookie": await commitSession(session) } }
+    { headers: { "Set-Cookie": cookieHeader } }
   );
 };
 

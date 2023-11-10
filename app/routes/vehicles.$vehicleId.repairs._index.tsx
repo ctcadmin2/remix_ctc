@@ -21,9 +21,14 @@ import {
 } from "~/utils/session.server";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import { useState } from "react";
-import { redirectBack, verifyAuthenticityToken } from "remix-utils";
-import type { ActionArgs, ActionFunction } from "@remix-run/server-runtime";
+import type {
+  ActionFunctionArgs,
+  ActionFunction,
+} from "@remix-run/server-runtime";
 import { zfd } from "zod-form-data";
+import { redirectBack } from "remix-utils/redirect-back";
+import { CSRFError } from "remix-utils/csrf/server";
+import { csrf } from "~/utils/csrf.server";
 
 type LoaderData = {
   repairs: Repair[];
@@ -81,13 +86,21 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export const action: ActionFunction = async ({
   request,
   params,
-}: ActionArgs) => {
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
   const session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
+
+  try {
+    await csrf.validate(request);
+  } catch (error) {
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
+  }
 
   const { id } = schema.parse(await request.formData());
   const { vehicleId } = zx.parseParams(params, {
@@ -121,7 +134,7 @@ const Repairs = () => {
   const columns: DataTableColumn<Repair>[] = [
     {
       accessor: "date",
-      textAlignment: "left",
+      textAlign: "left",
       render: ({ date }) =>
         Intl.DateTimeFormat("en-US", {
           day: "2-digit",
@@ -131,16 +144,16 @@ const Repairs = () => {
     },
     {
       accessor: "km",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "comment",
-      textAlignment: "center",
+      textAlign: "center",
     },
 
     {
       accessor: "actions",
-      textAlignment: "center",
+      textAlign: "center",
       title: <SearchInput />,
       render: (row) => {
         return (

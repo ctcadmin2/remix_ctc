@@ -1,7 +1,7 @@
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   ActionFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
 
@@ -15,8 +15,10 @@ import {
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import { redirectBack, verifyAuthenticityToken } from "remix-utils";
 import RepairForm from "~/forms/RepairForm";
+import { redirectBack } from "remix-utils/redirect-back";
+import { CSRFError } from "remix-utils/csrf/server";
+import { csrf } from "~/utils/csrf.server";
 
 const schema = zfd.formData({
   date: zfd.text(),
@@ -27,7 +29,7 @@ const schema = zfd.formData({
 export const loader: LoaderFunction = async ({
   request,
   params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
@@ -48,7 +50,7 @@ export const loader: LoaderFunction = async ({
 export const action: ActionFunction = async ({
   request,
   params,
-}: ActionArgs) => {
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
@@ -59,12 +61,14 @@ export const action: ActionFunction = async ({
   });
 
   const session = await getSession(request.headers.get("Cookie"));
+
   try {
-    await verifyAuthenticityToken(request, session);
+    await csrf.validate(request);
   } catch (error) {
-    return redirectBack(request, {
-      fallback: `/vehicles/${vehicleId}/repairs`,
-    });
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
   }
 
   const data = schema.parse(await request.formData());

@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { DateInput } from "@mantine/dates";
 
 const RepairForm = () => {

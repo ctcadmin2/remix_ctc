@@ -20,15 +20,17 @@ import {
   getSession,
 } from "~/utils/session.server";
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   ActionFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/server-runtime";
-import { redirectBack, verifyAuthenticityToken } from "remix-utils";
 import { zfd } from "zod-form-data";
 import { useState } from "react";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
+import { redirectBack } from "remix-utils/redirect-back";
+import { CSRFError } from "remix-utils/csrf/server";
+import { csrf } from "~/utils/csrf.server";
 
 export type Vehicle = Prisma.VehicleGetPayload<{
   select: {
@@ -50,7 +52,9 @@ const schema = zfd.formData({
   id: zx.NumAsString,
 });
 
-export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
+export const loader: LoaderFunction = async ({
+  request,
+}: LoaderFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
@@ -109,13 +113,23 @@ export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
   return json(data);
 };
 
-export const action: ActionFunction = async ({ request }: ActionArgs) => {
+export const action: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
   const session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
+
+  try {
+    await csrf.validate(request);
+  } catch (error) {
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
+  }
 
   const { id } = schema.parse(await request.formData());
 
@@ -149,17 +163,17 @@ const Vehicles = () => {
     },
     {
       accessor: "vin",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "active",
-      textAlignment: "center",
+      textAlign: "center",
       sortable: true,
       render: (record) => <BooleanIcon value={record.active} />,
     },
     {
       accessor: "actions",
-      textAlignment: "center",
+      textAlign: "center",
       title: <SearchInput />,
       render: (row) => {
         return (

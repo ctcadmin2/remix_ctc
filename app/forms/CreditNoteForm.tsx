@@ -16,7 +16,7 @@ import { useForm } from "@mantine/form";
 import VehiclesList from "~/lists/VehicleList";
 import SettingList from "~/lists/SettingList";
 import { Form, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { Upload } from "react-feather";
 
 const CreditNoteForm = () => {

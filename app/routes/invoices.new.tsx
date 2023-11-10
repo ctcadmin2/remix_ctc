@@ -1,10 +1,11 @@
 import type { Company, CreditNote, Setting } from "@prisma/client";
 import type { ActionFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { verifyAuthenticityToken } from "remix-utils";
+import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import InvoiceForm from "~/forms/InvoiceForm";
+import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import {
   DEFAULT_REDIRECT,
@@ -54,7 +55,14 @@ export const action: ActionFunction = async ({ request }) => {
 
   const session = await getSession(request.headers.get("Cookie"));
 
-  await verifyAuthenticityToken(request, session);
+  try {
+    await csrf.validate(request);
+  } catch (error) {
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
+  }
 
   // const data = schema.parse(await request.formData());
 

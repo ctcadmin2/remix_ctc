@@ -14,7 +14,7 @@ import {
 import { useForm } from "@mantine/form";
 import SettingList from "~/lists/SettingList";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 import { DateInput } from "@mantine/dates";
 import CompanyList from "~/lists/CompanyList";
 import type { CreditNote } from "@prisma/client";

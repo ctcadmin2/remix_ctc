@@ -21,8 +21,11 @@ import {
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
 import { useState } from "react";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
-import type { ActionFunction, ActionArgs } from "@remix-run/server-runtime";
-import { verifyAuthenticityToken, redirectBack } from "remix-utils";
+import type {
+  ActionFunction,
+  ActionFunctionArgs,
+} from "@remix-run/server-runtime";
+import { redirectBack } from "remix-utils/redirect-back";
 import { zfd } from "zod-form-data";
 
 export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
@@ -139,13 +142,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   return json(data);
 };
 
-export const action: ActionFunction = async ({ request }: ActionArgs) => {
+export const action: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
   const session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
 
   const { id } = schema.parse(await request.formData());
 
@@ -182,24 +186,24 @@ const CreditNotes = () => {
     },
     {
       accessor: "number",
-      textAlignment: `${pathname === "/creditNotes" ? "left" : "center"}`,
+      textAlign: `${pathname === "/creditNotes" ? "left" : "center"}`,
       sortable: true,
     },
     {
       accessor: "start",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "end",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "week",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "value",
-      textAlignment: "center",
+      textAlign: "center",
       render: ({ amount, currency }) =>
         Intl.NumberFormat("en-US", {
           style: "currency",
@@ -208,22 +212,22 @@ const CreditNotes = () => {
     },
     {
       accessor: "paid",
-      textAlignment: "center",
+      textAlign: "center",
       sortable: true,
       render: (record) => <BooleanIcon value={record.paid} />,
     },
     {
       accessor: "vehicle.registration",
       title: "Vehicle",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "notes",
-      textAlignment: "center",
+      textAlign: "center",
     },
     {
       accessor: "actions",
-      textAlignment: "center",
+      textAlign: "center",
       title: <SearchInput />,
       render: (row) => {
         return (

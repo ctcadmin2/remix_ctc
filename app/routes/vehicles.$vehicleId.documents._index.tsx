@@ -21,11 +21,16 @@ import {
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import { redirectBack, verifyAuthenticityToken } from "remix-utils";
-import type { ActionFunction, ActionArgs } from "@remix-run/server-runtime";
+import type {
+  ActionFunction,
+  ActionFunctionArgs,
+} from "@remix-run/server-runtime";
 import { zfd } from "zod-form-data";
 import { useState } from "react";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
+import { redirectBack } from "remix-utils/redirect-back";
+import { CSRFError } from "remix-utils/csrf/server";
+import { csrf } from "~/utils/csrf.server";
 
 type LoaderData = {
   documents: DocumentWithAttachement[];
@@ -120,13 +125,21 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export const action: ActionFunction = async ({
   request,
   params,
-}: ActionArgs) => {
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
   const session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
+
+  try {
+    await csrf.validate(request);
+  } catch (error) {
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
+  }
 
   const { id } = schema.parse(await request.formData());
   const { vehicleId } = zx.parseParams(params, { vehicleId: zx.NumAsString });
@@ -158,11 +171,11 @@ const Documents = () => {
   const columns: DataTableColumn<DocumentWithAttachement>[] = [
     {
       accessor: "description",
-      textAlignment: "left",
+      textAlign: "left",
     },
     {
       accessor: "expire",
-      textAlignment: "center",
+      textAlign: "center",
       render: ({ expire }) =>
         expire &&
         Intl.DateTimeFormat("en-US", {
@@ -174,12 +187,12 @@ const Documents = () => {
 
     {
       accessor: "comment",
-      textAlignment: "center",
+      textAlign: "center",
     },
 
     {
       accessor: "actions",
-      textAlignment: "center",
+      textAlign: "center",
       title: <SearchInput />,
       render: (row) => {
         return (

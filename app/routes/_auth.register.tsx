@@ -7,11 +7,11 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { type LoaderFunction, type ActionArgs } from "@remix-run/node";
+import { type LoaderFunction, type ActionFunctionArgs } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { badRequest } from "remix-utils";
+// import { badRequest } from "remix-utils/csrf/react";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { db } from "~/utils/db.server";
@@ -31,7 +31,7 @@ const schema = zfd.formData({
   language: zfd.text(z.union([z.literal("en"), z.literal("ro")])),
 });
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const data = schema.parse(await request.formData());
 
   const { passCheck, redirectTo, ...rest } = data;

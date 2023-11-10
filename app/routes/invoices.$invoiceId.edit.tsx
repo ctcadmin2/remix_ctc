@@ -1,7 +1,7 @@
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   ActionFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
 
@@ -16,9 +16,10 @@ import {
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import { redirectBack, verifyAuthenticityToken } from "remix-utils";
 import InvoiceForm from "~/forms/InvoiceForm";
 import type { Invoice, Setting } from "@prisma/client";
+import { csrf } from "~/utils/csrf.server";
+import { CSRFError } from "remix-utils/csrf/server";
 
 type LoaderData = {
   invoice: Invoice | null;
@@ -41,7 +42,7 @@ const schema = zfd.formData({
 export const loader: LoaderFunction = async ({
   request,
   params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
@@ -65,16 +66,20 @@ export const loader: LoaderFunction = async ({
 export const action: ActionFunction = async ({
   request,
   params,
-}: ActionArgs) => {
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
   const session = await getSession(request.headers.get("Cookie"));
+
   try {
-    await verifyAuthenticityToken(request, session);
+    await csrf.validate(request);
   } catch (error) {
-    return redirectBack(request, { fallback: "/vehicles" });
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
   }
 
   const { invoiceId } = zx.parseParams(params, {

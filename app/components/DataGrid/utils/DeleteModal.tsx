@@ -2,7 +2,7 @@ import { Alert, Button, Group, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useSubmit } from "@remix-run/react";
 import { AlertCircle } from "react-feather";
-import { useAuthenticityToken } from "remix-utils";
+import { useAuthenticityToken } from "remix-utils/csrf/react";
 
 type Document = { id: number };
 

@@ -4,4 +4,7 @@ module.exports = {
   serverModuleFormat: "cjs",
   sourceMaps: true,
   postcss: true,
+  serverDependenciesToBundle: [
+		/^remix-utils.*/,
+  ]
 };

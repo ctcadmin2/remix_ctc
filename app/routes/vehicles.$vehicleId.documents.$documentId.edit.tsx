@@ -1,7 +1,7 @@
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   ActionFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
 
@@ -15,10 +15,11 @@ import {
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import { verifyAuthenticityToken } from "remix-utils";
 import DocumentForm from "~/forms/DocumentForm";
 import { z } from "zod";
 import FileUploader from "~/utils/uploader.server";
+import { CSRFError } from "remix-utils/csrf/server";
+import { csrf } from "~/utils/csrf.server";
 
 const schema = zfd.formData({
   description: zfd.text(),
@@ -32,7 +33,7 @@ const schema = zfd.formData({
 export const loader: LoaderFunction = async ({
   request,
   params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
@@ -53,7 +54,7 @@ export const loader: LoaderFunction = async ({
 export const action: ActionFunction = async ({
   request,
   params,
-}: ActionArgs) => {
+}: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
@@ -64,10 +65,14 @@ export const action: ActionFunction = async ({
   });
 
   const session = await getSession(request.headers.get("Cookie"));
+
   try {
-    await verifyAuthenticityToken(request, session);
+    await csrf.validate(request);
   } catch (error) {
-    return redirect(`/vehicles/${vehicleId}/documents`);
+    if (error instanceof CSRFError) {
+      console.log("csrf error");
+    }
+    console.log("other error");
   }
 
   const { files, ...data } = schema.parse(await request.formData());

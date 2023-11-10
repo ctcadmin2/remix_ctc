@@ -1,12 +1,12 @@
-import type { LoaderArgs } from "@remix-run/server-runtime";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { readFile } from "fs/promises";
 
 import { cwd } from "process";
-import { pdf } from "remix-utils";
+import { pdf } from "remix-utils/responses";
 import { zx } from "zodix";
 import { db } from "~/utils/db.server";
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const { documentId } = zx.parseParams(params, { documentId: zx.NumAsString });
   const document = await db.document.findUnique({
     where: { id: documentId },
