@@ -90,7 +90,7 @@ const Settings = () => {
     <Tabs
       radius="xs"
       value={searchParams.get("type") || "main"}
-      onTabChange={(tab: string) => {
+      onChange={(tab: string) => {
         searchParams.set("type", tab);
         setSearchParams(searchParams);
       }}

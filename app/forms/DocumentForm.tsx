@@ -71,11 +71,11 @@ const DocumentForm = () => {
           clearable
           accept="image/png,image/jpeg,image/jpg,application/pdf"
           {...form.getInputProps("files", { type: "input" })}
-          icon={<Upload strokeWidth={"3px"} size={"16px"} />}
+          leftSection={<Upload strokeWidth={"3px"} size={"16px"} />}
         />
       </ScrollArea.Autosize>
       <Divider size={"sm"} mt="xl" mb="xl" />
-      <Group position="center" spacing={"sm"}>
+      <Group justify="center" gap={"sm"}>
         <Button type="submit">Submit</Button>
         <Button type="reset" onClick={() => navigate(-1)}>
           Back

@@ -219,7 +219,7 @@ const Invoices = () => {
                 component={Link}
                 to={`${row.id}`}
                 reloadDocument
-                leftIcon={<FileText />}
+                leftSection={<FileText />}
               >
                 PDF
               </Button>
@@ -227,7 +227,7 @@ const Invoices = () => {
               <Button
                 component={Menu}
                 trigger="hover"
-                position="bottom-start"
+                justify="bottom-start"
                 color="lime"
                 withArrow
                 openDelay={100}
@@ -237,13 +237,13 @@ const Invoices = () => {
                   <Button
                     color={"teal"}
                     variant={"filled"}
-                    leftIcon={<MoreHorizontal />}
+                    leftSection={<MoreHorizontal />}
                   />
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item
                     component={Link}
-                    icon={
+                    leftSection={
                       <Edit size={"16px"} strokeWidth={"2px"} color="teal" />
                     }
                     to={`${row.id}/edit`}
@@ -252,7 +252,7 @@ const Invoices = () => {
                   </Menu.Item>
 
                   <Menu.Item
-                    icon={
+                    leftSection={
                       <Trash2 size={"16px"} color="red" strokeWidth={"2px"} />
                     }
                     onClick={() => handleDelete(row)}
@@ -273,7 +273,7 @@ const Invoices = () => {
       <Tabs
         radius="xs"
         value={searchParams.get("type") || "national"}
-        onTabChange={(tab: string) => {
+        onChange={(tab: string) => {
           searchParams.set("type", tab);
           setSearchParams(searchParams);
         }}

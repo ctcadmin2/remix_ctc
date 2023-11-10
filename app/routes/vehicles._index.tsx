@@ -191,7 +191,7 @@ const Vehicles = () => {
               <Button
                 component={Menu}
                 trigger="hover"
-                position="bottom-start"
+                justify="bottom-start"
                 color="lime"
                 withArrow
                 openDelay={100}
@@ -201,13 +201,13 @@ const Vehicles = () => {
                   <Button
                     color={"teal"}
                     variant={"filled"}
-                    leftIcon={<MoreHorizontal strokeWidth={"1.5px"} />}
+                    leftSection={<MoreHorizontal strokeWidth={"1.5px"} />}
                   />
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item
                     component={Link}
-                    icon={
+                    leftSection={
                       <FileText
                         size={"16px"}
                         color="teal"
@@ -220,7 +220,7 @@ const Vehicles = () => {
                   </Menu.Item>
                   <Menu.Item
                     component={Link}
-                    icon={
+                    leftSection={
                       <Tool size={"16px"} color="teal" strokeWidth={"2px"} />
                     }
                     to={`${row.id}/repairs`}
@@ -229,7 +229,7 @@ const Vehicles = () => {
                   </Menu.Item>
                   <Menu.Item
                     component={Link}
-                    icon={
+                    leftSection={
                       <Edit size={"16px"} color="teal" strokeWidth={"2px"} />
                     }
                     to={`${row.id}/edit`}
@@ -238,7 +238,7 @@ const Vehicles = () => {
                   </Menu.Item>
 
                   <Menu.Item
-                    icon={
+                    leftSection={
                       <Trash2 size={"16px"} color="red" strokeWidth={"2px"} />
                     }
                     onClick={() => handleDelete(row)}

@@ -177,8 +177,8 @@ export default function App() {
             // }
           >
             <AppShell.Header>
-              <Group position="apart" grow>
-                <Group position="apart">
+              <Group justify="apart" grow>
+                <Group justify="apart">
                   <Burger
                     opened={opened}
                     onClick={toggle}
@@ -186,11 +186,11 @@ export default function App() {
                     hiddenFrom="sm"
                     display={!user ? "none" : "inline"}
                   />
-                  <Title order={3} weight={"bolder"}>
+                  <Title order={3} fw={"bolder"}>
                     CTCAdmin 2
                   </Title>
                 </Group>
-                <Group position="right">
+                <Group justify="right">
                   <Button>Language</Button>
 
                   {user && (

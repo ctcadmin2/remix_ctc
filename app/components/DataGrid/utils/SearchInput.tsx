@@ -35,7 +35,7 @@ const SearchInput = () => {
     <TextInput
       placeholder="Search..."
       ref={queryRef}
-      icon={<Search size={"16px"} strokeWidth="3px" />}
+      leftSection={<Search size={"16px"} strokeWidth="3px" />}
       rightSection={
         query.length === 0 ? null : (
           <ThemeIcon variant="outline" radius="xl" size="sm" color="red">

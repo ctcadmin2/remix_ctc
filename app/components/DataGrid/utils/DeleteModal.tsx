@@ -36,14 +36,14 @@ function DeleteModal<T extends Document>({
     >
       <Alert
         variant="outline"
-        icon={<AlertCircle size="1rem" />}
+        leftSection={<AlertCircle size="1rem" />}
         title="Warning!"
         color="red"
       >
         {`You are going to delete a ${name}. This action will delete all other
         associated data. Please confirm.`}
       </Alert>
-      <Group mt={"xl"} position="center">
+      <Group mt={"xl"} justify="center">
         <Button
           variant="filled"
           color="red"

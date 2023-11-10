@@ -205,7 +205,7 @@ const Documents = () => {
                 to={`${row.id}/pdf`}
                 disabled={row.attachment === null}
                 reloadDocument
-                leftIcon={<FileText size={"24px"} />}
+                leftSection={<FileText size={"24px"} />}
               >
                 PDF
               </Button>
@@ -213,7 +213,7 @@ const Documents = () => {
               <Button
                 component={Menu}
                 trigger="hover"
-                position="bottom-start"
+                justify="bottom-start"
                 color="lime"
                 withArrow
                 openDelay={100}
@@ -223,13 +223,13 @@ const Documents = () => {
                   <Button
                     color={"teal"}
                     variant={"filled"}
-                    leftIcon={<MoreHorizontal strokeWidth={"1.5px"} />}
+                    leftSection={<MoreHorizontal strokeWidth={"1.5px"} />}
                   />
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item
                     component={Link}
-                    icon={
+                    leftSection={
                       <Edit size={"16px"} color="teal" strokeWidth={"2px"} />
                     }
                     to={`/vehicles/${row.vehicleId}/documents/${row.id}/edit`}
@@ -238,7 +238,7 @@ const Documents = () => {
                   </Menu.Item>
 
                   <Menu.Item
-                    icon={
+                    leftSection={
                       <Trash2 size={"16px"} color="red" strokeWidth={"2px"} />
                     }
                     onClick={() => handleDelete(row)}

@@ -128,7 +128,7 @@ const InvoiceForm = () => {
           </Flex>
         </ScrollArea.Autosize>
         <Divider size={"sm"} mt="xl" mb="xl" />
-        <Group position="center" spacing={"sm"}>
+        <Group justify="center" gap={"sm"}>
           <Button onClick={() => console.log(form.values)}>Submit</Button>
           <Button type="reset" onClick={() => navigate(-1)}>
             Back

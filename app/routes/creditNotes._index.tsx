@@ -240,7 +240,7 @@ const CreditNotes = () => {
                 to={`${row.id}`}
                 disabled={row.attachment === null}
                 reloadDocument
-                leftIcon={<FileText size={"24px"} />}
+                leftSection={<FileText size={"24px"} />}
               >
                 PDF
               </Button>
@@ -248,7 +248,7 @@ const CreditNotes = () => {
               <Button
                 component={Menu}
                 trigger="hover"
-                position="bottom-start"
+                justify="bottom-start"
                 color="lime"
                 withArrow
                 openDelay={100}
@@ -258,13 +258,13 @@ const CreditNotes = () => {
                   <Button
                     color={"teal"}
                     variant={"filled"}
-                    leftIcon={<MoreHorizontal />}
+                    leftSection={<MoreHorizontal />}
                   />
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item
                     component={Link}
-                    icon={
+                    leftSection={
                       <Edit size={"16px"} color="teal" strokeWidth={"2px"} />
                     }
                     to={`${row.id}/edit`}
@@ -273,7 +273,7 @@ const CreditNotes = () => {
                   </Menu.Item>
 
                   <Menu.Item
-                    icon={
+                    leftSection={
                       <Trash2 size={"16px"} color="red" strokeWidth={"2px"} />
                     }
                     onClick={() => handleDelete(row)}
