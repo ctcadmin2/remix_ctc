@@ -32,6 +32,7 @@ import {
   Paper,
   Title,
   ColorSchemeScript,
+  ScrollArea,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -165,18 +166,15 @@ export default function App() {
         <MantineProvider theme={theme}>
           <Notifications />
           <AppShell
-            header={{ height: { base: 60, md: 70, lg: 80 } }}
+            padding={"md"}
+            header={{ height: 60 }}
             navbar={{
-              width: { base: 200, md: 300, lg: 400 },
+              width: 200,
               breakpoint: "sm",
-              collapsed: { mobile: !opened },
+              collapsed: { mobile: !opened, desktop: !user },
             }}
-            padding="md"
-            // navbarOffsetBreakpoint={user ? "sm" : undefined}
-            // navbar={
-            // }
           >
-            <AppShell.Header>
+            <AppShell.Header p={"md"}>
               <Group justify="apart" grow>
                 <Group justify="apart">
                   <Burger
@@ -212,15 +210,10 @@ export default function App() {
               </Group>
             </AppShell.Header>
 
-            <AppShell.Navbar
-              p="md"
-              h={"85vh"}
-              style={{ marginTop: "16px" }}
-              hidden={!opened}
-              w={{ sm: 250 }}
-              withBorder
-            >
-              {links}
+            <AppShell.Navbar pl="md" mt={"1rem"} h={"85vh"} hidden={true}>
+              <AppShell.Section grow component={ScrollArea}>
+                {links}
+              </AppShell.Section>
             </AppShell.Navbar>
             <AppShell.Main>
               <Paper
@@ -228,7 +221,7 @@ export default function App() {
                 radius="md"
                 p="xl"
                 withBorder
-                style={{ height: "85vh" }}
+                style={{ height: "85vh", width: "auto" }}
               >
                 <Container fluid px={0}>
                   <AuthenticityTokenProvider token={csrf}>
