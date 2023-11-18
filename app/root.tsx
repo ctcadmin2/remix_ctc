@@ -1,12 +1,7 @@
 import "@mantine/core/styles.layer.css";
 import "mantine-datatable/styles.layer.css";
 
-import type {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
-import { cssBundleHref } from "@remix-run/css-bundle";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 import { json } from "@remix-run/node";
 import {
@@ -50,10 +45,6 @@ export const meta: MetaFunction = () => {
     { viewport: "width=device-width,initial-scale=1" },
   ];
 };
-
-export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-];
 
 interface LoaderData {
   csrf: string;
@@ -231,8 +222,8 @@ export default function App() {
               </Paper>
             </AppShell.Main>
           </AppShell>
-          <Scripts />
           <LiveReload />
+          <Scripts />
         </MantineProvider>
       </body>
     </html>

@@ -48,7 +48,7 @@ const DataGrid = ({ data, columns, total, perPage }: Props) => {
     <DataTable
       striped
       highlightOnHover
-      withBorder
+      // withBorder
       // minHeight={550}
       horizontalSpacing={"xl"}
       verticalSpacing={"sm"}

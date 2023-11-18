@@ -49,6 +49,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  console.log("called");
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
@@ -60,8 +61,9 @@ export const action: ActionFunction = async ({ request }) => {
   } catch (error) {
     if (error instanceof CSRFError) {
       console.log("csrf error");
+    } else {
+      console.log("other error");
     }
-    console.log("other error");
   }
 
   const data = schema.parse(await request.formData());
@@ -74,6 +76,7 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   if (setting) {
+    //TODO fix notifications
     //TODO fix flash for multiple changes
     session.flash("toastMessage", "Settings updated successfully.");
     return redirect("/settings", {
@@ -84,14 +87,14 @@ export const action: ActionFunction = async ({ request }) => {
 
 const Settings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { settings } = useLoaderData();
+  const { settings } = useLoaderData<LoaderData>();
 
   return (
     <Tabs
       radius="xs"
       value={searchParams.get("type") || "main"}
-      onChange={(tab: string) => {
-        searchParams.set("type", tab);
+      onChange={(tab: string | null) => {
+        searchParams.set("type", tab || "main");
         setSearchParams(searchParams);
       }}
       keepMounted={false}
@@ -101,7 +104,7 @@ const Settings = () => {
         <Tabs.Tab value="company">Company</Tabs.Tab>
       </Tabs.List>
 
-      <Tabs.Panel value="main" pl="xs">
+      <Tabs.Panel value="main" pl="xs" mt="lg">
         {settings.sort(sortSettings).map((setting: Setting) => {
           if (setting.multi === false) {
             return (
