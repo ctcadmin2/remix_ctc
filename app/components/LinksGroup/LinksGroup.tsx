@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-has-content */
 import { NavLink } from "@mantine/core";
 import { useLocation, Link } from "@remix-run/react";
 import type { ReactNode } from "react";
@@ -39,8 +38,9 @@ const LinksGroup = ({ label, path, links }: LinksGroupProps) => {
       active={activeStatus(path)}
       childrenOffset={32}
       to={hasLinks ? "" : path}
-      children={items.length === 0 ? null : items}
-    />
+    >
+      {items.length === 0 ? null : items}
+    </NavLink>
   );
 };
 

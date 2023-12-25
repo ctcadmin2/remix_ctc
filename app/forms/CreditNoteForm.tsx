@@ -12,7 +12,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Form, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
+import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
@@ -21,7 +21,6 @@ import SettingList from "~/lists/SettingList";
 import VehiclesList from "~/lists/VehicleList";
 
 const CreditNoteForm = () => {
-  const submit = useSubmit();
   const { creditNote, currencies } = useLoaderData();
   const form = useForm({
     initialValues: {
@@ -44,23 +43,13 @@ const CreditNoteForm = () => {
     ref.current?.focus();
   }, []);
 
-  const handleSubmit = (
-    _v: any,
-    e: { currentTarget: HTMLFormElement | undefined }
-  ) => {
-    const formData = new FormData(e.currentTarget);
-    submit(formData, {
-      method: "post",
-      ...(form.values.files ? { encType: "multipart/form-data" } : {}),
-    });
-  };
-
   return (
     <Box p={"sm"}>
       {/*TODO make responsive containers*/}
       <Form
-        // reloadDocument
-        onSubmit={form.onSubmit(handleSubmit)}
+        reloadDocument
+        method="POST"
+        {...(form.values.files ? { encType: "multipart/form-data" } : {})}
       >
         <AuthenticityTokenInput />
         <ScrollArea.Autosize mah={"60vh"} offsetScrollbars>
