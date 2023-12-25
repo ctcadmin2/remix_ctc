@@ -4,22 +4,22 @@ import type {
   LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
-
 import { json, redirect } from "@remix-run/node";
-import { db } from "~/utils/db.server";
+import { CSRFError } from "remix-utils/csrf/server";
+import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
+
+import DocumentForm from "~/forms/DocumentForm";
+import { csrf } from "~/utils/csrf.server";
+import { db } from "~/utils/db.server";
 import {
   DEFAULT_REDIRECT,
   authenticator,
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import DocumentForm from "~/forms/DocumentForm";
-import { z } from "zod";
 import FileUploader from "~/utils/uploader.server";
-import { CSRFError } from "remix-utils/csrf/server";
-import { csrf } from "~/utils/csrf.server";
 
 const schema = zfd.formData({
   description: zfd.text(),

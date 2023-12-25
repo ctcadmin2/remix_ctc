@@ -1,4 +1,5 @@
 import type { LoaderFunction } from "@remix-run/node";
+
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {

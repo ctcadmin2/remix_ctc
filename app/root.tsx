@@ -1,22 +1,6 @@
 import "@mantine/core/styles.layer.css";
 import "mantine-datatable/styles.layer.css";
 
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
-import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
-import { json } from "@remix-run/node";
-import {
-  Link,
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  isRouteErrorResponse,
-  useLoaderData,
-  useLocation,
-  useRouteError,
-  useSubmit,
-} from "@remix-run/react";
 import {
   MantineProvider,
   AppShell,
@@ -30,14 +14,30 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { Notifications, showNotification } from "@mantine/notifications";
+import type { User } from "@prisma/client";
+import { json } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import {
+  Link,
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  isRouteErrorResponse,
+  useLoaderData,
+  useLocation,
+  useRouteError,
+  useSubmit,
+} from "@remix-run/react";
+import { useEffect, useState } from "react";
+import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 
 import LinksGroup from "./components/LinksGroup/LinksGroup";
-import { Notifications, showNotification } from "@mantine/notifications";
-import { authenticator, getSession } from "./utils/session.server";
-import type { User } from "@prisma/client";
-import { useEffect, useState } from "react";
 import { theme } from "./theme";
 import { csrf } from "./utils/csrf.server";
+import { authenticator, getSession } from "./utils/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -56,7 +56,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await authenticator.isAuthenticated(request);
 
   const session = await getSession(request.headers.get("cookie"));
-  let [token, cookieHeader] = await csrf.commitToken();
+  const [token, cookieHeader] = await csrf.commitToken();
 
   const toastMessage = session.get("toastMessage") || null;
 
@@ -108,8 +108,8 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
-  let location = useLocation();
-  let [linkPath, setLinkPath] = useState({ name: "", to: "" });
+  const location = useLocation();
+  const [linkPath, setLinkPath] = useState({ name: "", to: "" });
 
   const { csrf, user, toastMessage } = useLoaderData<LoaderData>();
   const [opened, { toggle }] = useDisclosure(false);
@@ -182,21 +182,17 @@ export default function App() {
                 <Group justify="right">
                   <Button>Language</Button>
 
-                  {user && (
-                    <Button
+                  {user ? <Button
                       type="submit"
                       onClick={() =>
                         submit(null, { method: "post", action: "/logout" })
                       }
                     >
                       Logout
-                    </Button>
-                  )}
-                  {!user && (
-                    <Button component={Link} to={linkPath.to}>
+                    </Button> : null}
+                  {!user ? <Button component={Link} to={linkPath.to}>
                       {linkPath.name}
-                    </Button>
-                  )}
+                    </Button> : null}
                 </Group>
               </Group>
             </AppShell.Header>

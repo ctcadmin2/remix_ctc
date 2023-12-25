@@ -1,36 +1,40 @@
-import { Center, Button, Menu, Divider } from "@mantine/core";
-
-import DataGrid from "~/components/DataGrid/DataGrid";
-import SearchInput from "~/components/DataGrid/utils/SearchInput";
-import BooleanIcon from "~/components/DataGrid/utils/BooleanIcon";
-import type { DataTableColumn } from "mantine-datatable";
-import { Link, useLoaderData } from "@remix-run/react";
-import type { Prisma } from "@prisma/client";
 import { env } from "process";
-import { json } from "react-router-dom";
-import { z } from "zod";
-import { zx } from "zodix";
-import { db } from "~/utils/db.server";
-import { sortOrder } from "~/utils/helpers.server";
-import { Edit, FileText, MoreHorizontal, Tool, Trash2 } from "react-feather";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+
+import { Center, Button, Menu, Divider } from "@mantine/core";
+import type { Prisma } from "@prisma/client";
+import { Link, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunctionArgs,
   ActionFunction,
   LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/server-runtime";
-import { zfd } from "zod-form-data";
+import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
-import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
-import { redirectBack } from "remix-utils/redirect-back";
+import { Edit, FileText, MoreHorizontal, Tool, Trash2 } from "react-feather";
+import { json } from "react-router-dom";
 import { CSRFError } from "remix-utils/csrf/server";
+import { redirectBack } from "remix-utils/redirect-back";
+import { z } from "zod";
+import { zfd } from "zod-form-data";
+import { zx } from "zodix";
+
+import DataGrid from "~/components/DataGrid/DataGrid";
+import BooleanIcon from "~/components/DataGrid/utils/BooleanIcon";
+import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
+import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { csrf } from "~/utils/csrf.server";
+import { db } from "~/utils/db.server";
+import { sortOrder } from "~/utils/helpers.server";
+import {
+  DEFAULT_REDIRECT,
+  authenticator,
+  commitSession,
+  getSession,
+} from "~/utils/session.server";
+
+
+
 
 export type Vehicle = Prisma.VehicleGetPayload<{
   select: {
@@ -42,11 +46,11 @@ export type Vehicle = Prisma.VehicleGetPayload<{
   };
 }>;
 
-type LoaderData = {
+interface LoaderData {
   vehicles: Vehicle[];
   total: number;
   perPage: number;
-};
+}
 
 const schema = zfd.formData({
   id: zx.NumAsString,

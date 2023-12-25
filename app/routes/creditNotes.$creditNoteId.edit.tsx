@@ -4,22 +4,23 @@ import type {
   LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
-
 import { json, redirect } from "@remix-run/node";
-import CreditNoteForm from "~/forms/CreditNoteForm";
-import { db } from "~/utils/db.server";
-import { zfd } from "zod-form-data";
+import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
-import FileUploader from "~/utils/uploader.server";
+import { zfd } from "zod-form-data";
 import { zx } from "zodix";
+
+import CreditNoteForm from "~/forms/CreditNoteForm";
+import { csrf } from "~/utils/csrf.server";
+import { db } from "~/utils/db.server";
 import {
   DEFAULT_REDIRECT,
   authenticator,
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import { csrf } from "~/utils/csrf.server";
-import { CSRFError } from "remix-utils/csrf/server";
+import FileUploader from "~/utils/uploader.server";
+
 
 const schema = zfd.formData({
   orderNr: zfd.numeric(z.number().optional()),
@@ -100,7 +101,7 @@ export const action: ActionFunction = async ({
     await FileUploader(files as Blob[], "creditNote", creditNoteId);
   }
 
-  let creditNote = await db.creditNote.update({
+  const creditNote = await db.creditNote.update({
     data: {
       ...rest,
       ...(vehicleId

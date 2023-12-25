@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-
+import { Stack } from "@mantine/core";
+import { useSearchParams } from "@remix-run/react";
 import type { DataTableColumn, DataTableSortStatus } from "mantine-datatable";
 import { DataTable } from "mantine-datatable";
-import { useSearchParams } from "@remix-run/react";
+import { useEffect, useRef, useState } from "react";
+
+
 import NewPageButton from "../NewPageButton/NewPageButton";
-import { Stack } from "@mantine/core";
+
 
 interface Props {
   data: unknown[];

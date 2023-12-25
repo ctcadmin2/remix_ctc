@@ -4,15 +4,15 @@ import { useSubmit } from "@remix-run/react";
 import { AlertCircle } from "react-feather";
 import { useAuthenticityToken } from "remix-utils/csrf/react";
 
-type Document = { id: number };
+interface Document { id: number }
 
-type Props<T extends Document> = {
+interface Props<T extends Document> {
   name: string;
   title: string | undefined;
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
   document: T | undefined;
-};
+}
 function DeleteModal<T extends Document>({
   name,
   title,
@@ -20,7 +20,7 @@ function DeleteModal<T extends Document>({
   setOpened,
   document,
 }: Props<T>) {
-  let csrf = useAuthenticityToken();
+  const csrf = useAuthenticityToken();
   const submit = useSubmit();
 
   return (

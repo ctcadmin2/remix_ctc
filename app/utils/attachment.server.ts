@@ -1,6 +1,8 @@
-import type { Attachment } from "@prisma/client";
 import { readFileSync, unlink } from "fs";
 import { cwd } from "process";
+
+import type { Attachment } from "@prisma/client";
+
 import { db } from "./db.server";
 
 export const processAttachment = async (
@@ -9,7 +11,7 @@ export const processAttachment = async (
   name: string
 ) => {
   try {
-    let oldFile = await db.attachment.findUnique({
+    const oldFile = await db.attachment.findUnique({
       where: { [`${type}Id`]: id },
     });
 

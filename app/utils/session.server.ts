@@ -3,23 +3,24 @@ import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { compare, hash } from "bcryptjs";
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
+
 import { db } from "./db.server";
 
 const sessionSecret = process.env.SESSION_SECRET;
 export const DEFAULT_REDIRECT = "/login";
 
-type LoginForm = {
+interface LoginForm {
   email: string;
   password: string;
-};
+}
 
-type RegisterForm = {
+interface RegisterForm {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   language: "en" | "ro";
-};
+}
 
 const login = async ({ email, password }: LoginForm) => {
   const user = await db.user.findUnique({
@@ -54,8 +55,8 @@ export const authenticator = new Authenticator<Partial<User> | Error | null>(
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {
-    let email = form.get("email") as string;
-    let password = form.get("password") as string;
+    const email = form.get("email") as string;
+    const password = form.get("password") as string;
 
     // do some validation, errors are in the sessionErrorKey
     if (!email || email?.length === 0)

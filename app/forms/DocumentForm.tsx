@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 
 import {
   Button,
@@ -9,11 +8,12 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils/csrf/react";
-import { DateInput } from "@mantine/dates";
+import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 const DocumentForm = () => {
   const { document } = useLoaderData();

@@ -8,6 +8,7 @@ import {
 import { useForm } from "@mantine/form";
 import type { LoaderFunction, ActionFunctionArgs } from "@remix-run/node";
 import { useSearchParams } from "@remix-run/react";
+
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {

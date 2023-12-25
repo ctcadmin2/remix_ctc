@@ -1,16 +1,18 @@
-import { cwd } from "process";
 import { mkdir, writeFileSync } from "fs";
+import { cwd } from "process";
+
+import { createId } from '@paralleldrive/cuid2';
 import type { PDFImage } from "pdf-lib";
 import { PDFDocument } from "pdf-lib";
-import { createId } from '@paralleldrive/cuid2';
+
 import { processAttachment } from "./attachment.server";
 
 // A4 size in mm 210x297;
 // in pixels 2480 x 3508 at 300dpi
 
 const processImage = (img: PDFImage, pdfDoc: PDFDocument) => {
-  let scaled = img.scaleToFit(2480, 3508);
-  let page = pdfDoc.addPage([2480, 3508]);
+  const scaled = img.scaleToFit(2480, 3508);
+  const page = pdfDoc.addPage([2480, 3508]);
   page.drawImage(img, {
     x: (2480 - scaled.width) / 2,
     y: (3508 - scaled.height) / 2,
@@ -28,14 +30,14 @@ const FileUploader = async (
     const pdfDoc = await PDFDocument.create();
 
     for (const file of files) {
-      let arrayBuffer = await file?.arrayBuffer();
+      const arrayBuffer = await file?.arrayBuffer();
 
       if (file.type !== "application/pdf") {
         if (file.type === "application/png") {
-          let img = await pdfDoc.embedPng(arrayBuffer);
+          const img = await pdfDoc.embedPng(arrayBuffer);
           processImage(img, pdfDoc);
         } else {
-          let img = await pdfDoc.embedJpg(arrayBuffer);
+          const img = await pdfDoc.embedJpg(arrayBuffer);
           processImage(img, pdfDoc);
         }
       } else {

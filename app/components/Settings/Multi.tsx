@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 const Multi = ({ name, value }: { name: string; value: string[] }) => {
   const [inputValue, setInputValue] = useState("");
   const [values, handlers] = useListState(value);
-  let submit = useSubmit();
+  const submit = useSubmit();
   const didMountRef = useRef(false);
 
   useEffect(() => {

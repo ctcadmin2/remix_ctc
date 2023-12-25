@@ -14,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 // import { badRequest } from "remix-utils/csrf/react";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+
 import { db } from "~/utils/db.server";
 import {
   authenticator,
@@ -75,7 +76,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 const RegisterRoute = () => {
   const [searchParams] = useSearchParams();
   const data = useActionData();
-  let { getInputProps, setErrors } = useForm({
+  const { getInputProps, setErrors } = useForm({
     initialValues: {
       firstName: data?.fields?.firstName || "",
       lastName: data?.fields?.lastName || "",

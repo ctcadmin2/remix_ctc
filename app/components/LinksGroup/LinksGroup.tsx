@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
+import { NavLink } from "@mantine/core";
+import { useLocation, Link } from "@remix-run/react";
 import type { ReactNode } from "react";
 
 import classes from "../../css/NavLink.module.css";
 
-import { NavLink } from "@mantine/core";
-import { useLocation, Link } from "@remix-run/react";
 
 interface LinksGroupProps {
   label: string;
@@ -20,7 +20,7 @@ const LinksGroup = ({ label, path, links }: LinksGroupProps) => {
     return pathname === path ? true : false;
   };
 
-  const items: Array<ReactNode> = (hasLinks ? links : []).map((link) => (
+  const items: ReactNode[] = (hasLinks ? links : []).map((link) => (
     <NavLink
       component={Link}
       className={classes.link}

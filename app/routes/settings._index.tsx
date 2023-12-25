@@ -1,8 +1,17 @@
 import { Tabs } from "@mantine/core";
-import { useSearchParams, useLoaderData } from "@remix-run/react";
 import type { Setting } from "@prisma/client";
+import { redirect, type ActionFunction } from "@remix-run/node";
+import { useSearchParams, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "react-router-dom";
 import { json } from "react-router-dom";
+import { CSRFError } from "remix-utils/csrf/server";
+import { z } from "zod";
+import { zfd } from "zod-form-data";
+import { zx } from "zodix";
+
+import Multi from "~/components/Settings/Multi";
+import Single from "~/components/Settings/Single";
+import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import {
   DEFAULT_REDIRECT,
@@ -10,19 +19,11 @@ import {
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import { z } from "zod";
-import { zx } from "zodix";
-import Single from "~/components/Settings/Single";
-import Multi from "~/components/Settings/Multi";
-import { redirect, type ActionFunction } from "@remix-run/node";
-import { zfd } from "zod-form-data";
 import sortSettings from "~/utils/sortSettings";
-import { CSRFError } from "remix-utils/csrf/server";
-import { csrf } from "~/utils/csrf.server";
 
-type LoaderData = {
+interface LoaderData {
   settings: Setting[];
-};
+}
 
 const schema = zfd.formData({
   name: zfd.text(),
@@ -70,7 +71,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const { name, value } = data;
 
-  let setting = await db.setting.update({
+  const setting = await db.setting.update({
     where: { name },
     data: { value: value },
   });

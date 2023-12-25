@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
 
 import { TextInput, ThemeIcon } from "@mantine/core";
-import { useSearchParams } from "react-router-dom";
 import { useDebouncedValue } from "@mantine/hooks";
+import { useEffect, useRef, useState } from "react";
 import { Search, X } from "react-feather";
+import { useSearchParams } from "react-router-dom";
 
 const SearchInput = () => {
   //use to skip useEffect on first render

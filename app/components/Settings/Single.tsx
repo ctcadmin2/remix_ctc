@@ -8,7 +8,7 @@ const Single = ({ name, value }: { name: string; value: string }) => {
   const [textValue, setTextValue] = useState(value);
   const [isEdit, toggleEdit] = useToggle([false, true]);
   const ref = useRef<HTMLInputElement>(null);
-  let submit = useSubmit();
+  const submit = useSubmit();
 
   const handleEdit = () => {
     toggleEdit();

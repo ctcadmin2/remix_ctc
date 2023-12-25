@@ -3,6 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+
 import CreditNoteForm from "~/forms/CreditNoteForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
@@ -68,7 +69,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const { vehicleId, files, ...rest } = data;
 
-  let creditNote = await db.creditNote.create({
+  const creditNote = await db.creditNote.create({
     data: {
       ...rest,
       ...(vehicleId

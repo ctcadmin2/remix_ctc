@@ -1,42 +1,45 @@
 //TODO cleanup files on attach delete
 
-import { Center, Button, Menu, Divider } from "@mantine/core";
-import { Link, useLoaderData } from "@remix-run/react";
+import { env } from "process";
 
-import DataGrid from "~/components/DataGrid/DataGrid";
-import SearchInput from "~/components/DataGrid/utils/SearchInput";
+import { Center, Button, Menu, Divider } from "@mantine/core";
+import type { Prisma } from "@prisma/client";
+import { Link, useLoaderData } from "@remix-run/react";
+import type {
+  ActionFunction,
+  ActionFunctionArgs,
+} from "@remix-run/server-runtime";
 import type { DataTableColumn } from "mantine-datatable";
+import { useState } from "react";
+import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
 import type { LoaderFunction } from "react-router-dom";
 import { json } from "react-router-dom";
-import { db } from "~/utils/db.server";
-import { env } from "process";
-import { zx } from "zodix";
-import { sortOrder } from "~/utils/helpers.server";
+import { CSRFError } from "remix-utils/csrf/server";
+import { redirectBack } from "remix-utils/redirect-back";
 import { z } from "zod";
-import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import type { Prisma } from "@prisma/client";
+import { zfd } from "zod-form-data";
+import { zx } from "zodix";
+
+import DataGrid from "~/components/DataGrid/DataGrid";
+import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
+import SearchInput from "~/components/DataGrid/utils/SearchInput";
+import { csrf } from "~/utils/csrf.server";
+import { db } from "~/utils/db.server";
+import { sortOrder } from "~/utils/helpers.server";
 import {
   DEFAULT_REDIRECT,
   authenticator,
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import type {
-  ActionFunction,
-  ActionFunctionArgs,
-} from "@remix-run/server-runtime";
-import { zfd } from "zod-form-data";
-import { useState } from "react";
-import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
-import { redirectBack } from "remix-utils/redirect-back";
-import { CSRFError } from "remix-utils/csrf/server";
-import { csrf } from "~/utils/csrf.server";
 
-type LoaderData = {
+
+
+interface LoaderData {
   documents: DocumentWithAttachement[];
   total: number;
   perPage: number;
-};
+}
 
 type DocumentWithAttachement = Prisma.DocumentGetPayload<{
   select: {

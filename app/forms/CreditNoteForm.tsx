@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 
 import {
   Box,
@@ -13,11 +12,13 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import VehiclesList from "~/lists/VehicleList";
-import SettingList from "~/lists/SettingList";
 import { Form, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
-import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
+import { AuthenticityTokenInput } from "remix-utils/csrf/react";
+
+import SettingList from "~/lists/SettingList";
+import VehiclesList from "~/lists/VehicleList";
 
 const CreditNoteForm = () => {
   const submit = useSubmit();

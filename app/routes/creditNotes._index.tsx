@@ -1,15 +1,24 @@
 import { Center, Button, Menu, Divider } from "@mantine/core";
-import { useLocation, Link, useLoaderData } from "@remix-run/react";
-
-import DataGrid from "~/components/DataGrid/DataGrid";
-import SearchInput from "~/components/DataGrid/utils/SearchInput";
-import BooleanIcon from "~/components/DataGrid/utils/BooleanIcon";
-import type { DataTableColumn } from "mantine-datatable";
 import type { Prisma } from "@prisma/client";
+import { useLocation, Link, useLoaderData } from "@remix-run/react";
+import type {
+  ActionFunction,
+  ActionFunctionArgs,
+} from "@remix-run/server-runtime";
+import type { DataTableColumn } from "mantine-datatable";
+import { useState } from "react";
+import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
 import type { LoaderFunction } from "react-router-dom";
 import { json } from "react-router-dom";
+import { redirectBack } from "remix-utils/redirect-back";
 import { z } from "zod";
+import { zfd } from "zod-form-data";
 import { zx } from "zodix";
+
+import DataGrid from "~/components/DataGrid/DataGrid";
+import BooleanIcon from "~/components/DataGrid/utils/BooleanIcon";
+import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
+import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
 import {
@@ -18,15 +27,7 @@ import {
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import { useState } from "react";
-import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
-import type {
-  ActionFunction,
-  ActionFunctionArgs,
-} from "@remix-run/server-runtime";
-import { redirectBack } from "remix-utils/redirect-back";
-import { zfd } from "zod-form-data";
+
 
 export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
   select: {
@@ -52,11 +53,11 @@ export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
   };
 }>;
 
-type LoaderData = {
+interface LoaderData {
   creditNotes: CreditNoteWithAttachement[];
   total: number;
   perPage: number;
-};
+}
 
 const schema = zfd.formData({
   id: zx.NumAsString,
