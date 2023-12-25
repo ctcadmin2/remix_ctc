@@ -1,12 +1,18 @@
-import type { Company, CreditNote, Setting } from "@prisma/client";
+import type { Setting } from "@prisma/client";
 import type { ActionFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
+import Decimal from "decimal.js";
 import { CSRFError } from "remix-utils/csrf/server";
-import { z } from "zod";
-import { zfd } from "zod-form-data";
+
 import InvoiceForm from "~/forms/InvoiceForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
+import {
+  calculateAmount,
+  createIdentification,
+  createOrders,
+  schema,
+} from "~/utils/invoiceUtils.server";
 import {
   DEFAULT_REDIRECT,
   authenticator,
@@ -14,36 +20,35 @@ import {
   getSession,
 } from "~/utils/session.server";
 
-type LoaderData = {
-  creditNotes: Partial<CreditNote>[];
-  clients: Partial<Company>[];
-  currencies: Setting | null;
-  vatRates: Setting | null;
-};
-
-const schema = zfd.formData({
-  number: zfd.text(), //required
-  date: zfd.text(z.string().datetime()), //required
-  currency: zfd.text(), //required
-  // vatRate: zfd.numeric(), //required
-  clientId: zfd.numeric(), //required
-  creditNotes: zfd.repeatableOfType(zfd.numeric(z.number().optional())),
-  paid: zfd.checkbox(),
-});
+export interface LoaderData {
+  creditNotes: {
+    id: number;
+    number: string;
+    amount: Decimal;
+    currency: string;
+  }[];
+  clients: { id: number; name: string }[];
+  currencies: Partial<Setting> | null;
+  vatRates: Partial<Setting> | null;
+}
 
 export const loader = async () => {
   const data: LoaderData = {
     creditNotes: await db.creditNote.findMany({
-      where: { paid: false },
+      where: { invoiceId: null },
       select: { id: true, number: true, amount: true, currency: true },
     }),
     clients: await db.company.findMany({
-      select: { country: true, id: true, name: true, vatValid: true },
+      select: { id: true, name: true },
     }),
     currencies: await db.setting.findUnique({
       where: { name: "currencies" },
+      select: { value: true },
     }),
-    vatRates: await db.setting.findUnique({ where: { name: "vatRates" } }),
+    vatRates: await db.setting.findUnique({
+      where: { name: "vatRates" },
+      select: { value: true },
+    }),
   };
   return json(data);
 };
@@ -64,34 +69,40 @@ export const action: ActionFunction = async ({ request }) => {
     console.log("other error");
   }
 
-  // const data = schema.parse(await request.formData());
+  const data = schema.parse(await request.formData());
 
-  console.log((await request.formData()).getAll("creditNotes"));
+  const { clientId, creditNotesIds, identification, orders, ...rest } = data;
 
-  // const { clientId, creditNotes, ...rest } = data;
+  const creditNotes = await db.creditNote.findMany({
+    where: {
+      id: { in: creditNotesIds?.split(",").map(Number) || [] },
+    },
+    select: {
+      amount: true,
+    },
+  });
 
-  // let invoice = await db.invoice.create({
-  //   data: {
-  //     ...rest,
-  //     client: {
-  //       connect: { id: clientId },
-  //     },
-  //     ...(creditNotes
-  //       ? {
-  //           creditNotes: {
-  //             connect: { id: creditNotes },
-  //           },
-  //         }
-  //       : {}),
-  //   },
-  // });
+  const invoice = await db.invoice.create({
+    data: {
+      ...rest,
+      amount: calculateAmount(orders, creditNotes),
+      client: {
+        connect: { id: clientId },
+      },
+      creditNotes: {
+        connect: creditNotesIds?.split(",").map((cn) => ({ id: parseInt(cn) })),
+      },
+      ...createIdentification(identification),
+      ...createOrders(orders),
+    },
+  });
 
-  // if (invoice) {
-  //   session.flash("toastMessage", "Invoice created successfully.");
-  //   return redirect("/invoices", {
-  //     headers: { "Set-Cookie": await commitSession(session) },
-  //   });
-  // }
+  if (invoice) {
+    session.flash("toastMessage", "Invoice created successfully.");
+    return redirect("/invoices", {
+      headers: { "Set-Cookie": await commitSession(session) },
+    });
+  }
 
   return null;
 };

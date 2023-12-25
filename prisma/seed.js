@@ -153,13 +153,12 @@ async function seed() {
     number: faker.string.alphanumeric(5),
     amount: faker.number.int({ min: 1000, max: 10000 }),
     currency: faker.finance.currencyCode(),
-    paid: faker.datatype.boolean(),
     vehicleId: faker.number.int({ min: 1, max: 10 }),
     invoiceId: faker.number.int({ min: 1, max: 20 }),
   }));
 
   const invoices = Array.from({ length: 20 }).map(() => ({
-    number: faker.string.numeric(5),
+    number: faker.number.int({ min: 1000, max: 10000 }),
     date: faker.date.past(),
     amount: faker.number.int({ min: 1000, max: 10000 }),
     currency: faker.finance.currencyCode(),
@@ -237,6 +236,15 @@ async function seed() {
     },
   }));
 
+  await db.user.create({
+    data: {
+      firstName: "sega",
+      lastName: "test",
+      email: "sega@sega.org",
+      language: "en",
+      hash: "$2a$10$ASUExexWpsLTZklz5ZqEI.zducNPjPlJ1IB6zeElsS2wADpD5kESm",
+    },
+  });
   await db.setting.createMany({ data: settings });
   await db.vehicle.createMany({ data: vehicles });
   await db.company.createMany({ data: companies });

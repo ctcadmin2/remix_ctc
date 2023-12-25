@@ -61,9 +61,8 @@ model CreditNote {
   id         Int         @id @default(autoincrement())
   orderNr    Int?
   number     String
-  amount     Int
+  amount     Decimal     @db.Decimal(8, 2)
   currency   String      @default("EUR")
-  paid       Boolean     @default(false)
   start      String?
   end        String?
   week       Int?
@@ -91,7 +90,7 @@ model Company {
   capital              Float?
   email                String?
   phone                String?
-  Invoices             Invoice[]
+  invoices             Invoice[]
   createdAt            DateTime?              @default(now()) @db.Date
   updatedAt            DateTime?              @updatedAt @db.Date
   NationalExpense      NationalExpense[]
@@ -99,38 +98,38 @@ model Company {
 }
 
 model Invoice {
-  id               Int             @id @default(autoincrement())
-  number           String
-  date             DateTime        @db.Date
-  amount           Int
-  currency         String          @default("EUR")
-  vatRate          Int             @default(0)
-  orders           Order[]
-  creditNotes      CreditNote[]
-  clientId         Int
-  client           Company         @relation(fields: [clientId], references: [id])
-  identification   Identification?
-  identificationId Int?
-  createdAt        DateTime?       @default(now()) @db.Date
-  updatedAt        DateTime?       @updatedAt @db.Date
+  id             Int             @id @default(autoincrement())
+  number         Int             @unique
+  date           DateTime        @db.Date
+  amount         Decimal         @db.Decimal(8, 2)
+  currency       String          @default("EUR")
+  vatRate        Int             @default(0)
+  orders         Order[]
+  creditNotes    CreditNote[]
+  clientId       Int
+  client         Company         @relation(fields: [clientId], references: [id])
+  identification Identification?
+  createdAt      DateTime?       @default(now()) @db.Date
+  updatedAt      DateTime?       @updatedAt @db.Date
 }
 
 model Identification {
-  id              Int     @id @default(autoincrement())
-  buyer           String?
-  indentification String?
-  transport       String?
-  Invoice         Invoice @relation(fields: [invoiceId], references: [id])
-  invoiceId       Int     @unique
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  expName   String?
+  expId     String?
+  expVeh    String?
+  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId Int     @unique
 }
 
 model Order {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   description String
-  value       Int
+  amount      Decimal @db.Decimal(8, 2)
   quantity    Int
-  total       Int
-  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  total       Decimal @db.Decimal(8, 2)
+  currency    String  @default("EUR")
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   invoiceId   Int
 }
 
@@ -139,7 +138,7 @@ model NationalExpense {
   number      String
   date        DateTime    @db.Date
   description String
-  amount      Int
+  amount      Decimal     @db.Decimal(8, 2)
   paidBy      String?
   supplierId  Int
   supplier    Company     @relation(fields: [supplierId], references: [id])
@@ -153,7 +152,7 @@ model InternationalExpense {
   number      String
   date        DateTime    @db.Date
   description String
-  amount      Int
+  amount      Decimal     @db.Decimal(8, 2)
   currency    String      @default("EUR")
   paidBy      String?
   supplierId  Int
@@ -169,9 +168,9 @@ model TripExpense {
   number      String
   date        DateTime?   @db.Date
   description String?
-  amount      Int
+  amount      Decimal     @db.Decimal(8, 2)
   currency    String      @default("EUR")
-  amountEur   Int
+  amountEur   Decimal     @db.Decimal(8, 2)
   card        Boolean     @default(true)
   attachment  Attachment?
   createdAt   DateTime    @default(now()) @db.Date
@@ -192,8 +191,8 @@ model Employee {
 
 model Payment {
   id             Int             @id @default(autoincrement())
-  totalRon       Int
-  totalEur       Int?
+  totalRon       Decimal         @db.Decimal(8, 2)
+  totalEur       Decimal         @db.Decimal(8, 2)
   month          String
   indemnisations Indemnisation[]
   employee       Employee        @relation(fields: [employeeId], references: [id])
@@ -220,8 +219,8 @@ model Indemnisation {
   id        Int       @id @default(autoincrement())
   perDay    Int
   days      Int
-  avans     Int
-  rest      Int
+  avans     Decimal   @db.Decimal(8, 2)
+  rest      Decimal   @db.Decimal(8, 2)
   type      String
   Payment   Payment?  @relation(fields: [paymentId], references: [id])
   paymentId Int?

@@ -1,43 +1,51 @@
+import type { Setting, Prisma } from "@prisma/client";
 import type {
   ActionFunctionArgs,
   ActionFunction,
   LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
-
 import { json, redirect } from "@remix-run/node";
-import { db } from "~/utils/db.server";
-import { zfd } from "zod-form-data";
-import { z } from "zod";
+import Decimal from "decimal.js";
+import { CSRFError } from "remix-utils/csrf/server";
 import { zx } from "zodix";
+
+import InvoiceForm from "~/forms/InvoiceForm";
+import { csrf } from "~/utils/csrf.server";
+import { db } from "~/utils/db.server";
+import {
+  calculateAmount,
+  schema,
+  updateIdentification,
+  updateOrders,
+} from "~/utils/invoiceUtils.server";
 import {
   DEFAULT_REDIRECT,
   authenticator,
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import InvoiceForm from "~/forms/InvoiceForm";
-import type { Invoice, Setting } from "@prisma/client";
-import { csrf } from "~/utils/csrf.server";
-import { CSRFError } from "remix-utils/csrf/server";
 
-type LoaderData = {
-  invoice: Invoice | null;
+export interface LoaderData {
+  invoice: Prisma.InvoiceGetPayload<{
+    include: {
+      creditNotes: { select: { id: true } };
+      orders: true;
+      identification: { select: { expName: true; expId: true; expVeh: true } };
+    };
+  }> | null;
+  creditNotes:
+    | {
+        id: number;
+        number: string;
+        amount: Decimal;
+        currency: string;
+      }[]
+    | null;
   currencies: Setting | null;
+  clients: { id: number; name: string }[];
   vatRates: Setting | null;
-};
-
-const schema = zfd.formData({
-  number: zfd.text(),
-  date: zfd.text(),
-  dueDate: zfd.text(z.string().optional()),
-  amount: zfd.text(),
-  currency: zfd.text(),
-  vatRate: zfd.numeric(),
-  paid: zfd.checkbox(),
-  creditNotes: zfd.text(),
-  clientId: zfd.numeric(),
-});
+}
 
 export const loader: LoaderFunction = async ({
   request,
@@ -54,6 +62,26 @@ export const loader: LoaderFunction = async ({
   const data: LoaderData = {
     invoice: await db.invoice.findUnique({
       where: { id: invoiceId },
+      include: {
+        creditNotes: { select: { id: true } },
+        orders: true,
+        identification: {
+          select: { expName: true, expId: true, expVeh: true },
+        },
+      },
+    }),
+    creditNotes: await db.creditNote.findMany({
+      where: {
+        OR: [
+          { invoiceId: { equals: null } },
+          { invoiceId: { equals: invoiceId } },
+        ],
+      },
+      select: { id: true, number: true, amount: true, currency: true },
+    }),
+
+    clients: await db.company.findMany({
+      select: { id: true, name: true },
     }),
 
     currencies: await db.setting.findUnique({ where: { name: "currencies" } }),
@@ -88,9 +116,31 @@ export const action: ActionFunction = async ({
 
   const data = schema.parse(await request.formData());
 
+  const { clientId, creditNotesIds, identification, orders, ...rest } = data;
+
+  const creditNotes = await db.creditNote.findMany({
+    where: {
+      id: { in: creditNotesIds?.split(",").map(Number) || [] },
+    },
+    select: {
+      amount: true,
+    },
+  });
+
   const invoice = await db.invoice.update({
-    data,
     where: { id: invoiceId },
+    data: {
+      ...rest,
+      amount: calculateAmount(orders, creditNotes),
+      client: {
+        connect: { id: clientId },
+      },
+      creditNotes: {
+        set: creditNotesIds?.split(",").map((cn) => ({ id: parseInt(cn) })),
+      },
+      ...updateIdentification(identification),
+      ...updateOrders(orders),
+    },
   });
 
   if (invoice) {

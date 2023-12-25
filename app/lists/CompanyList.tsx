@@ -1,15 +1,36 @@
 import { Select } from "@mantine/core";
-import type { Company } from "@prisma/client";
+
 import { capitalize } from "~/utils/stringUtils";
 
-type PropType = {
+interface PropType {
   type: string;
-  companies: Partial<Company>[];
+  companies: { id: number; name: string }[];
+  required: boolean;
   value: string;
-  onChange: any;
-};
+  onChange: (value: string | null) => void;
+}
 
-const CompanyList = ({ type, companies, value, onChange }: PropType) => {
+const CompanyList = ({
+  type,
+  companies,
+  required,
+  value,
+  onChange
+}: PropType) => {
+  const companyList = () => {
+    if (companies) {
+      const list = companies.map((company) => {
+        return {
+          label: company.name,
+          value: String(company.id)
+        };
+      });
+
+      return list;
+    }
+    return [];
+  };
+
   return (
     <Select
       label={`${capitalize(type)}`}
@@ -19,17 +40,9 @@ const CompanyList = ({ type, companies, value, onChange }: PropType) => {
       allowDeselect
       clearable
       searchable
-      data={
-        companies
-          ? companies.map((company) => {
-              return {
-                label: company.name,
-                value: String(company.id),
-              };
-            })
-          : []
-      }
-      value={value}
+      required={required}
+      data={companyList()}
+      value={String(value)}
       onChange={onChange}
     />
   );

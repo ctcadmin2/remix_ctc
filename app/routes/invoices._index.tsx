@@ -1,34 +1,41 @@
-import { Center, Button, Menu, Tabs, Divider } from "@mantine/core";
-import { useSearchParams, Link, useLoaderData } from "@remix-run/react";
-
-import DataGrid from "~/components/DataGrid/DataGrid";
-import SearchInput from "~/components/DataGrid/utils/SearchInput";
-import type { DataTableColumn } from "mantine-datatable";
-import type { Prisma } from "@prisma/client";
 import { env } from "process";
+
+import { Center, Button, Menu, Tabs, Divider } from "@mantine/core";
+import type { Prisma } from "@prisma/client";
+import {
+  useSearchParams,
+  Link,
+  useLoaderData,
+  useSubmit,
+} from "@remix-run/react";
+import type {
+  ActionFunction,
+  ActionFunctionArgs,
+} from "@remix-run/server-runtime";
+import { Decimal } from "decimal.js";
+import type { DataTableColumn } from "mantine-datatable";
+import { useState } from "react";
+import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
 import type { LoaderFunction } from "react-router-dom";
 import { json } from "react-router-dom";
+import { CSRFError } from "remix-utils/csrf/server";
+import { redirectBack } from "remix-utils/redirect-back";
 import { z } from "zod";
+import { zfd } from "zod-form-data";
 import { zx } from "zodix";
+
+import DataGrid from "~/components/DataGrid/DataGrid";
+import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
+import SearchInput from "~/components/DataGrid/utils/SearchInput";
+import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
-import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
 import {
   DEFAULT_REDIRECT,
   authenticator,
   commitSession,
   getSession,
 } from "~/utils/session.server";
-import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
-import { useState } from "react";
-import type {
-  ActionFunction,
-  ActionFunctionArgs,
-} from "@remix-run/server-runtime";
-import { zfd } from "zod-form-data";
-import { redirectBack } from "remix-utils/redirect-back";
-import { CSRFError } from "remix-utils/csrf/server";
-import { csrf } from "~/utils/csrf.server";
 
 export type Invoice = Prisma.InvoiceGetPayload<{
   select: {
@@ -40,8 +47,6 @@ export type Invoice = Prisma.InvoiceGetPayload<{
     client: {
       select: {
         name: true;
-        country: true;
-        vatValid: true;
       };
     };
   };
@@ -50,11 +55,11 @@ const schema = zfd.formData({
   id: zx.NumAsString,
 });
 
-type LoaderData = {
+interface LoaderData {
   invoices: Invoice[];
   total: number;
   perPage: number;
-};
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
@@ -73,7 +78,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     filter: z.string().optional(),
   });
 
-  const offset = (page - 1) * 7;
+  const offset = (page - 1) * parseInt(env.ITEMS_PER_PAGE);
 
   const where: object = {
     ...(filter
@@ -116,8 +121,6 @@ export const loader: LoaderFunction = async ({ request }) => {
         client: {
           select: {
             name: true,
-            country: true,
-            vatValid: true,
           },
         },
       },
@@ -125,7 +128,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     total: await db.invoice.count({ where }),
     perPage: parseInt(env.ITEMS_PER_PAGE),
   };
-
   return json(data);
 };
 
@@ -164,13 +166,14 @@ export const action: ActionFunction = async ({
 };
 
 const Invoices = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { invoices, total, perPage } = useLoaderData<LoaderData>();
+  const [searchParams, _setSearchParams] = useSearchParams();
+  const { invoices, total, perPage } = useLoaderData<typeof loader>();
   const [opened, setOpened] = useState(false);
-  const [invoice, setVehicle] = useState<Invoice>();
+  const [invoice, setInvoice] = useState<Invoice>();
+  const submit = useSubmit();
 
   const handleDelete = (row: Invoice) => {
-    setVehicle(row);
+    setInvoice(row);
     setOpened(!opened);
   };
 
@@ -191,17 +194,19 @@ const Invoices = () => {
     },
 
     {
-      accessor: "value",
+      accessor: "amount",
       textAlign: "center",
       render: ({ amount, currency }) =>
-        Intl.NumberFormat("en-US", {
+        Intl.NumberFormat("ro-RO", {
           style: "currency",
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 0,
           currency: currency,
-        }).format(amount / 100),
+        }).format(new Decimal(amount).toNumber()),
     },
 
     {
-      accessor: "company.name",
+      accessor: "client.name",
       title: "Client",
       textAlign: "center",
     },
@@ -273,15 +278,18 @@ const Invoices = () => {
       <Tabs
         radius="xs"
         value={searchParams.get("type") || "national"}
-        onChange={(tab: string) => {
-          searchParams.set("type", tab);
-          setSearchParams(searchParams);
+        onChange={(tab: string | null) => {
+          submit({ type: tab || "national" }, { method: "get" });
         }}
         keepMounted={false}
       >
         <Tabs.List>
-          <Tabs.Tab value="national">National</Tabs.Tab>
-          <Tabs.Tab value="international">International</Tabs.Tab>
+          <Tabs.Tab name="type" value="national">
+            National
+          </Tabs.Tab>
+          <Tabs.Tab name="type" value="international">
+            International
+          </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="national" pl="xs">
@@ -304,7 +312,7 @@ const Invoices = () => {
       </Tabs>
       <DeleteModal<Invoice>
         name="expense"
-        title={invoice?.number}
+        title={String(invoice?.number)}
         opened={opened}
         setOpened={setOpened}
         document={invoice}
