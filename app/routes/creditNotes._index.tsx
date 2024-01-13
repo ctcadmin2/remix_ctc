@@ -5,6 +5,7 @@ import type {
   ActionFunction,
   ActionFunctionArgs,
 } from "@remix-run/server-runtime";
+import Decimal from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
@@ -28,7 +29,6 @@ import {
   getSession,
 } from "~/utils/session.server";
 
-
 export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
   select: {
     id: true;
@@ -38,8 +38,8 @@ export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
     week: true;
     amount: true;
     currency: true;
-    paid: true;
     notes: true;
+    invoiceId: true;
     vehicle: {
       select: {
         registration: true;
@@ -122,8 +122,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         week: true,
         amount: true,
         currency: true,
-        paid: true,
         notes: true,
+        invoiceId: true,
         vehicle: {
           select: {
             registration: true,
@@ -209,13 +209,16 @@ const CreditNotes = () => {
         Intl.NumberFormat("en-US", {
           style: "currency",
           currency: currency,
-        }).format(amount),
+        }).format(new Decimal(amount).toNumber()),
     },
     {
-      accessor: "paid",
+      accessor: "invoiceId",
+      title: "Invoiced",
       textAlign: "center",
       sortable: true,
-      render: (record) => <BooleanIcon value={record.paid} />,
+      render: (record) => (
+        <BooleanIcon value={record.invoiceId ? true : false} />
+      ),
     },
     {
       accessor: "vehicle.registration",

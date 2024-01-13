@@ -222,7 +222,7 @@ const Invoices = () => {
                 variant="filled"
                 color={"teal"}
                 component={Link}
-                to={`${row.id}`}
+                to={`${row.id}.pdf`}
                 reloadDocument
                 leftSection={<FileText />}
               >

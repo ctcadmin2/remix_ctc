@@ -1,4 +1,3 @@
-
 import {
   Box,
   Button,
@@ -7,7 +6,6 @@ import {
   Group,
   NumberInput,
   ScrollArea,
-  Switch,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -27,7 +25,6 @@ const CreditNoteForm = () => {
       number: creditNote?.number || "",
       amount: creditNote?.amount || "",
       currency: creditNote?.currency || "",
-      paid: creditNote?.paid || false,
       start: creditNote?.start || "",
       end: creditNote?.end || "",
       week: creditNote?.week || "",
@@ -74,14 +71,6 @@ const CreditNoteForm = () => {
               label="Currency"
               {...form.getInputProps("currency")}
               required
-            />
-            <Switch
-              labelPosition="left"
-              label="Paid"
-              name="paid"
-              size="md"
-              my={16}
-              {...form.getInputProps("paid", { type: "checkbox" })}
             />
             <TextInput
               label="Start"

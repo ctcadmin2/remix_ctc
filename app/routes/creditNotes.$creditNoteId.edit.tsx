@@ -21,13 +21,11 @@ import {
 } from "~/utils/session.server";
 import FileUploader from "~/utils/uploader.server";
 
-
 const schema = zfd.formData({
   orderNr: zfd.numeric(z.number().optional()),
   number: zfd.text(), //required
   amount: zfd.numeric(), //required
   currency: zfd.text(), //required
-  paid: zfd.checkbox(),
   start: zfd.text(z.string().optional()),
   end: zfd.text(z.string().optional()),
   week: zfd.numeric(z.number().optional()),

@@ -20,7 +20,6 @@ const schema = zfd.formData({
   number: zfd.text(), //required
   amount: zfd.numeric(), //required
   currency: zfd.text(), //required
-  paid: zfd.checkbox(),
   start: zfd.text(z.string().optional()),
   end: zfd.text(z.string().optional()),
   week: zfd.numeric(z.number().optional()),

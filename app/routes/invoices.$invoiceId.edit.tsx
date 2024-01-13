@@ -124,14 +124,24 @@ export const action: ActionFunction = async ({
     },
     select: {
       amount: true,
+      currency: true,
     },
   });
+
+  const amountValue = await calculateAmount(
+    orders,
+    creditNotes,
+    rest.currency,
+    rest.date
+  );
 
   const invoice = await db.invoice.update({
     where: { id: invoiceId },
     data: {
       ...rest,
-      amount: calculateAmount(orders, creditNotes),
+      amount: amountValue.amount,
+      bnr: amountValue.bnr,
+      bnrAt: amountValue.bnrAt,
       client: {
         connect: { id: clientId },
       },

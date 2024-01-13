@@ -6,6 +6,7 @@ import type {
   ActionFunction,
   ActionFunctionArgs,
 } from "@remix-run/server-runtime";
+import Decimal from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
@@ -32,10 +33,6 @@ import {
 } from "~/utils/session.server";
 
 import type { CreditNoteWithAttachement } from "./creditNotes._index";
-
-
-
-
 
 interface LoaderData {
   creditNotes: Partial<CreditNoteWithAttachement>[];
@@ -188,13 +185,15 @@ const CreditNotes = () => {
         Intl.NumberFormat("en-US", {
           style: "currency",
           currency: currency,
-        }).format(amount),
+        }).format(new Decimal(amount).toNumber()),
     },
     {
       accessor: "paid",
       textAlign: "center",
       sortable: true,
-      render: (record) => <BooleanIcon value={record.paid} />,
+      render: (record) => (
+        <BooleanIcon value={record.invoiceId ? true : false} />
+      ),
     },
     {
       accessor: "notes",

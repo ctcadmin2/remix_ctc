@@ -13,7 +13,6 @@
     "esbenp.prettier-vscode",
     "prisma.prisma",
     "gruntfuggly.todo-tree",
-    "redhat.vscode-yaml",
-    "arcanis.vscode-zipfs"
+    "redhat.vscode-yaml"
   ]
 }

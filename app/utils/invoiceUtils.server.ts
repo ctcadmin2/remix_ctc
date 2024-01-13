@@ -2,6 +2,8 @@ import Decimal from "decimal.js";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 
+import bnrRate from "./bnrRate.server";
+
 export const schema = zfd.formData({
   number: zfd.numeric(), //required
   date: zfd.text(z.string().datetime()), //required
@@ -29,7 +31,13 @@ export const schema = zfd.formData({
     .optional(),
 });
 
-export const calculateAmount = (
+interface amount {
+  amount: Decimal;
+  bnr: string | null;
+  bnrAt: string | null;
+}
+
+export const calculateAmount = async (
   orders:
     | {
         description: string;
@@ -41,24 +49,41 @@ export const calculateAmount = (
   creditNotes:
     | {
         amount: Decimal;
+        currency: string;
       }[]
-    | undefined
+    | undefined,
+  currency: string,
+  date: string
 ) => {
+  const amount: amount = {
+    amount: new Decimal(0),
+    bnr: null,
+    bnrAt: null,
+  };
+
   if (creditNotes && creditNotes.length > 0) {
-    return creditNotes.reduce(
+    amount.amount = creditNotes.reduce(
       (accumulator, currentValue) =>
         new Decimal(accumulator).add(new Decimal(currentValue.amount)),
       new Decimal(0)
     );
+
+    const xChange = creditNotes.filter((cn) => cn.currency !== currency);
+    if (xChange.length > 0) {
+      const rate = await bnrRate(date, currency);
+      amount.amount = amount.amount.times(new Decimal(rate.rate));
+      amount.bnr = rate.rate;
+      amount.bnrAt = new Date(rate.date).toISOString();
+    }
   }
   if (orders && orders.length > 0) {
-    return orders.reduce(
+    amount.amount = orders.reduce(
       (accumulator, currentValue) =>
         new Decimal(accumulator).plus(new Decimal(currentValue.total)),
       new Decimal(0)
     );
   }
-  return new Decimal(0);
+  return amount;
 };
 
 export const createIdentification = (

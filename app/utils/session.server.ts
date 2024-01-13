@@ -30,7 +30,8 @@ const login = async ({ email, password }: LoginForm) => {
   const isCorrectPassword = compare(password, user.hash as string);
   if (!isCorrectPassword) throw new AuthorizationError("Bad Credentials");
 
-  return { id: user.id, email, language: user.language, role: user.role };
+  const { hash, ...rest } = user;
+  return rest;
 };
 
 if (!sessionSecret) {
@@ -49,9 +50,7 @@ const sessionStorage = createCookieSessionStorage({
   },
 });
 
-export const authenticator = new Authenticator<Partial<User> | Error | null>(
-  sessionStorage
-);
+export const authenticator = new Authenticator<Partial<User>>(sessionStorage);
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {

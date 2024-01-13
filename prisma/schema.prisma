@@ -30,7 +30,7 @@ model User {
   hash      String
   language  Language  @default(en)
   role      Role      @default(user)
-  active    Boolean?  @default(false)
+  active    Boolean   @default(false)
   createdAt DateTime? @default(now()) @db.Date
   updatedAt DateTime? @updatedAt @db.Date
 }
@@ -99,11 +99,13 @@ model Company {
 
 model Invoice {
   id             Int             @id @default(autoincrement())
-  number         Int             @unique
+  number         Int
   date           DateTime        @db.Date
   amount         Decimal         @db.Decimal(8, 2)
   currency       String          @default("EUR")
   vatRate        Int             @default(0)
+  bnr            String?
+  bnrAt          DateTime?       @db.Date
   orders         Order[]
   creditNotes    CreditNote[]
   clientId       Int
