@@ -78,16 +78,16 @@ model CreditNote {
 
 model Company {
   id                   Int                    @id @default(autoincrement())
-  name                 String
+  name                 String?
   registration         String?
-  vatNumber            String
-  vatValid             Boolean                @default(false)
+  vatNumber            String                 @unique
+  vatValid             Boolean?               @default(false)
   accRon               String?
   accEur               String?
   address              String?
   country              String
   bank                 String?
-  capital              Float?
+  capital              String?
   email                String?
   phone                String?
   invoices             Invoice[]
@@ -109,7 +109,7 @@ model Invoice {
   orders         Order[]
   creditNotes    CreditNote[]
   clientId       Int
-  client         Company         @relation(fields: [clientId], references: [id])
+  client         Company         @relation(fields: [clientId], references: [id], onDelete: Cascade)
   identification Identification?
   createdAt      DateTime?       @default(now()) @db.Date
   updatedAt      DateTime?       @updatedAt @db.Date
@@ -143,7 +143,7 @@ model NationalExpense {
   amount      Decimal     @db.Decimal(8, 2)
   paidBy      String?
   supplierId  Int
-  supplier    Company     @relation(fields: [supplierId], references: [id])
+  supplier    Company     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   attachment  Attachment?
   createdAt   DateTime?   @default(now()) @db.Date
   updatedAt   DateTime?   @updatedAt @db.Date
@@ -158,7 +158,7 @@ model InternationalExpense {
   currency    String      @default("EUR")
   paidBy      String?
   supplierId  Int
-  supplier    Company     @relation(fields: [supplierId], references: [id])
+  supplier    Company     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   attachment  Attachment?
   createdAt   DateTime?   @default(now()) @db.Date
   updatedAt   DateTime?   @updatedAt @db.Date

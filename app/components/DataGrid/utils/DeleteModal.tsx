@@ -4,7 +4,9 @@ import { useSubmit } from "@remix-run/react";
 import { AlertCircle } from "react-feather";
 import { useAuthenticityToken } from "remix-utils/csrf/react";
 
-interface Document { id: number }
+interface Document {
+  id: number;
+}
 
 interface Props<T extends Document> {
   name: string;
@@ -36,7 +38,7 @@ function DeleteModal<T extends Document>({
     >
       <Alert
         variant="outline"
-        leftSection={<AlertCircle size="1rem" />}
+        icon={<AlertCircle size="1rem" />}
         title="Warning!"
         color="red"
       >

@@ -1,7 +1,7 @@
 import { mkdir, writeFileSync } from "fs";
 import { cwd } from "process";
 
-import { createId } from '@paralleldrive/cuid2';
+import { createId } from "@paralleldrive/cuid2";
 import type { PDFImage } from "pdf-lib";
 import { PDFDocument } from "pdf-lib";
 
@@ -61,7 +61,7 @@ const FileUploader = async (
 
     await processAttachment(type, id, name);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

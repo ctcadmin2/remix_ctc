@@ -6,7 +6,7 @@ export const cookie = createCookie("csrf", {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax",
-  secrets: ["s3cr3t"],
+  secrets: process.env.COOKIE_SECRETS, //TODO change
 });
 
 //TODO customize
@@ -15,5 +15,5 @@ export const csrf = new CSRF({
   // what key in FormData objects will be used for the token, defaults to `csrf`
   formDataKey: "csrf",
   // an optional secret used to sign the token, recommended for extra safety
-  secret: "s3cr3t",
+  secret: process.env.CSRF_SECRET, //TODO change
 });

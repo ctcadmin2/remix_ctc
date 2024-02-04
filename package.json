@@ -46,7 +46,9 @@
     "react-feather": "^2.0.10",
     "remix-auth": "^3.6.0",
     "remix-auth-form": "^1.4.0",
+    "remix-toast": "^1.1.0",
     "remix-utils": "^7.3.0",
+    "vies-validate": "^1.0.5",
     "zod": "^3.22.4",
     "zod-form-data": "^2.0.2",
     "zodix": "^0.4.4"

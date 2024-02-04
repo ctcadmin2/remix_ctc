@@ -55,7 +55,6 @@ const InvoiceForm = () => {
 
   const cnSelectData = () => {
     if (creditNotes) {
-      console.log(creditNotes);
       const list = creditNotes.map((cn) => {
         return {
           value: String(cn.id),

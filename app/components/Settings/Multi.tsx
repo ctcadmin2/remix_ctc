@@ -18,7 +18,6 @@ const Multi = ({ name, value }: { name: string; value: string[] }) => {
   }, [values]);
 
   const addSettings = (code: string) => {
-    console.log(inputValue.split(","));
     if (code === "Enter") {
       handlers.append(...inputValue.split(","));
       setInputValue("");
