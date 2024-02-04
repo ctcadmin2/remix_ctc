@@ -20,6 +20,8 @@ import SelectCSS from "~/css/Select.module.css";
 import SwitchCSS from "~/css/Switch.module.css";
 import TabsCSS from "~/css/Tabs.module.css";
 export const theme: MantineThemeOverride = createTheme({
+  autoContrast: true,
+  luminanceThreshold: 0.4,
   components: {
     Input: Input.extend({
       classNames: {

@@ -1,11 +1,12 @@
 import type { User } from "@prisma/client";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
-import { compare, hash } from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 
 import { db } from "./db.server";
 
+const { compare, hash } = bcryptjs;
 const sessionSecret = process.env.SESSION_SECRET;
 export const DEFAULT_REDIRECT = "/login";
 

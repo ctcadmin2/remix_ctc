@@ -21,7 +21,9 @@ import { CountrySelect } from "~/utils/countryCodes";
 const CompanyForm = ({ data = undefined }: { data?: Company | undefined }) => {
   const company = useLoaderData<Company | null>();
 
-  const { values, setValues, getInputProps, reset } = useForm({
+  const { values, initialize, getInputProps, reset } = useForm<
+    Partial<Company>
+  >({
     initialValues: {
       name: company?.name || "",
       registration: company?.registration || "",
@@ -45,16 +47,16 @@ const CompanyForm = ({ data = undefined }: { data?: Company | undefined }) => {
 
   useEffect(() => {
     if (data) {
-      setValues(data);
+      initialize(data);
       setManual(true);
       return;
     }
     if (fetcher.data != null) {
-      setValues(fetcher.data);
+      initialize(fetcher.data);
       setManual(true);
       return;
     }
-  }, [data, fetcher.data, setValues]);
+  }, [data, fetcher.data, initialize]);
 
   useEffect(() => {
     ref.current?.focus();

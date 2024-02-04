@@ -1,6 +1,9 @@
-import "@mantine/core/styles.layer.css";
-import "@mantine/notifications/styles.layer.css";
-import "mantine-datatable/styles.layer.css";
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
+import "@mantine/notifications/styles.css";
+import "mantine-datatable/styles.css";
+import "dayjs/locale/en";
+import "dayjs/locale/ro";
 
 import {
   MantineProvider,
@@ -14,6 +17,7 @@ import {
   ColorSchemeScript,
   ScrollArea,
 } from "@mantine/core";
+import { DatesProvider } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { Notifications } from "@mantine/notifications";
 import type { User } from "@prisma/client";
@@ -22,7 +26,6 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import {
   Link,
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -112,7 +115,7 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
-  // console.log("root render");
+  console.log("root render");
 
   const location = useLocation();
   const [linkPath, setLinkPath] = useState({ name: "", to: "" });
@@ -220,13 +223,19 @@ export default function App() {
               >
                 <Container fluid px={0}>
                   <AuthenticityTokenProvider token={csrf}>
-                    <Outlet />
+                    <DatesProvider
+                      settings={{
+                        consistentWeeks: true,
+                        locale: user ? user.language : "en",
+                      }}
+                    >
+                      <Outlet />
+                    </DatesProvider>
                   </AuthenticityTokenProvider>
                 </Container>
               </Paper>
             </AppShell.Main>
           </AppShell>
-          <LiveReload />
           <Scripts />
         </MantineProvider>
       </body>
