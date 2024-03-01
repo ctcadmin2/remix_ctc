@@ -183,8 +183,8 @@ model Employee {
   id        Int        @id @default(autoincrement())
   firstName String
   lastName  String
-  cnp       Int        @unique
-  activ     Boolean
+  ssn       String     @unique
+  activ     Boolean    @default(true)
   payments  Payment[]
   documents Document[]
   createdAt DateTime   @default(now()) @db.Date
@@ -193,11 +193,11 @@ model Employee {
 
 model Payment {
   id             Int             @id @default(autoincrement())
-  totalRon       Decimal         @db.Decimal(8, 2)
-  totalEur       Decimal         @db.Decimal(8, 2)
+  salaryRon      Decimal         @db.Decimal(8, 2)
+  salaryEur      Decimal         @db.Decimal(8, 2)
   month          String
-  indemnisations Indemnisation[]
-  employee       Employee        @relation(fields: [employeeId], references: [id])
+  indemnizations Indemnization[]
+  employee       Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   employeeId     Int
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -217,17 +217,19 @@ model Document {
   vehicleId   Int?
 }
 
-model Indemnisation {
-  id        Int       @id @default(autoincrement())
-  perDay    Int
-  days      Int
-  avans     Decimal   @db.Decimal(8, 2)
-  rest      Decimal   @db.Decimal(8, 2)
-  type      String
-  Payment   Payment?  @relation(fields: [paymentId], references: [id])
-  paymentId Int?
-  createdAt DateTime? @default(now()) @db.Date
-  updatedAt DateTime? @updatedAt @db.Date
+model Indemnization {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  startDate  DateTime
+  perDay     Int
+  days       Int
+  avans      Decimal   @db.Decimal(8, 2)
+  rest       Decimal   @db.Decimal(8, 2)
+  total      Decimal   @db.Decimal(8, 2)
+  delegation Boolean
+  Payment    Payment?  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  paymentId  Int?
+  createdAt  DateTime? @default(now()) @db.Date
+  updatedAt  DateTime? @updatedAt @db.Date
 }
 
 model Repair {

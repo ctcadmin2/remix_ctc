@@ -8,15 +8,15 @@ async function seed() {
   const settings = [
     {
       id: 1,
-      name: "diurnaBaza",
-      value: ["to be removed"],
+      name: "perDay",
+      value: ["65"],
       type: "main",
       multi: false,
     },
     {
       id: 2,
-      name: "salarBaza",
-      value: ["to be removed"],
+      name: "salary",
+      value: ["2500"],
       type: "main",
       multi: false,
     },
@@ -215,7 +215,7 @@ async function seed() {
   const employees = Array.from({ length: 10 }).map(() => ({
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    cnp: parseInt(faker.helpers.unique(faker.string.numeric, [13], {})),
+    ssn: parseInt(faker.helpers.unique(faker.string.numeric, [13], {})),
     activ: faker.datatype.boolean(),
     payments: {
       createMany: {

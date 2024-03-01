@@ -1,21 +1,27 @@
-import { Stack } from "@mantine/core";
+import { ButtonGroup, Divider, Flex, Pagination, Stack } from "@mantine/core";
 import { useSearchParams } from "@remix-run/react";
+import Decimal from "decimal.js";
 import type { DataTableColumn, DataTableSortStatus } from "mantine-datatable";
 import { DataTable } from "mantine-datatable";
-import { useEffect, useRef, useState } from "react";
-
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 import NewPageButton from "../NewPageButton/NewPageButton";
-
 
 interface Props {
   data: unknown[];
   columns: DataTableColumn<unknown>[];
   total: number;
   perPage: number;
+  extraButton: ReactNode | undefined;
 }
 
-const DataGrid = ({ data, columns, total, perPage }: Props) => {
+const DataGrid = ({
+  data,
+  columns,
+  total,
+  perPage,
+  extraButton = undefined,
+}: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const sort = searchParams.get("sort");
@@ -47,30 +53,46 @@ const DataGrid = ({ data, columns, total, perPage }: Props) => {
   }, [searchParams, setSearchParams, sortStatus]);
 
   return (
-    <DataTable
-      striped
-      highlightOnHover
-      // withBorder
-      // minHeight={550}
-      horizontalSpacing={"xl"}
-      verticalSpacing={"sm"}
-      borderRadius={"md"}
-      minHeight={"65vh"}
-      records={data}
-      columns={columns}
-      sortStatus={sortStatus}
-      onSortStatusChange={setSortStatus}
-      page={parseInt(searchParams.get("page") || "1")}
-      onPageChange={(page) => setSearchParams({ page: String(page) })}
-      totalRecords={total}
-      recordsPerPage={perPage}
-      paginationText={() => <NewPageButton />}
-      emptyState={
-        <Stack align="center" gap="xs" style={{ pointerEvents: "all" }}>
+    <>
+      <DataTable
+        striped
+        highlightOnHover
+        // withBorder
+        // minHeight={550}
+        horizontalSpacing={"xl"}
+        verticalSpacing={"sm"}
+        borderRadius={"md"}
+        minHeight={"65vh"}
+        records={data}
+        columns={columns}
+        sortStatus={sortStatus}
+        onSortStatusChange={setSortStatus}
+        totalRecords={total}
+        emptyState={
+          <Stack align="center" gap="xs" style={{ pointerEvents: "all" }}>
+            <NewPageButton />
+          </Stack>
+        }
+      />
+      <Divider orientation="horizontal" my={"lg"} />
+      <Flex justify={"space-between"}>
+        <ButtonGroup>
           <NewPageButton />
-        </Stack>
-      }
-    />
+          {extraButton ?? null}
+        </ButtonGroup>
+
+        <Pagination
+          total={new Decimal(total).dividedBy(perPage).ceil().toNumber()}
+          value={parseInt(searchParams.get("page") || "1")}
+          onChange={(page) =>
+            setSearchParams((prev) => {
+              prev.set("page", String(page));
+              return prev;
+            })
+          }
+        />
+      </Flex>
+    </>
   );
 };
 

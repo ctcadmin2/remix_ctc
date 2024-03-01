@@ -1,4 +1,4 @@
-import type { Company } from "@prisma/client";
+import type { Employee } from "@prisma/client";
 import type {
   ActionFunctionArgs,
   ActionFunction,
@@ -8,28 +8,19 @@ import type {
 import { json } from "@remix-run/node";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
-import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
-import CompanyForm from "~/forms/CompanyForm";
+import EmployeeForm from "~/forms/EmployeeForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 const schema = zfd.formData({
-  name: zfd.text(z.string().optional()),
-  registration: zfd.text(z.string().optional()),
-  vatNumber: zfd.text(),
-  vatValid: zfd.checkbox(),
-  accRon: zfd.text(z.string().optional()),
-  accEur: zfd.text(z.string().optional()),
-  address: zfd.text(z.string().optional()),
-  country: zfd.text(),
-  bank: zfd.text(z.string().optional()),
-  capital: zfd.text(z.string().optional()),
-  email: zfd.text(z.string().optional()),
-  phone: zfd.text(z.string().optional()),
+  firstName: zfd.text(),
+  lastName: zfd.text(),
+  ssn: zfd.text(),
+  activ: zfd.checkbox(),
 });
 
 export const loader: LoaderFunction = async ({
@@ -40,12 +31,12 @@ export const loader: LoaderFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const { companyId } = zx.parseParams(params, {
-    companyId: zx.NumAsString,
+  const { employeeId } = zx.parseParams(params, {
+    employeeId: zx.NumAsString,
   });
 
-  const data: Company | null = await db.company.findUnique({
-    where: { id: companyId },
+  const data: Employee | null = await db.employee.findUnique({
+    where: { id: employeeId },
   });
 
   return json(data);
@@ -70,23 +61,24 @@ export const action: ActionFunction = async ({
     }
   }
 
-  const { companyId } = zx.parseParams(params, {
-    companyId: zx.NumAsString,
+  const { employeeId } = zx.parseParams(params, {
+    employeeId: zx.NumAsString,
   });
 
   const data = schema.parse(await request.formData());
 
   try {
-    await db.company.update({
-      where: { id: companyId },
+    await db.employee.update({
+      where: { id: employeeId },
       data,
     });
-    return redirectWithSuccess("/companies", "Company updated successfully.");
+    return redirectWithSuccess("/employees", "Employee updated successfully.");
   } catch (error) {
+    console.error(error);
     return jsonWithError(error, `There has been and error: ${error}`);
   }
 };
 
-export default function EditCompany() {
-  return <CompanyForm />;
+export default function EditEmployee() {
+  return <EmployeeForm />;
 }

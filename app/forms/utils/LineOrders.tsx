@@ -10,7 +10,7 @@ import {
 import Decimal from "decimal.js";
 import { X } from "react-feather";
 
-import { useInvoiceFormContext } from "./InvoiceFormContext";
+import { useInvoiceFormContext } from "./FormContext/InvoiceFormContext";
 
 interface Props {
   disabled: boolean;

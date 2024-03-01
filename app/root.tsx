@@ -19,6 +19,7 @@ import {
 } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
+import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import type { User } from "@prisma/client";
 import { json } from "@remix-run/node";
@@ -162,81 +163,83 @@ export default function App() {
 
       <body>
         <MantineProvider theme={theme}>
-          <Notifications />
-          <AppShell
-            padding={"md"}
-            header={{ height: 60 }}
-            navbar={{
-              width: 200,
-              breakpoint: "sm",
-              collapsed: { mobile: !opened, desktop: !user },
-            }}
-          >
-            <AppShell.Header p={"md"}>
-              <Group justify="apart" grow>
-                <Group justify="apart">
-                  <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    size="md"
-                    hiddenFrom="sm"
-                    display={!user ? "none" : "inline"}
-                  />
-                  <Title order={3} fw={"bolder"}>
-                    CTCAdmin 2
-                  </Title>
-                </Group>
-                <Group justify="right">
-                  <Button>Language</Button>
+          <ModalsProvider>
+            <Notifications />
+            <AppShell
+              padding={"md"}
+              header={{ height: 60 }}
+              navbar={{
+                width: 200,
+                breakpoint: "sm",
+                collapsed: { mobile: !opened, desktop: !user },
+              }}
+            >
+              <AppShell.Header p={"md"}>
+                <Group justify="apart" grow>
+                  <Group justify="apart">
+                    <Burger
+                      opened={opened}
+                      onClick={toggle}
+                      size="md"
+                      hiddenFrom="sm"
+                      display={!user ? "none" : "inline"}
+                    />
+                    <Title order={3} fw={"bolder"}>
+                      CTCAdmin 2
+                    </Title>
+                  </Group>
+                  <Group justify="right">
+                    <Button>Language</Button>
 
-                  {user ? (
-                    <Button
-                      type="submit"
-                      onClick={() =>
-                        submit(null, { method: "post", action: "/logout" })
-                      }
-                    >
-                      Logout
-                    </Button>
-                  ) : null}
-                  {!user ? (
-                    <Button component={Link} to={linkPath.to}>
-                      {linkPath.name}
-                    </Button>
-                  ) : null}
+                    {user ? (
+                      <Button
+                        type="submit"
+                        onClick={() =>
+                          submit(null, { method: "post", action: "/logout" })
+                        }
+                      >
+                        Logout
+                      </Button>
+                    ) : null}
+                    {!user ? (
+                      <Button component={Link} to={linkPath.to}>
+                        {linkPath.name}
+                      </Button>
+                    ) : null}
+                  </Group>
                 </Group>
-              </Group>
-            </AppShell.Header>
+              </AppShell.Header>
 
-            <AppShell.Navbar pl="md" mt={"1rem"} h={"85vh"} hidden={true}>
-              <AppShell.Section grow component={ScrollArea}>
-                {links}
-              </AppShell.Section>
-            </AppShell.Navbar>
-            <AppShell.Main>
-              <Paper
-                shadow="sm"
-                radius="md"
-                p="xl"
-                withBorder
-                style={{ height: "85vh", width: "auto" }}
-              >
-                <Container fluid px={0}>
-                  <AuthenticityTokenProvider token={csrf}>
-                    <DatesProvider
-                      settings={{
-                        consistentWeeks: true,
-                        locale: user ? user.language : "en",
-                      }}
-                    >
-                      <Outlet />
-                    </DatesProvider>
-                  </AuthenticityTokenProvider>
-                </Container>
-              </Paper>
-            </AppShell.Main>
-          </AppShell>
-          <Scripts />
+              <AppShell.Navbar pl="md" mt={"1rem"} h={"85vh"} hidden={true}>
+                <AppShell.Section grow component={ScrollArea}>
+                  {links}
+                </AppShell.Section>
+              </AppShell.Navbar>
+              <AppShell.Main>
+                <Paper
+                  shadow="sm"
+                  radius="md"
+                  p="xl"
+                  withBorder
+                  style={{ height: "85vh", width: "auto" }}
+                >
+                  <Container fluid px={0}>
+                    <AuthenticityTokenProvider token={csrf}>
+                      <DatesProvider
+                        settings={{
+                          consistentWeeks: true,
+                          locale: user ? user.language : "en",
+                        }}
+                      >
+                        <Outlet />
+                      </DatesProvider>
+                    </AuthenticityTokenProvider>
+                  </Container>
+                </Paper>
+              </AppShell.Main>
+            </AppShell>
+            <Scripts />
+          </ModalsProvider>
         </MantineProvider>
       </body>
     </html>
