@@ -30,13 +30,14 @@ import {
   Meta,
   Outlet,
   Scripts,
+  ScrollRestoration,
   isRouteErrorResponse,
   useLoaderData,
   useLocation,
   useRouteError,
   useSubmit,
 } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { getToast, type ToastMessage } from "remix-toast";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 
@@ -55,7 +56,7 @@ export const meta: MetaFunction = () => {
 
 interface LoaderData {
   csrf: string;
-  user: Partial<User> | null | Error;
+  user: Partial<User> | null;
   toast: ToastMessage | undefined;
 }
 
@@ -95,29 +96,55 @@ const navLinks = [
 export function ErrorBoundary() {
   const error = useRouteError();
 
-  // when true, this is what used to go to `CatchBoundary`
+  let errorMessage: string;
+
   if (isRouteErrorResponse(error)) {
-    return (
-      <div>
-        <h1>Oops</h1>
-        <p>Status: {error.status}</p>
-        <p>{error.data}</p>
-      </div>
-    );
+    // error is type `ErrorResponse`
+    errorMessage = error.data || error.statusText;
+  } else if (error instanceof Error) {
+    errorMessage = error.message;
+  } else if (typeof error === "string") {
+    errorMessage = error;
+  } else {
+    console.error(error);
+    errorMessage = "Unknown error";
   }
 
   return (
-    <div>
-      <h1>Uh oh ...</h1>
-      <p>Something went wrong.</p>
-      <pre>{String(error)}</pre>
+    <div id="error-page">
+      <h1>Oops!</h1>
+      <p>Sorry, an unexpected error has occurred.</p>
+      <p>
+        <i>{errorMessage}</i>
+      </p>
     </div>
   );
 }
 
-export default function App() {
-  console.log("root render");
+export function Layout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
+        />
+        <Meta />
+        <Links />
+        <ColorSchemeScript />
+      </head>
+      <body>
+        {/* children will be the root Component, ErrorBoundary, or HydrateFallback */}
+        {children}
+        <Scripts />
+        <ScrollRestoration />
+      </body>
+    </html>
+  );
+}
 
+export default function App() {
   const location = useLocation();
   const [linkPath, setLinkPath] = useState({ name: "", to: "" });
 
@@ -149,99 +176,84 @@ export default function App() {
   ));
 
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
-        />
-        <Meta />
-        <Links />
-        <ColorSchemeScript />
-      </head>
+    <MantineProvider theme={theme}>
+      <ModalsProvider>
+        <Notifications />
+        <AppShell
+          padding={"md"}
+          header={{ height: 60 }}
+          navbar={{
+            width: 200,
+            breakpoint: "sm",
+            collapsed: { mobile: !opened, desktop: !user },
+          }}
+        >
+          <AppShell.Header p={"md"}>
+            <Group justify="apart" grow>
+              <Group justify="apart">
+                <Burger
+                  opened={opened}
+                  onClick={toggle}
+                  size="md"
+                  hiddenFrom="sm"
+                  display={!user ? "none" : "inline"}
+                />
+                <Title order={3} fw={"bolder"}>
+                  CTCAdmin 2
+                </Title>
+              </Group>
+              <Group justify="right">
+                <Button>Language</Button>
 
-      <body>
-        <MantineProvider theme={theme}>
-          <ModalsProvider>
-            <Notifications />
-            <AppShell
-              padding={"md"}
-              header={{ height: 60 }}
-              navbar={{
-                width: 200,
-                breakpoint: "sm",
-                collapsed: { mobile: !opened, desktop: !user },
-              }}
+                {user ? (
+                  <Button
+                    type="submit"
+                    onClick={() =>
+                      submit(null, { method: "post", action: "/logout" })
+                    }
+                  >
+                    Logout
+                  </Button>
+                ) : null}
+                {!user ? (
+                  <Button component={Link} to={linkPath.to}>
+                    {linkPath.name}
+                  </Button>
+                ) : null}
+              </Group>
+            </Group>
+          </AppShell.Header>
+
+          <AppShell.Navbar pl="md" mt={"1rem"} h={"85vh"} hidden={true}>
+            <AppShell.Section grow component={ScrollArea}>
+              {links}
+            </AppShell.Section>
+          </AppShell.Navbar>
+          <AppShell.Main>
+            <Paper
+              shadow="sm"
+              radius="md"
+              p="xl"
+              withBorder
+              style={{ height: "85vh", width: "auto" }}
             >
-              <AppShell.Header p={"md"}>
-                <Group justify="apart" grow>
-                  <Group justify="apart">
-                    <Burger
-                      opened={opened}
-                      onClick={toggle}
-                      size="md"
-                      hiddenFrom="sm"
-                      display={!user ? "none" : "inline"}
-                    />
-                    <Title order={3} fw={"bolder"}>
-                      CTCAdmin 2
-                    </Title>
-                  </Group>
-                  <Group justify="right">
-                    <Button>Language</Button>
-
-                    {user ? (
-                      <Button
-                        type="submit"
-                        onClick={() =>
-                          submit(null, { method: "post", action: "/logout" })
-                        }
-                      >
-                        Logout
-                      </Button>
-                    ) : null}
-                    {!user ? (
-                      <Button component={Link} to={linkPath.to}>
-                        {linkPath.name}
-                      </Button>
-                    ) : null}
-                  </Group>
-                </Group>
-              </AppShell.Header>
-
-              <AppShell.Navbar pl="md" mt={"1rem"} h={"85vh"} hidden={true}>
-                <AppShell.Section grow component={ScrollArea}>
-                  {links}
-                </AppShell.Section>
-              </AppShell.Navbar>
-              <AppShell.Main>
-                <Paper
-                  shadow="sm"
-                  radius="md"
-                  p="xl"
-                  withBorder
-                  style={{ height: "85vh", width: "auto" }}
-                >
-                  <Container fluid px={0}>
-                    <AuthenticityTokenProvider token={csrf}>
-                      <DatesProvider
-                        settings={{
-                          consistentWeeks: true,
-                          locale: user ? user.language : "en",
-                        }}
-                      >
-                        <Outlet />
-                      </DatesProvider>
-                    </AuthenticityTokenProvider>
-                  </Container>
-                </Paper>
-              </AppShell.Main>
-            </AppShell>
-            <Scripts />
-          </ModalsProvider>
-        </MantineProvider>
-      </body>
-    </html>
+              <Container fluid px={0}>
+                <AuthenticityTokenProvider token={csrf}>
+                  <DatesProvider
+                    settings={{
+                      consistentWeeks: true,
+                      locale: user ? user.language : "en",
+                    }}
+                  >
+                    <Outlet />
+                  </DatesProvider>
+                </AuthenticityTokenProvider>
+              </Container>
+            </Paper>
+          </AppShell.Main>
+        </AppShell>
+        <Scripts />
+      </ModalsProvider>
+    </MantineProvider>
   );
 }
