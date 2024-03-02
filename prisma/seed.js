@@ -181,17 +181,11 @@ async function seed() {
     amount: faker.number.int({ min: 1000, max: 10000 }),
     currency: faker.finance.currencyCode(),
     supplierId: faker.number.int({ min: 1, max: 10 }),
-    attachment: {
-      create: {
-        name: faker.string.alphanumeric(5),
-        url: faker.internet.url(),
-      },
-    },
   }));
 
   const tripExpenses = Array.from({ length: 200 }).map(() => ({
     number: faker.string.alphanumeric(5),
-    intNr: parseInt(faker.helpers.unique(faker.string.numeric, [4], {})),
+    intNr: faker.string.numeric({ min: 1, max: 300 }),
     date: faker.date.past(),
     description: faker.commerce.product(),
     amount: faker.number.int({ min: 1000, max: 10000 }),
@@ -209,26 +203,8 @@ async function seed() {
   const employees = Array.from({ length: 10 }).map(() => ({
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
-    ssn: parseInt(faker.helpers.unique(faker.string.numeric, [13], {})),
+    ssn: faker.string.numeric(13),
     activ: faker.datatype.boolean(),
-    payments: {
-      createMany: {
-        data: Array.from({ length: 10 }).map(() => ({
-          totalRon: 2100,
-          month: faker.date.past(),
-        })),
-      },
-    },
-    documents: {
-      createMany: {
-        data: Array.from({ length: 10 }).map(() => ({
-          description: faker.lorem.slug(),
-          expire: faker.date.past(),
-          comment: "some comment",
-          info: faker.datatype.boolean(),
-        })),
-      },
-    },
   }));
 
   await db.user.create({
@@ -240,20 +216,47 @@ async function seed() {
       hash: "$2a$10$ASUExexWpsLTZklz5ZqEI.zducNPjPlJ1IB6zeElsS2wADpD5kESm",
     },
   });
-  await db.setting.createMany({ data: settings });
-  await db.vehicle.createMany({ data: vehicles });
-  await db.company.createMany({ data: companies });
-  await db.invoice.createMany({ data: invoices });
-  await db.creditNote.createMany({ data: creditNotes });
-  await db.nationalExpense.createMany({ data: nationalExpenses });
-  // internationalExpenses.map(async (data) => {
-  //   await db.internationalExpense.create({ data })
-  // })
+  await db.setting.createMany({ data: settings, skipDuplicates: true });
+  await db.vehicle.createMany({ data: vehicles, skipDuplicates: true });
+  await db.company.createMany({ data: companies, skipDuplicates: true });
+  await db.invoice.createMany({ data: invoices, skipDuplicates: true });
+  await db.creditNote.createMany({ data: creditNotes, skipDuplicates: true });
+  await db.nationalExpense.createMany({
+    data: nationalExpenses,
+    skipDuplicates: true,
+  });
+  await db.internationalExpense.createMany({
+    data: internationalExpenses,
+    skipDuplicates: true,
+  });
+  employees.map(
+    async (e) =>
+      await db.employee.create({
+        data: {
+          ...e,
+          payments: {
+            createMany: {
+              data: Array.from({ length: 10 }).map(() => ({
+                salaryRon: 2100,
+                salaryEur: 2100,
+                month: faker.date.past().toISOString(),
+              })),
+            },
+          },
+          documents: {
+            createMany: {
+              data: Array.from({ length: 10 }).map(() => ({
+                description: faker.lorem.slug(),
+                expire: faker.date.past(),
+                comment: "some comment",
+              })),
+            },
+          },
+        },
+      })
+  );
   // tripExpenses.map(async (data) => {
   //   await db.tripExpense.create({ data })
-  // })
-  // employees.map(async (data) => {
-  //   await db.employee.create({ data })
   // })
 }
 
