@@ -167,14 +167,14 @@ async function seed() {
     clientId: faker.number.int({ min: 1, max: 10 }),
   }));
 
-  const nationalExpenses = Array.from({ length: 200 }).map(() => ({
+  const nationalExpenses = Array.from({ length: 50 }).map(() => ({
     number: faker.string.alphanumeric(5),
     date: faker.date.past(),
     description: faker.commerce.product(),
     amount: faker.number.int({ min: 1000, max: 10000 }),
     supplierId: faker.number.int({ min: 1, max: 10 }),
   }));
-  const internationalExpenses = Array.from({ length: 200 }).map(() => ({
+  const internationalExpenses = Array.from({ length: 50 }).map(() => ({
     number: faker.string.alphanumeric(5),
     date: faker.date.past(),
     description: faker.commerce.product(),
@@ -183,21 +183,15 @@ async function seed() {
     supplierId: faker.number.int({ min: 1, max: 10 }),
   }));
 
-  const tripExpenses = Array.from({ length: 200 }).map(() => ({
+  const tripExpenses = Array.from({ length: 50 }).map(() => ({
     number: faker.string.alphanumeric(5),
-    intNr: faker.string.numeric({ min: 1, max: 300 }),
+    intNr: faker.number.int({ min: 1, max: 100 }),
     date: faker.date.past(),
     description: faker.commerce.product(),
-    amount: faker.number.int({ min: 1000, max: 10000 }),
+    amount: faker.number.float({ fractionDigits: 2, max: 10000 }),
     currency: faker.finance.currencyCode(),
-    amountEur: faker.number.int({ min: 1000, max: 10000 }),
+    amountEur: faker.number.float({ fractionDigits: 2, max: 10000 }),
     card: faker.datatype.boolean(),
-    attachment: {
-      create: {
-        name: faker.string.alphanumeric(5),
-        url: faker.internet.url(),
-      },
-    },
   }));
 
   const employees = Array.from({ length: 10 }).map(() => ({
@@ -216,11 +210,13 @@ async function seed() {
       hash: "$2a$10$ASUExexWpsLTZklz5ZqEI.zducNPjPlJ1IB6zeElsS2wADpD5kESm",
     },
   });
+
   await db.setting.createMany({ data: settings, skipDuplicates: true });
   await db.vehicle.createMany({ data: vehicles, skipDuplicates: true });
   await db.company.createMany({ data: companies, skipDuplicates: true });
   await db.invoice.createMany({ data: invoices, skipDuplicates: true });
   await db.creditNote.createMany({ data: creditNotes, skipDuplicates: true });
+  await db.tripExpense.createMany({ data: tripExpenses, skipDuplicates: true });
   await db.nationalExpense.createMany({
     data: nationalExpenses,
     skipDuplicates: true,
@@ -255,9 +251,6 @@ async function seed() {
         },
       })
   );
-  // tripExpenses.map(async (data) => {
-  //   await db.tripExpense.create({ data })
-  // })
 }
 
 seed();
