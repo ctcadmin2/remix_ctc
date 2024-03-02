@@ -22,7 +22,7 @@ async function seed() {
     },
     {
       id: 3,
-      name: "activities",
+      name: "descriptions",
       value: ["to be removed"],
       type: "main",
       multi: true,
@@ -36,7 +36,7 @@ async function seed() {
     },
     {
       id: 5,
-      name: "paidBy",
+      name: "paymentOptions",
       value: ["to be removed"],
       type: "main",
       multi: true,
@@ -173,12 +173,6 @@ async function seed() {
     description: faker.commerce.product(),
     amount: faker.number.int({ min: 1000, max: 10000 }),
     supplierId: faker.number.int({ min: 1, max: 10 }),
-    attachment: {
-      create: {
-        name: faker.string.alphanumeric(5),
-        url: faker.internet.url(),
-      },
-    },
   }));
   const internationalExpenses = Array.from({ length: 200 }).map(() => ({
     number: faker.string.alphanumeric(5),
@@ -251,10 +245,7 @@ async function seed() {
   await db.company.createMany({ data: companies });
   await db.invoice.createMany({ data: invoices });
   await db.creditNote.createMany({ data: creditNotes });
-
-  // nationalExpenses.map(async (data) => {
-  //   await db.nationalExpense.create({ data })
-  // })
+  await db.nationalExpense.createMany({ data: nationalExpenses });
   // internationalExpenses.map(async (data) => {
   //   await db.internationalExpense.create({ data })
   // })

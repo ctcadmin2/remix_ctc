@@ -78,7 +78,7 @@ model CreditNote {
 
 model Company {
   id                   Int                    @id @default(autoincrement())
-  name                 String?
+  name                 String
   registration         String?
   vatNumber            String                 @unique
   vatValid             Boolean?               @default(false)

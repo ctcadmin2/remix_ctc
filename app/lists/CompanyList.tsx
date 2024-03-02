@@ -6,7 +6,7 @@ interface PropType {
   type: string;
   companies: { id: number; name: string }[];
   required: boolean;
-  value: string;
+  value?: string;
   onChange: (value: string | null) => void;
 }
 
@@ -15,14 +15,14 @@ const CompanyList = ({
   companies,
   required,
   value,
-  onChange
+  onChange,
 }: PropType) => {
   const companyList = () => {
     if (companies) {
       const list = companies.map((company) => {
         return {
           label: company.name,
-          value: String(company.id)
+          value: String(company.id),
         };
       });
 

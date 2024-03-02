@@ -7,7 +7,7 @@ import { camalize } from "~/utils/stringUtils";
 interface Props {
   setting: Setting | null;
   label: string;
-  value: string | null | undefined;
+  value?: string | null;
   onChange: ((value: string | null) => void) | undefined;
   required: boolean;
   styles?: Partial<Record<SelectStylesNames, React.CSSProperties>>;
