@@ -18,7 +18,7 @@ import {
 } from "react-feather";
 import type { LoaderFunction } from "react-router-dom";
 import { json } from "react-router-dom";
-import { redirectWithError, redirectWithSuccess } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
@@ -28,7 +28,6 @@ import BooleanIcon from "~/components/DataGrid/utils/BooleanIcon";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { db } from "~/utils/db.server";
-import { sortOrder } from "~/utils/helpers.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 interface LoaderData {
@@ -42,7 +41,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const { page, sort, filter } = zx.parseQuery(request, {
+  const { page, filter } = zx.parseQuery(request, {
     page: zx.NumAsString.optional(),
     sort: z.string().optional(),
     filter: z.string().optional(),
@@ -71,7 +70,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       where,
       take: parseInt(process.env.ITEMS_PER_PAGE),
       skip: offset,
-      orderBy: sortOrder({ lastName: "asc" }, sort),
+      orderBy: [{ activ: "desc" }, { lastName: "asc" }],
     }),
     total: await db.employee.count({ where }),
     perPage: parseInt(process.env.ITEMS_PER_PAGE),
@@ -93,17 +92,18 @@ export const action: ActionFunction = async ({
   const { id } = schema.parse(await request.formData());
 
   try {
-    await db.employee.delete({ where: { id } });
-    return redirectWithSuccess("/employees", "Employee deleted successfully.");
+    const employee = await db.employee.delete({ where: { id } });
+    if (employee) {
+      return jsonWithSuccess(null, "Employee deleted successfully.");
+    } else {
+      return jsonWithError(null, "Employee could not ne deleted.");
+    }
   } catch (error) {
-    return redirectWithError(
-      "/employees",
-      `Employee could not be deleted: ${error}`
-    );
+    return jsonWithError(error, `Employee could not be deleted: ${error}`);
   }
 };
 
-const Companies = () => {
+const Employee = () => {
   const { employees, total, perPage } = useLoaderData<LoaderData>();
   const [delOpen, setDelOpen] = useState(false);
   const [employee, setEmployee] = useState<Employee>();
@@ -250,4 +250,4 @@ const Companies = () => {
   );
 };
 
-export default Companies;
+export default Employee;
