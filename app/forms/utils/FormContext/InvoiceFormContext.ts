@@ -1,7 +1,7 @@
 import { createFormContext } from "@mantine/form";
 
 interface FormValues {
-  number: number;
+  number: string;
   date: Date;
   currency: string;
   vatRate: string;

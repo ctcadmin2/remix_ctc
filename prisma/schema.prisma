@@ -99,7 +99,7 @@ model Company {
 
 model Invoice {
   id             Int             @id @default(autoincrement())
-  number         Int
+  number         String
   date           DateTime        @db.Date
   amount         Decimal         @db.Decimal(8, 2)
   currency       String          @default("EUR")

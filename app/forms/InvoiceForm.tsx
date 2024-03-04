@@ -32,7 +32,7 @@ const InvoiceForm = () => {
 
   const form = useInvoiceForm({
     initialValues: {
-      number: invoice?.number || 0,
+      number: invoice?.number || "",
       date: dayjs(invoice?.date).toDate() || "",
       currency: invoice?.currency || "",
       vatRate: String(invoice?.vatRate) || "0",

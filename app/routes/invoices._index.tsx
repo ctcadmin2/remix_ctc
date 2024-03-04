@@ -18,8 +18,8 @@ import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
 import type { LoaderFunction } from "react-router-dom";
 import { json } from "react-router-dom";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
-import { redirectBack } from "remix-utils/redirect-back";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
@@ -30,12 +30,7 @@ import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export type Invoice = Prisma.InvoiceGetPayload<{
   select: {
@@ -111,7 +106,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       where,
       take: parseInt(env.ITEMS_PER_PAGE),
       skip: offset,
-      orderBy: sortOrder({ number: "asc" }, sort),
+      orderBy: sortOrder({ date: "desc" }, sort),
       select: {
         id: true,
         number: true,
@@ -138,8 +133,6 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -151,18 +144,16 @@ export const action: ActionFunction = async ({
 
   const { id } = schema.parse(await request.formData());
 
-  const invoice = await db.invoice.delete({ where: { id } });
-
-  if (invoice) {
-    session.flash("toastMessage", "Invoice deleted successfully.");
-  } else {
-    session.flash("toastMessage", "Invoice could not be deleted.");
+  try {
+    const invoice = await db.invoice.delete({ where: { id } });
+    if (invoice) {
+      jsonWithSuccess(null, "Invoice deleted successfully.");
+    } else {
+      jsonWithError(null, "Invoice could not be deleted.");
+    }
+  } catch (error) {
+    jsonWithError(error, "An error has occured.");
   }
-
-  return redirectBack(request, {
-    fallback: `/invoices`,
-    headers: { "Set-Cookie": await commitSession(session) },
-  });
 };
 
 const Invoices = () => {
@@ -298,6 +289,7 @@ const Invoices = () => {
             columns={columns as DataTableColumn<unknown>[]}
             total={total}
             perPage={perPage}
+            extraButton={null}
           />
         </Tabs.Panel>
 
@@ -307,6 +299,7 @@ const Invoices = () => {
             columns={columns as DataTableColumn<unknown>[]}
             total={total}
             perPage={perPage}
+            extraButton={null}
           />
         </Tabs.Panel>
       </Tabs>

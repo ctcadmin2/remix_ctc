@@ -5,7 +5,7 @@ import { zfd } from "zod-form-data";
 import bnrRate from "./bnrRate.server";
 
 export const schema = zfd.formData({
-  number: zfd.numeric(), //required
+  number: zfd.text(), //required
   date: zfd.text(z.string().datetime()), //required
   currency: zfd.text(), //required
   vatRate: zfd.numeric(), //required
