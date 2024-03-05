@@ -156,7 +156,6 @@ model InternationalExpense {
   description String
   amount      Decimal     @db.Decimal(8, 2)
   currency    String      @default("EUR")
-  paidBy      String?
   supplierId  Int
   supplier    Company     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   attachment  Attachment?
