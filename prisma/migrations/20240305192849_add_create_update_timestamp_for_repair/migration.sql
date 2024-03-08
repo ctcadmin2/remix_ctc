@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Repair" ADD COLUMN     "createdAt" DATE DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "updatedAt" DATE;

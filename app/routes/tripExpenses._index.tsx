@@ -8,7 +8,13 @@ import type {
 import Decimal from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
-import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
+import {
+  Clipboard,
+  Edit,
+  FileText,
+  MoreHorizontal,
+  Trash2,
+} from "react-feather";
 import type { LoaderFunction } from "react-router-dom";
 import { json } from "react-router-dom";
 import { redirectWithError, redirectWithSuccess } from "remix-toast";
@@ -212,6 +218,25 @@ const TripExpenses = () => {
                 <Menu.Dropdown>
                   <Menu.Item
                     component={Link}
+                    to={
+                      row.tripReportId === null
+                        ? "#"
+                        : `tripReport/${row.tripReportId}.pdf`
+                    }
+                    disabled={row.tripReportId === null}
+                    reloadDocument
+                    leftSection={
+                      <Clipboard
+                        size={"16px"}
+                        color="teal"
+                        strokeWidth={"2px"}
+                      />
+                    }
+                  >
+                    {`Report nr. ${row.tripReportId}`}
+                  </Menu.Item>
+                  <Menu.Item
+                    component={Link}
                     leftSection={
                       <Edit size={"16px"} color="teal" strokeWidth={"2px"} />
                     }
@@ -248,7 +273,7 @@ const TripExpenses = () => {
       />
       <DeleteModal<TripExpense>
         name="tripExpense"
-        title={expense?.number}
+        title={expense?.number ?? ""}
         opened={delOpen}
         setOpened={setDelOpen}
         document={expense}

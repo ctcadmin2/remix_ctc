@@ -164,18 +164,27 @@ model InternationalExpense {
 }
 
 model TripExpense {
-  id          Int         @id @default(autoincrement())
-  intNr       Int         @unique
-  number      String
-  date        DateTime?   @db.Date
-  description String?
-  amount      Decimal     @db.Decimal(8, 2)
-  currency    String      @default("EUR")
-  amountEur   Decimal     @db.Decimal(8, 2)
-  card        Boolean     @default(true)
-  attachment  Attachment?
-  createdAt   DateTime    @default(now()) @db.Date
-  updatedAt   DateTime    @updatedAt @db.Date
+  id           Int         @id @default(autoincrement())
+  intNr        Int         @unique
+  number       String?
+  date         DateTime    @db.Date
+  description  String
+  amount       Decimal     @db.Decimal(8, 2)
+  currency     String      @default("EUR")
+  amountEur    Decimal     @db.Decimal(8, 2)
+  card         Boolean     @default(true)
+  attachment   Attachment?
+  createdAt    DateTime    @default(now()) @db.Date
+  updatedAt    DateTime    @updatedAt @db.Date
+  TripReport   TripReport? @relation(fields: [tripReportId], references: [id], onDelete: SetNull)
+  tripReportId Int?
+}
+
+model TripReport {
+  id        Int           @id @default(autoincrement())
+  expenses  TripExpense[]
+  createdAt DateTime      @default(now()) @db.Date
+  updatedAt DateTime      @updatedAt @db.Date
 }
 
 model Employee {
@@ -232,12 +241,14 @@ model Indemnization {
 }
 
 model Repair {
-  id        Int      @id @default(autoincrement())
-  date      DateTime @db.Date
-  km        Int
+  id        Int       @id @default(autoincrement())
+  date      DateTime? @db.Date
+  km        Int?
   comment   String
   vehicleId Int
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle   Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  createdAt DateTime? @default(now()) @db.Date
+  updatedAt DateTime? @updatedAt @db.Date
 }
 
 model Attachment {

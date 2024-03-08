@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Repair" ALTER COLUMN "date" DROP NOT NULL,
+ALTER COLUMN "km" DROP NOT NULL;
