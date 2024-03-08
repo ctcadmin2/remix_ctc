@@ -16,7 +16,7 @@ const schema = zfd.formData({
   date: zfd.text(), //required
   amount: zfd.numeric(), //required
   description: zfd.text(), //required
-  paidBy: zfd.text(), //required
+  paidBy: zfd.text(z.string().optional()),
   supplierId: zfd.numeric(), //required
   files: zfd.repeatableOfType(
     zfd.file(z.instanceof(Blob).optional().catch(undefined))
