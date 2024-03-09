@@ -12,7 +12,7 @@ interface Props {
   columns: DataTableColumn<unknown>[];
   total: number;
   perPage: number;
-  extraButton: ReactNode | undefined;
+  extraButton?: ReactNode | undefined;
 }
 
 const DataGrid = ({

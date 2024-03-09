@@ -2,10 +2,11 @@ import { Center, Button, Menu, Divider, Modal, Flex } from "@mantine/core";
 import { MonthPicker } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import type { Employee } from "@prisma/client";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
   ActionFunctionArgs,
+  LoaderFunction,
 } from "@remix-run/server-runtime";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
@@ -16,8 +17,6 @@ import {
   MoreHorizontal,
   Trash2,
 } from "react-feather";
-import type { LoaderFunction } from "react-router-dom";
-import { json } from "react-router-dom";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zfd } from "zod-form-data";

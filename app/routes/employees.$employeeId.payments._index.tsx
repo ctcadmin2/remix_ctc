@@ -3,10 +3,11 @@ import { env } from "process";
 import { Center, Button, Menu, ActionIcon } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import type { Indemnization, Payment, Prisma } from "@prisma/client";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunctionArgs,
   ActionFunction,
+  LoaderFunction,
 } from "@remix-run/server-runtime";
 import Decimal from "decimal.js";
 import { DataTable, type DataTableColumn } from "mantine-datatable";
@@ -18,8 +19,6 @@ import {
   MoreHorizontal,
   Trash2,
 } from "react-feather";
-import type { LoaderFunction } from "react-router-dom";
-import { json } from "react-router-dom";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";

@@ -2,16 +2,15 @@ import { env } from "process";
 
 import { Center, Button, Menu } from "@mantine/core";
 import type { Repair } from "@prisma/client";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunctionArgs,
   ActionFunction,
+  LoaderFunction,
 } from "@remix-run/server-runtime";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, MoreHorizontal, Trash2 } from "react-feather";
-import type { LoaderFunction } from "react-router-dom";
-import { json } from "react-router-dom";
 import { CSRFError } from "remix-utils/csrf/server";
 import { redirectBack } from "remix-utils/redirect-back";
 import { z } from "zod";
@@ -30,8 +29,6 @@ import {
   commitSession,
   getSession,
 } from "~/utils/session.server";
-
-
 
 interface LoaderData {
   repairs: Repair[];

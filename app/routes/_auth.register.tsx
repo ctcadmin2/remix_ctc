@@ -8,10 +8,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { type LoaderFunction, type ActionFunctionArgs } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import { useActionData, useSearchParams } from "@remix-run/react";
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-// import { badRequest } from "remix-utils/csrf/react";
+import { jsonWithError } from "remix-toast";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 
@@ -38,30 +37,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { passCheck, redirectTo, ...rest } = data;
 
   if (passCheck !== rest.password) {
-    return badRequest({
-      fieldErrors: { passCheck: `Password doesn't match.` },
-      fields: { ...data },
-    });
+    return jsonWithError(null, "Password doesn't match.");
   }
 
   const emailExists = await db.user.findFirst({
     where: { email: rest.email },
   });
   if (emailExists) {
-    return badRequest({
-      fieldErrors: { email: `User with email ${rest.email} already exists` },
-      fields: { ...data },
-    });
+    return jsonWithError(null, `User with email ${rest.email} already exists.`);
   }
   // create the user
   // create their session and redirect to last route
   const user = await register({ ...rest });
 
   if (!user) {
-    return badRequest({
-      fieldErrors: {},
-      fields: { ...data },
-    });
+    return jsonWithError(null, `User could not be created.`);
   }
 
   return createUserSession(user.id, redirectTo);

@@ -1,62 +1,69 @@
 # base node image
-FROM node:18-alpine as base
+FROM node:20-alpine as base
 
-# Install openssl for Prisma
-RUN apk update && apk add openssl
+# set for base and all layer that inherit from it
+ENV NODE_ENV production
+
+# enable corepack for yarn
+RUN corepack enable
+
+# Install openssl for Prisma and git
+RUN apk update && apk add openssl && apk add git
+
+WORKDIR /ctcadmin
+
+ADD package.json .
+ADD yarn.lock .
+ADD .yarnrc.yml .
+
+RUN yarn set version stable
+
 
 # Install all node_modules, including dev dependencies
 FROM base as deps
 
-RUN mkdir /app
-WORKDIR /app
+WORKDIR /ctcadmin
 
-ADD package.json ./
-RUN npm install --production=false
+RUN yarn install
 
 # Setup production node_modules
 FROM base as production-deps
 
-ENV NODE_ENV production
+WORKDIR /ctcadmin
 
-RUN mkdir /app
-WORKDIR /app
-
-COPY --from=deps /app/node_modules /app/node_modules
-ADD package.json ./
-RUN npm prune --production
+RUN yarn workspaces focus --production
 
 # Build the app
 FROM base as build
 
-RUN mkdir /app
-WORKDIR /app
+WORKDIR /ctcadmin
 
-COPY --from=deps /app/node_modules /app/node_modules
+COPY --from=deps /ctcadmin/node_modules /ctcadmin/node_modules
+COPY --from=deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
 
-ADD prisma .
-RUN npx prisma generate
+ADD prisma prisma
+
+RUN yarn prisma generate
 
 ADD . .
-RUN npm run build
+
+RUN yarn build
 
 # Finally, build the production image with minimal footprint
 FROM base
 
-ENV NODE_ENV production
-ENV SESSION_SECRET=secret
-ENV DATABASE_URL="postgres://sega:sega@172.17.0.1:5432/ctc_rw"
-ENV ITEMS_PER_PAGE="7"
+WORKDIR /ctcadmin
 
-RUN mkdir /app
-WORKDIR /app
+ENV REMIX_DEV_ORIGIN="http://0.0.0.0:3000"
 
-COPY --from=production-deps /app/node_modules /app/node_modules
-COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
+COPY --from=production-deps /ctcadmin/node_modules /ctcadmin/node_modules
+COPY --from=build /ctcadmin/node_modules/.prisma /ctcadmin/node_modules/.prisma
 
-COPY --from=build /app/build /app/build
-COPY --from=build /app/public /app/public
-ADD . .
+COPY --from=build /ctcadmin/build /ctcadmin/build
+COPY --from=build /ctcadmin/public /ctcadmin/public
+
+COPY --from=deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["yarn", "start"]

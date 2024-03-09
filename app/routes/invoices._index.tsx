@@ -7,17 +7,17 @@ import {
   Link,
   useLoaderData,
   useSubmit,
+  json,
 } from "@remix-run/react";
 import type {
   ActionFunction,
   ActionFunctionArgs,
+  LoaderFunction,
 } from "@remix-run/server-runtime";
 import { Decimal } from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import type { LoaderFunction } from "react-router-dom";
-import { json } from "react-router-dom";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
