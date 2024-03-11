@@ -1,5 +1,4 @@
 import { readFile } from "fs/promises";
-import { cwd } from "process";
 
 import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
@@ -16,6 +15,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const attachment = document?.attachment;
 
   return pdf(
-    await readFile(`${cwd()}/storage/${attachment?.type}/${attachment?.name}`)
+    await readFile(`/storage/${attachment?.type}/${attachment?.name}`),
   );
 }
