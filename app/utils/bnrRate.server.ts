@@ -7,7 +7,7 @@ interface bnr {
 //TODO swich to prod api
 
 const bnrRate = async (date: string, currency: string) => {
-  const url = `https://private-anon-78fa821efd-openapien.apiary-mock.com/api/exchange/${currency}?date=${
+  const url = `https://api.openapi.ro/api/exchange/${currency}?date=${
     date.split("T")[0]
   }`;
 

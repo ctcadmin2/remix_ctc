@@ -1,5 +1,4 @@
 import { readFileSync, unlink } from "fs";
-import { cwd } from "process";
 
 import type { Attachment } from "@prisma/client";
 
@@ -8,7 +7,7 @@ import { db } from "./db.server";
 export const processAttachment = async (
   type: string,
   id: number,
-  name: string
+  name: string,
 ) => {
   try {
     const oldFile = await db.attachment.findUnique({
@@ -16,7 +15,7 @@ export const processAttachment = async (
     });
 
     if (oldFile) {
-      unlink(`${cwd()}/storage/${oldFile?.type}/${oldFile?.name}`, (err) => {
+      unlink(`/storage/${oldFile?.type}/${oldFile?.name}`, (err) => {
         if (err) {
           console.log("error on delete: ", err);
         }
@@ -39,7 +38,7 @@ export const processAttachment = async (
 };
 
 export const getPdf = async ({ type, name }: Attachment) => {
-  const path = `${cwd()}/storage/${type}/${name}`;
+  const path = `/storage/${type}/${name}`;
 
   return readFileSync(path);
 };

@@ -56,7 +56,7 @@ const findCompany = async (country: string | null, vatNr: string | null) => {
 };
 
 const processRO = async (vatNr: string) => {
-  const url = `https://private-anon-e78d340347-openapien.apiary-mock.com/api/companies/${vatNr}`;
+  const url = `https://api.openapi.ro/api/companies/${vatNr}`;
   let company: Partial<Company> | null = null;
 
   const res = await fetch(url, {

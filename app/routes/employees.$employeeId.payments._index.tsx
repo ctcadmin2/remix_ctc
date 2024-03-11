@@ -71,7 +71,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       include: { indemnizations: true },
       take: 7,
       skip: offset,
-      orderBy: sortOrder({ month: "asc" }, sort),
+      orderBy: sortOrder({ month: "desc" }, sort),
     }),
     total: await db.payment.count({ where: { employee: { id: employeeId } } }),
     perPage: parseInt(env.ITEMS_PER_PAGE),
@@ -150,7 +150,7 @@ const Payments = () => {
           .reduce(
             (accumulator: Decimal, currentValue: { total: Decimal }) =>
               new Decimal(accumulator).plus(currentValue.total),
-            0
+            0,
           )
           .toNumber();
       },
@@ -196,7 +196,7 @@ const Payments = () => {
                         {
                           month: "short",
                           year: "numeric",
-                        }
+                        },
                       ).format(Date.parse(row.month))}`,
                       children: (
                         <DataTable

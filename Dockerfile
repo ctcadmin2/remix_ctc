@@ -61,6 +61,7 @@ COPY --from=build /ctcadmin/node_modules/.prisma /ctcadmin/node_modules/.prisma
 
 COPY --from=build /ctcadmin/build /ctcadmin/build
 COPY --from=build /ctcadmin/public /ctcadmin/public
+COPY --from=build /ctcadmin/prisma /ctcadmin/prisma
 
 COPY --from=deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
 

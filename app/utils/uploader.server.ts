@@ -1,5 +1,4 @@
 import { mkdir, writeFileSync } from "fs";
-import { cwd } from "process";
 
 import { createId } from "@paralleldrive/cuid2";
 import type { PDFImage } from "pdf-lib";
@@ -24,7 +23,7 @@ const processImage = (img: PDFImage, pdfDoc: PDFDocument) => {
 const FileUploader = async (
   files: Blob[],
   type: string,
-  id: number
+  id: number,
 ): Promise<void> => {
   try {
     const pdfDoc = await PDFDocument.create();
@@ -52,12 +51,12 @@ const FileUploader = async (
       }
     }
 
-    mkdir(`${cwd()}/storage/${type}/`, { recursive: true }, (err) => {
+    mkdir(`/storage/${type}/`, { recursive: true }, (err) => {
       if (err) throw err;
     });
     const name = `${createId()}.pdf`;
     const path = `/storage/${type}/${name}`;
-    writeFileSync(`${cwd()}${path}`, await pdfDoc.save());
+    writeFileSync(`${path}`, await pdfDoc.save());
 
     await processAttachment(type, id, name);
   } catch (error) {
