@@ -21,7 +21,7 @@ const schema = zfd.formData({
   amountEur: zfd.numeric(), //required
   card: zfd.checkbox(), //required
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined))
+    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
   ),
 });
 
@@ -65,13 +65,19 @@ export const action: ActionFunction = async ({ request }) => {
       },
     });
 
-    if (files[0]) {
-      await FileUploader(files as Blob[], "tripExpense", expense.id);
-    }
+    if (expense) {
+      if (files[0]) {
+        await FileUploader(files as Blob[], "tripExpense", expense.id);
+      }
 
-    return redirectWithSuccess("/tripExpenses", "Expense added successfully.");
+      return redirectWithSuccess(
+        "/tripExpenses",
+        "Expense added successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Expense could not be created.");
+    }
   } catch (error) {
-    console.error(error);
     return jsonWithError(null, `There has been and error: ${error}`);
   }
 };

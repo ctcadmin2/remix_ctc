@@ -149,12 +149,12 @@ export const action: ActionFunction = async ({
   try {
     const invoice = await db.invoice.delete({ where: { id } });
     if (invoice) {
-      jsonWithSuccess(null, "Invoice deleted successfully.");
+      return jsonWithSuccess(null, "Invoice deleted successfully.");
     } else {
-      jsonWithError(null, "Invoice could not be deleted.");
+      return jsonWithError(null, "Invoice could not be deleted.");
     }
   } catch (error) {
-    jsonWithError(error, "An error has occured.");
+    return jsonWithError(error, "An error has occured.");
   }
 };
 

@@ -123,12 +123,12 @@ export const action: ActionFunction = async ({
     const creditNote = await db.creditNote.delete({ where: { id } });
 
     if (creditNote) {
-      jsonWithSuccess(null, "Credit note deleted successfully.");
+      return jsonWithSuccess(null, "Credit note deleted successfully.");
     } else {
-      jsonWithError(null, "Credit note could not be deleted.");
+      return jsonWithError(null, "Credit note could not be deleted.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

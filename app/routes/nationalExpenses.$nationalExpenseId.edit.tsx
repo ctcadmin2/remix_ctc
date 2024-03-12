@@ -25,7 +25,7 @@ const schema = zfd.formData({
   paidBy: zfd.text(z.string().optional()),
   supplierId: zfd.numeric(), //required
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined))
+    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
   ),
 });
 
@@ -87,7 +87,7 @@ export const action: ActionFunction = async ({
   const { supplierId, files, ...rest } = data;
 
   try {
-    await db.nationalExpense.update({
+    const expense = await db.nationalExpense.update({
       where: { id: nationalExpenseId },
       data: {
         ...rest,
@@ -97,16 +97,22 @@ export const action: ActionFunction = async ({
       },
     });
 
-    if (files[0]) {
-      await FileUploader(files as Blob[], "nationalExpense", nationalExpenseId);
+    if (expense) {
+      if (files[0]) {
+        await FileUploader(
+          files as Blob[],
+          "nationalExpense",
+          nationalExpenseId,
+        );
+      }
+      return redirectWithSuccess(
+        "/nationalExpenses",
+        "Expense updated successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Expense could not be updated.");
     }
-
-    return redirectWithSuccess(
-      "/nationalExpenses",
-      "Expense updated successfully."
-    );
   } catch (error) {
-    console.error(error);
     return jsonWithError(error, `There has been and error: ${error}`);
   }
 };

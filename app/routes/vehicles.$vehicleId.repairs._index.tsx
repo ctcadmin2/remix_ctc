@@ -100,12 +100,12 @@ export const action: ActionFunction = async ({
     const repair = await db.repair.delete({ where: { id } });
 
     if (repair) {
-      jsonWithSuccess(null, "Repair data was deleted successfully.");
+      return jsonWithSuccess(null, "Repair data was deleted successfully.");
     } else {
-      jsonWithError(null, "Repair data could not be deleted.");
+      return jsonWithError(null, "Repair data could not be deleted.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

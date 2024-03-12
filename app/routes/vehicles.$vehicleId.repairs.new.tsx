@@ -60,15 +60,15 @@ export const action: ActionFunction = async ({
     });
 
     if (repair) {
-      redirectWithSuccess(
+      return redirectWithSuccess(
         " `/vehicle/${vehicleId}/repairs`",
         "Repair data was created successfully.",
       );
     } else {
-      jsonWithError(null, "Repair data could not be created.");
+      return jsonWithError(null, "Repair data could not be created.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

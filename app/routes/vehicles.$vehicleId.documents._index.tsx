@@ -139,12 +139,12 @@ export const action: ActionFunction = async ({
     const document = await db.document.delete({ where: { id } });
 
     if (document) {
-      jsonWithSuccess(null, "Document deleted successfully.");
+      return jsonWithSuccess(null, "Document deleted successfully.");
     } else {
-      jsonWithError(null, "Document could not be deleted.");
+      return jsonWithError(null, "Document could not be deleted.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

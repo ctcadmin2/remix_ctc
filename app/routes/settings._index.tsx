@@ -71,7 +71,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (setting) {
     return jsonWithSuccess(null, "Settings updated successfully.");
   } else {
-    jsonWithError(null, "An error has occured.");
+    return jsonWithError(null, "An error has occured.");
   }
 };
 

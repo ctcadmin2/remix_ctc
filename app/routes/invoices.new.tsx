@@ -105,12 +105,12 @@ export const action: ActionFunction = async ({ request }) => {
     });
 
     if (invoice) {
-      redirectWithSuccess("/invoices", "Invoice created successfully.");
+      return redirectWithSuccess("/invoices", "Invoice created successfully.");
     } else {
-      jsonWithError(null, "Invoice could not be created.");
+      return jsonWithError(null, "Invoice could not be created.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

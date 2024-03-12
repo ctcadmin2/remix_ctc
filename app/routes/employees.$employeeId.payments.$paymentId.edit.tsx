@@ -31,7 +31,7 @@ const schema = zfd.formData({
         perDay: zfd.numeric(),
         avans: zfd.numeric(),
         delegation: zfd.checkbox(),
-      })
+      }),
     )
     .optional(),
 });
@@ -95,22 +95,22 @@ export const action: ActionFunction = async ({
         total: new Decimal(0),
       };
       indemnization.total = new Decimal(indemnization.perDay).times(
-        indemnization.days
+        indemnization.days,
       );
       indemnization.rest = new Decimal(indemnization.total).minus(
-        indemnization.avans
+        indemnization.avans,
       );
 
       return indemnization;
     }) ?? [];
 
   try {
-    await db.payment.update({
+    const payment = await db.payment.update({
       where: { id: paymentId },
       data: {
         ...data,
         salaryEur: new Decimal(data.salaryRon).dividedBy(
-          (await bnrRate(data.month, "EUR")).rate
+          (await bnrRate(data.month, "EUR")).rate,
         ),
         indemnizations: {
           deleteMany: {},
@@ -118,12 +118,16 @@ export const action: ActionFunction = async ({
         },
       },
     });
-    return redirectWithSuccess(
-      `/employees/${employeeId}/payments`,
-      "Payment updated successfully."
-    );
+
+    if (payment) {
+      return redirectWithSuccess(
+        `/employees/${employeeId}/payments`,
+        "Payment updated successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Payment could not be updated.");
+    }
   } catch (error) {
-    console.error(error);
     return jsonWithError(error, `There has been and error: ${error}`);
   }
 };

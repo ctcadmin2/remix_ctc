@@ -80,16 +80,16 @@ export const action: ActionFunction = async ({
     if (document) {
       if (files[0]) {
         await FileUploader(files as Blob[], "document", document.id);
-        redirectWithSuccess(
+        return redirectWithSuccess(
           `/vehicles/${vehicleId}/documents`,
           "Document was edited successfully.",
         );
       } else {
-        jsonWithError(null, "Document could not be edited.");
+        return jsonWithError(null, "Document could not be edited.");
       }
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

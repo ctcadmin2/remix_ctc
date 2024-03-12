@@ -99,10 +99,13 @@ export const action: ActionFunction = async ({
   const { id } = schema.parse(await request.formData());
 
   try {
-    await db.payment.delete({ where: { id } });
-    return jsonWithSuccess(null, "Payment deleted successfully.");
+    const payment = await db.payment.delete({ where: { id } });
+    if (payment) {
+      return jsonWithSuccess(null, "Payment deleted successfully.");
+    } else {
+      return jsonWithError(null, "Payment could not be deleted.");
+    }
   } catch (error) {
-    console.error(error);
     return jsonWithError(null, "Payment could not be deleted.");
   }
 };

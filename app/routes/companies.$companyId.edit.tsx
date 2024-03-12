@@ -77,11 +77,15 @@ export const action: ActionFunction = async ({
   const data = schema.parse(await request.formData());
 
   try {
-    await db.company.update({
+    const company = await db.company.update({
       where: { id: companyId },
       data,
     });
-    return redirectWithSuccess("/companies", "Company updated successfully.");
+    if (company) {
+      return redirectWithSuccess("/companies", "Company updated successfully.");
+    } else {
+      return jsonWithError(null, "Company could not be updated.");
+    }
   } catch (error) {
     return jsonWithError(error, `There has been and error: ${error}`);
   }

@@ -80,12 +80,15 @@ export const action: ActionFunction = async ({ request }) => {
       if (files[0]) {
         await FileUploader(files as Blob[], "creditNote", creditNote.id);
       }
-      redirectWithSuccess("/creditNotes", "Credit note created successfully.");
+      return redirectWithSuccess(
+        "/creditNotes",
+        "Credit note created successfully.",
+      );
     } else {
-      jsonWithError(null, "Credit note could not be created.");
+      return jsonWithError(null, "Credit note could not be created.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

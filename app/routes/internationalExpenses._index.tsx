@@ -10,7 +10,7 @@ import Decimal from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import { redirectWithError, redirectWithSuccess } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
@@ -96,15 +96,9 @@ export const action: ActionFunction = async ({
 
   try {
     await db.internationalExpense.delete({ where: { id } });
-    return redirectWithSuccess(
-      "/internationalExpenses",
-      "Expense deleted successfully."
-    );
+    return jsonWithSuccess(null, "Expense deleted successfully.");
   } catch (error) {
-    return redirectWithError(
-      "/internationalExpenses",
-      `Expense could not be deleted: ${error}`
-    );
+    return jsonWithError(null, `Expense could not be deleted: ${error}`);
   }
 };
 

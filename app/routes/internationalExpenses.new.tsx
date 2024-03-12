@@ -19,7 +19,7 @@ const schema = zfd.formData({
   description: zfd.text(), //required
   supplierId: zfd.numeric(), //required
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined))
+    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
   ),
 });
 
@@ -70,16 +70,18 @@ export const action: ActionFunction = async ({ request }) => {
       },
     });
 
-    if (files[0]) {
-      await FileUploader(files as Blob[], "internationalExpense", expense.id);
+    if (expense) {
+      if (files[0]) {
+        await FileUploader(files as Blob[], "internationalExpense", expense.id);
+      }
+      return redirectWithSuccess(
+        "/internationalExpenses",
+        "Expense added successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Expense could not be created.");
     }
-
-    return redirectWithSuccess(
-      "/internationalExpenses",
-      "Expense added successfully."
-    );
   } catch (error) {
-    console.error(error);
     return jsonWithError(null, `There has been and error: ${error}`);
   }
 };

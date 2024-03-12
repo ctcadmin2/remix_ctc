@@ -68,13 +68,19 @@ export const action: ActionFunction = async ({
   const data = schema.parse(await request.formData());
 
   try {
-    await db.employee.update({
+    const employee = await db.employee.update({
       where: { id: employeeId },
       data,
     });
-    return redirectWithSuccess("/employees", "Employee updated successfully.");
+    if (employee) {
+      return redirectWithSuccess(
+        "/employees",
+        "Employee updated successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Employee could not be updated.");
+    }
   } catch (error) {
-    console.error(error);
     return jsonWithError(error, `There has been and error: ${error}`);
   }
 };

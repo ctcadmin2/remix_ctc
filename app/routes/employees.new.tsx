@@ -48,12 +48,18 @@ export const action: ActionFunction = async ({ request }) => {
   const data = schema.parse(await request.formData());
 
   try {
-    await db.employee.create({
+    const employee = await db.employee.create({
       data,
     });
-    return redirectWithSuccess("/employees", "Employee added successfully.");
+    if (employee) {
+      return redirectWithSuccess(
+        "/employees",
+        "Employee created successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Employee could not be created.");
+    }
   } catch (error) {
-    console.error(error);
     return jsonWithError(null, `There has been and error: ${error}`);
   }
 };

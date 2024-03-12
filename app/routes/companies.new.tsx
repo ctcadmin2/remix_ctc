@@ -25,7 +25,7 @@ import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 const schema = zfd.formData({
   _action: zfd.text(),
-  name: zfd.text(z.string().optional()),
+  name: zfd.text(),
   registration: zfd.text(z.string().optional()),
   vatNumber: zfd.text(),
   vatValid: zfd.checkbox(),
@@ -74,7 +74,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (_action === "search") {
     const data: SearchCompanyProps = await findCompany(
       rest.country,
-      rest.vatNumber
+      rest.vatNumber,
     );
     switch (data.status) {
       case 200:
@@ -90,10 +90,17 @@ export const action: ActionFunction = async ({ request }) => {
     }
   } else {
     try {
-      await db.company.create({
+      const company = await db.company.create({
         data: rest,
       });
-      return redirectWithSuccess("/companies", "Company added successfully.");
+      if (company) {
+        return redirectWithSuccess(
+          "/companies",
+          "Company was created successfully.",
+        );
+      } else {
+        return jsonWithError(null, "Company could not be created.");
+      }
     } catch (error) {
       return jsonWithError(null, `There has been and error: ${error}`);
     }

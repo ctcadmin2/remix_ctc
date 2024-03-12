@@ -61,12 +61,15 @@ export const action: ActionFunction = async ({
     });
 
     if (vehicle) {
-      redirectWithSuccess("/vehicles", "Vehicle was created successfully.");
+      return redirectWithSuccess(
+        "/vehicles",
+        "Vehicle was created successfully.",
+      );
     } else {
-      jsonWithError(null, "Vehicle could not be created.");
+      return jsonWithError(null, "Vehicle could not be created.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

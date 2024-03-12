@@ -149,12 +149,12 @@ export const action: ActionFunction = async ({
     });
 
     if (invoice) {
-      redirectWithSuccess("/invoices", "Invoice edited successfully.");
+      return redirectWithSuccess("/invoices", "Invoice edited successfully.");
     } else {
-      jsonWithError(null, "Invoice could not be edited.");
+      return jsonWithError(null, "Invoice could not be edited.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

@@ -31,7 +31,7 @@ const schema = zfd.formData({
         perDay: zfd.numeric(),
         avans: zfd.numeric(),
         delegation: zfd.checkbox(),
-      })
+      }),
     )
     .optional(),
 });
@@ -98,21 +98,21 @@ export const action: ActionFunction = async ({
         total: new Decimal(0),
       };
       indemnization.total = new Decimal(indemnization.perDay).times(
-        indemnization.days
+        indemnization.days,
       );
       indemnization.rest = new Decimal(indemnization.total).minus(
-        indemnization.avans
+        indemnization.avans,
       );
 
       return indemnization;
     }) ?? [];
 
   try {
-    await db.payment.create({
+    const payment = await db.payment.create({
       data: {
         ...data,
         salaryEur: new Decimal(data.salaryRon).dividedBy(
-          (await bnrRate(data.month, "EUR")).rate
+          (await bnrRate(data.month, "EUR")).rate,
         ),
         employee: { connect: { id: employeeId } },
         ...(indemnizationsData.length > 0
@@ -120,10 +120,15 @@ export const action: ActionFunction = async ({
           : null),
       },
     });
-    return redirectWithSuccess(
-      `/employees/${employeeId}/payments`,
-      "Payment created successfully."
-    );
+
+    if (payment) {
+      return redirectWithSuccess(
+        `/employees/${employeeId}/payments`,
+        "Payment created successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Payment could not be created.");
+    }
   } catch (error) {
     console.error(error);
     return jsonWithError(error, "Payment could not be created.");

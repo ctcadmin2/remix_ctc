@@ -130,12 +130,12 @@ export const action: ActionFunction = async ({
     const vehicle = await db.vehicle.delete({ where: { id } });
 
     if (vehicle) {
-      jsonWithSuccess(null, "Vehicle deleted successfully.");
+      return jsonWithSuccess(null, "Vehicle deleted successfully.");
     } else {
-      jsonWithError(null, "Vehicle could not be deleted.");
+      return jsonWithError(null, "Vehicle could not be deleted.");
     }
   } catch (error) {
-    jsonWithError(null, `An error has occured: ${error}`);
+    return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 
