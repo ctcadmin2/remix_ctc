@@ -37,12 +37,12 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const { invoiceId } = zx.parseParams(params, {
-    invoiceId: zx.NumAsString,
+  const { id } = zx.parseParams(params, {
+    id: zx.NumAsString,
   });
 
   const invoice = await db.invoice.findUnique({
-    where: { id: invoiceId },
+    where: { id },
     include: {
       client: true,
       creditNotes: { select: { number: true, amount: true, currency: true } },
@@ -57,6 +57,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       identification: { select: { expName: true, expId: true, expVeh: true } },
     },
   });
+
   const company: CompanyInfo[] = await db.setting.findMany({
     where: { type: { equals: "company" } },
     select: { name: true, value: true },
