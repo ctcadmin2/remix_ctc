@@ -1,5 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -7,12 +8,7 @@ import { zfd } from "zod-form-data";
 import CreditNoteForm from "~/forms/CreditNoteForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 import FileUploader from "~/utils/uploader.server";
 
 const schema = zfd.formData({
@@ -26,7 +22,7 @@ const schema = zfd.formData({
   notes: zfd.text(z.string().optional()),
   vehicleId: zfd.numeric(z.number().optional()),
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined))
+    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
   ),
 });
 
@@ -53,8 +49,6 @@ export const action: ActionFunction = async ({ request }) => {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -68,27 +62,30 @@ export const action: ActionFunction = async ({ request }) => {
 
   const { vehicleId, files, ...rest } = data;
 
-  const creditNote = await db.creditNote.create({
-    data: {
-      ...rest,
-      ...(vehicleId
-        ? {
-            vehicle: {
-              connect: { id: vehicleId },
-            },
-          }
-        : {}),
-    },
-  });
-
-  if (creditNote) {
-    if (files[0]) {
-      await FileUploader(files as Blob[], "creditNote", creditNote.id);
-    }
-    session.flash("toastMessage", "Credit note updated successfully.");
-    return redirect("/creditNotes", {
-      headers: { "Set-Cookie": await commitSession(session) },
+  try {
+    const creditNote = await db.creditNote.create({
+      data: {
+        ...rest,
+        ...(vehicleId
+          ? {
+              vehicle: {
+                connect: { id: vehicleId },
+              },
+            }
+          : {}),
+      },
     });
+
+    if (creditNote) {
+      if (files[0]) {
+        await FileUploader(files as Blob[], "creditNote", creditNote.id);
+      }
+      redirectWithSuccess("/creditNotes", "Credit note created successfully.");
+    } else {
+      jsonWithError(null, "Credit note could not be created.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

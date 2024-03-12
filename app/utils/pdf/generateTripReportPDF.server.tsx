@@ -7,8 +7,8 @@ import { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
 
 const fonts = {
   Roboto: {
-    normal: "app/utils/pdf/fonts/Roboto/Roboto-Regular.ttf",
-    bold: "app/utils/pdf/fonts/Roboto/Roboto-Bold.ttf",
+    normal: "public/assets/fonts/Roboto/Roboto-Regular.ttf",
+    bold: "public/assets/fonts/Roboto/Roboto-Bold.ttf",
   },
 };
 
@@ -21,10 +21,10 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 
   const start = expenses.reduce((prev, current) =>
-    prev && prev.date < current.date ? prev : current
+    prev && prev.date < current.date ? prev : current,
   );
   const end = expenses.reduce((prev, current) =>
-    prev && prev.date > current.date ? prev : current
+    prev && prev.date > current.date ? prev : current,
   );
 
   const expenseRows: TableCell[][] = expenses.map((e) => {
@@ -162,11 +162,11 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
                     .reduce(
                       (accumulator, currentValue) =>
                         new Decimal(accumulator).add(
-                          new Decimal(currentValue.amountEur)
+                          new Decimal(currentValue.amountEur),
                         ),
-                      new Decimal(0)
+                      new Decimal(0),
                     )
-                    .toNumber()
+                    .toNumber(),
                 ),
                 bold: true,
                 fontSize: 12,

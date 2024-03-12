@@ -11,8 +11,8 @@ import type {
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, MoreHorizontal, Trash2 } from "react-feather";
+import { jsonWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
-import { redirectBack } from "remix-utils/redirect-back";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
@@ -23,12 +23,7 @@ import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 interface LoaderData {
   repairs: Repair[];
@@ -85,13 +80,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export const action: ActionFunction = async ({
   request,
-  params,
 }: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
-
-  const session = await getSession(request.headers.get("Cookie"));
 
   try {
     await csrf.validate(request);
@@ -103,26 +95,22 @@ export const action: ActionFunction = async ({
   }
 
   const { id } = schema.parse(await request.formData());
-  const { vehicleId } = zx.parseParams(params, {
-    vehicleId: zx.NumAsString,
-  });
 
-  const repair = await db.repair.delete({ where: { id } });
+  try {
+    const repair = await db.repair.delete({ where: { id } });
 
-  if (repair) {
-    session.flash("toastMessage", "Repair deleted successfully.");
-  } else {
-    session.flash("toastMessage", "Repair could not be deleted.");
+    if (repair) {
+      jsonWithSuccess(null, "Repair data was deleted successfully.");
+    } else {
+      jsonWithError(null, "Repair data could not be deleted.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
   }
-
-  return redirectBack(request, {
-    fallback: `/vehicle/${vehicleId}/repairs`,
-    headers: { "Set-Cookie": await commitSession(session) },
-  });
 };
 
 const Repairs = () => {
-  const { repairs, total, perPage } = useLoaderData();
+  const { repairs, total, perPage } = useLoaderData<typeof loader>();
   const [opened, setOpened] = useState(false);
   const [repair, setRepair] = useState<Repair>();
 

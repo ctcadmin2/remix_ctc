@@ -39,6 +39,7 @@ export type Invoice = Prisma.InvoiceGetPayload<{
     date: true;
     amount: true;
     currency: true;
+    vatRate: true;
     client: {
       select: {
         name: true;
@@ -113,6 +114,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         date: true,
         amount: true,
         currency: true,
+        vatRate: true,
         client: {
           select: {
             name: true,
@@ -187,13 +189,17 @@ const Invoices = () => {
     {
       accessor: "amount",
       textAlign: "center",
-      render: ({ amount, currency }) =>
+      render: ({ amount, currency, vatRate }) =>
         Intl.NumberFormat("ro-RO", {
           style: "currency",
           maximumFractionDigits: 2,
           minimumFractionDigits: 0,
           currency: currency,
-        }).format(new Decimal(amount).toNumber()),
+        }).format(
+          new Decimal(amount)
+            .times(new Decimal(vatRate).dividedBy(100).add(1))
+            .toNumber(),
+        ),
     },
 
     {

@@ -12,8 +12,8 @@ import type {
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Tool, Trash2 } from "react-feather";
+import { jsonWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
-import { redirectBack } from "remix-utils/redirect-back";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
@@ -25,12 +25,7 @@ import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export type Vehicle = Prisma.VehicleGetPayload<{
   select: {
@@ -120,8 +115,6 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -133,18 +126,17 @@ export const action: ActionFunction = async ({
 
   const { id } = schema.parse(await request.formData());
 
-  const vehicle = await db.vehicle.delete({ where: { id } });
+  try {
+    const vehicle = await db.vehicle.delete({ where: { id } });
 
-  if (vehicle) {
-    session.flash("toastMessage", "Vehicle deleted successfully.");
-  } else {
-    session.flash("toastMessage", "Vehicle could not be deleted.");
+    if (vehicle) {
+      jsonWithSuccess(null, "Vehicle deleted successfully.");
+    } else {
+      jsonWithError(null, "Vehicle could not be deleted.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
   }
-
-  return redirectBack(request, {
-    fallback: `/vehicle`,
-    headers: { "Set-Cookie": await commitSession(session) },
-  });
 };
 
 const Vehicles = () => {

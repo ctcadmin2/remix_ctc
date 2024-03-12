@@ -4,7 +4,8 @@ import type {
   LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -13,14 +14,7 @@ import { zx } from "zodix";
 import VehicleForm from "~/forms/VehicleForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
-
-
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 const schema = zfd.formData({
   registration: zfd.text(z.string().optional()),
@@ -61,8 +55,6 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -78,16 +70,19 @@ export const action: ActionFunction = async ({
 
   const data = schema.parse(await request.formData());
 
-  const vehicle = await db.vehicle.update({
-    data,
-    where: { id: vehicleId },
-  });
-
-  if (vehicle) {
-    session.flash("toastMessage", "Vehicle updated successfully.");
-    return redirect("/vehicles", {
-      headers: { "Set-Cookie": await commitSession(session) },
+  try {
+    const vehicle = await db.vehicle.update({
+      data,
+      where: { id: vehicleId },
     });
+
+    if (vehicle) {
+      redirectWithSuccess("/vehicles", "Vehicle was edited successfully.");
+    } else {
+      jsonWithError(null, "Vehicle could not be edited.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

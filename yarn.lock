@@ -7372,6 +7372,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prisma-repl@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "prisma-repl@npm:1.4.0"
+  bin:
+    prisma-repl: dist/cli-wrapper.js
+  checksum: 10/bc2fce015ba19f00f2de62b0fbe14b1495ee019c158ce389c25ecab8a6674775c43037079d5fd9e17922c48f2917e3eaf2199bb3aca0db2d0793bba5e7e4ba8d
+  languageName: node
+  linkType: hard
+
 "prisma@npm:^5.10.2":
   version: 5.10.2
   resolution: "prisma@npm:5.10.2"
@@ -7928,6 +7937,7 @@ __metadata:
     postcss-simple-vars: "npm:^7.0.1"
     prettier: "npm:3.2.5"
     prisma: "npm:^5.10.2"
+    prisma-repl: "npm:^1.4.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-feather: "npm:^2.0.10"

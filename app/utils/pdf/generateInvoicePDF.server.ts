@@ -1,9 +1,10 @@
-import { User } from "@prisma/client";
 import Decimal from "decimal.js";
 import PdfPrinter from "pdfmake";
 import { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
 
 import { InvoiceData, CompanyInfo } from "~/routes/invoices.$id[.]pdf";
+
+import { db } from "../db.server";
 
 interface CompanyData {
   name: string;
@@ -21,8 +22,8 @@ interface CompanyData {
 
 const fonts = {
   Roboto: {
-    normal: "app/utils/pdf/fonts/Roboto/Roboto-Regular.ttf",
-    bold: "app/utils/pdf/fonts/Roboto/Roboto-Bold.ttf",
+    normal: "public/assets/fonts/Roboto/Roboto-Regular.ttf",
+    bold: "public/assets/fonts/Roboto/Roboto-Bold.ttf",
   },
 };
 
@@ -35,7 +36,6 @@ const notFoundDef: TDocumentDefinitions = {
 const generateInvoicePDF = async (
   invoice: InvoiceData["invoice"] | null,
   company: CompanyInfo[],
-  user: Partial<User>
 ) => {
   const doc = new PdfPrinter(fonts);
 
@@ -57,8 +57,14 @@ const generateInvoicePDF = async (
     {},
     ...company.map((obj) => {
       return { [obj.name]: obj.value[0] };
-    })
+    }),
   );
+
+  const user = invoice.createdById
+    ? await db.user.findUnique({
+        where: { id: invoice?.createdById },
+      })
+    : null;
 
   const cnLines = () => {
     const lines: TableCell[][] = [
@@ -105,7 +111,7 @@ const generateInvoicePDF = async (
             style: "currency",
             currency: currency,
           }).format(
-            new Decimal(value).times(invoice.vatRate).dividedBy(100).toNumber()
+            new Decimal(value).times(invoice.vatRate).dividedBy(100).toNumber(),
           )}`,
           border: [false, false, true, false],
           alignment: "right",
@@ -171,7 +177,7 @@ const generateInvoicePDF = async (
             new Decimal(order.total)
               .times(invoice.vatRate)
               .dividedBy(100)
-              .toNumber()
+              .toNumber(),
           )}`,
           border: [false, false, true, false],
           alignment: "right",
@@ -225,7 +231,7 @@ const generateInvoicePDF = async (
                 } Nr. ${new Intl.NumberFormat("ro-RO", {
                   minimumIntegerDigits: 7,
                   useGrouping: false,
-                }).format(invoice?.number)}`,
+                }).format(new Decimal(invoice?.number).toNumber())}`,
                 border: [false, false, true, false],
                 alignment: "center",
                 bold: true,
@@ -374,7 +380,9 @@ const generateInvoicePDF = async (
                         text: "Intocmit de: ",
                       },
                       {
-                        text: `${user?.firstName} ${user?.lastName}`,
+                        text: user
+                          ? `${user?.firstName} ${user?.lastName}`
+                          : "",
                         alignment: "right",
                       },
                     ],
@@ -383,7 +391,7 @@ const generateInvoicePDF = async (
                       {
                         text: invoice.bnrAt
                           ? `${invoice.bnr}/${new Intl.DateTimeFormat(
-                              "ro-RO"
+                              "ro-RO",
                             ).format(invoice.bnrAt)}`
                           : " ",
                         alignment: "right",
@@ -421,7 +429,7 @@ const generateInvoicePDF = async (
                             }).format(
                               new Decimal(invoice.amount)
                                 .dividedBy(new Decimal(invoice.bnr))
-                                .toNumber()
+                                .toNumber(),
                             )}`
                           : " ",
                         alignment: "right",
@@ -448,7 +456,7 @@ const generateInvoicePDF = async (
                           new Decimal(invoice.amount)
                             .times(invoice.vatRate)
                             .dividedBy(100)
-                            .toNumber()
+                            .toNumber(),
                         )}`,
                         bold: true,
                         alignment: "right",
@@ -466,7 +474,7 @@ const generateInvoicePDF = async (
                                 .times(invoice.vatRate)
                                 .dividedBy(100)
                                 .dividedBy(new Decimal(invoice.bnr))
-                                .toNumber()
+                                .toNumber(),
                             )}`
                           : " ",
                         alignment: "right",
@@ -557,9 +565,9 @@ const generateInvoicePDF = async (
                     }).format(
                       new Decimal(invoice.amount)
                         .times(
-                          new Decimal(invoice.vatRate).dividedBy(100).add(1)
+                          new Decimal(invoice.vatRate).dividedBy(100).add(1),
                         )
-                        .toNumber()
+                        .toNumber(),
                     )}`,
                     bold: true,
                     alignment: "right",
@@ -593,10 +601,12 @@ const generateInvoicePDF = async (
                         }).format(
                           new Decimal(invoice.amount)
                             .times(
-                              new Decimal(invoice.vatRate).dividedBy(100).add(1)
+                              new Decimal(invoice.vatRate)
+                                .dividedBy(100)
+                                .add(1),
                             )
                             .dividedBy(new Decimal(invoice.bnr))
-                            .toNumber()
+                            .toNumber(),
                         )}`
                       : "",
                     alignment: "right",

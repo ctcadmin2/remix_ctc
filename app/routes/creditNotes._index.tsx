@@ -10,7 +10,7 @@ import Decimal from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import { redirectBack } from "remix-utils/redirect-back";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
@@ -21,12 +21,7 @@ import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
   select: {
@@ -149,22 +144,19 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   const { id } = schema.parse(await request.formData());
 
-  const creditNote = await db.creditNote.delete({ where: { id } });
+  try {
+    const creditNote = await db.creditNote.delete({ where: { id } });
 
-  if (creditNote) {
-    session.flash("toastMessage", "Credit note deleted successfully.");
-  } else {
-    session.flash("toastMessage", "Credit note could not be deleted.");
+    if (creditNote) {
+      jsonWithSuccess(null, "Credit note deleted successfully.");
+    } else {
+      jsonWithError(null, "Credit note could not be deleted.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
   }
-
-  return redirectBack(request, {
-    fallback: `/creditNotes`,
-    headers: { "Set-Cookie": await commitSession(session) },
-  });
 };
 
 const CreditNotes = () => {
@@ -240,7 +232,7 @@ const CreditNotes = () => {
                 variant="filled"
                 color={"teal"}
                 component={Link}
-                to={`${row.id}`}
+                to={row.attachment === null ? "#" : `${row.id}.pdf`}
                 disabled={row.attachment === null}
                 reloadDocument
                 leftSection={<FileText size={"24px"} />}

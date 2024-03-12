@@ -4,8 +4,8 @@ import { TDocumentDefinitions } from "pdfmake/interfaces";
 
 const fonts = {
   Roboto: {
-    normal: "app/utils/pdf/fonts/Roboto/Roboto-Regular.ttf",
-    bold: "app/utils/pdf/fonts/Roboto/Roboto-Bold.ttf",
+    normal: "public/assets/fonts/Roboto/Roboto-Regular.ttf",
+    bold: "public/assets/fonts/Roboto/Roboto-Bold.ttf",
   },
 };
 
@@ -65,7 +65,7 @@ const generateDelegationPDF = async (indemnization: Indemnization | null) => {
                   {
                     text: "Domnul(a). . . . . @payment.employee.name".padEnd(
                       100,
-                      ". "
+                      ". ",
                     ),
                     colSpan: 3,
                   },

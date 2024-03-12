@@ -5,8 +5,9 @@ import type {
   LoaderFunctionArgs,
   LoaderFunction,
 } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import Decimal from "decimal.js";
+import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zx } from "zodix";
 
@@ -19,12 +20,7 @@ import {
   updateIdentification,
   updateOrders,
 } from "~/utils/invoiceUtils.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export interface LoaderData {
   invoice: Prisma.InvoiceGetPayload<{
@@ -99,8 +95,6 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -132,32 +126,35 @@ export const action: ActionFunction = async ({
     orders,
     creditNotes,
     rest.currency,
-    rest.date
+    rest.date,
   );
 
-  const invoice = await db.invoice.update({
-    where: { id: invoiceId },
-    data: {
-      ...rest,
-      amount: amountValue.amount,
-      bnr: amountValue.bnr,
-      bnrAt: amountValue.bnrAt,
-      client: {
-        connect: { id: clientId },
+  try {
+    const invoice = await db.invoice.update({
+      where: { id: invoiceId },
+      data: {
+        ...rest,
+        amount: amountValue.amount,
+        bnr: amountValue.bnr,
+        bnrAt: amountValue.bnrAt,
+        client: {
+          connect: { id: clientId },
+        },
+        creditNotes: {
+          set: creditNotesIds?.split(",").map((cn) => ({ id: parseInt(cn) })),
+        },
+        ...updateIdentification(identification),
+        ...updateOrders(orders),
       },
-      creditNotes: {
-        set: creditNotesIds?.split(",").map((cn) => ({ id: parseInt(cn) })),
-      },
-      ...updateIdentification(identification),
-      ...updateOrders(orders),
-    },
-  });
-
-  if (invoice) {
-    session.flash("toastMessage", "Invoice updated successfully.");
-    return redirect("/invoices", {
-      headers: { "Set-Cookie": await commitSession(session) },
     });
+
+    if (invoice) {
+      redirectWithSuccess("/invoices", "Invoice edited successfully.");
+    } else {
+      jsonWithError(null, "Invoice could not be edited.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 

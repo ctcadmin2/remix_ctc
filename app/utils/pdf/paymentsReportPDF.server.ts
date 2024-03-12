@@ -6,14 +6,14 @@ import { reportIndemnizations } from "~/routes/employees.paymentsReport[.]pdf";
 
 const fonts = {
   Roboto: {
-    normal: "app/utils/pdf/fonts/Roboto/Roboto-Regular.ttf",
-    bold: "app/utils/pdf/fonts/Roboto/Roboto-Bold.ttf",
+    normal: "public/assets/fonts/Roboto/Roboto-Regular.ttf",
+    bold: "public/assets/fonts/Roboto/Roboto-Bold.ttf",
   },
 };
 
 const paymentsReportPDF = async (
   data: reportIndemnizations[] | null,
-  date: string
+  date: string,
 ) => {
   const doc = new PdfPrinter(fonts);
   const indemnizations: reportIndemnizations[] = [];

@@ -1,7 +1,8 @@
 import type { Setting } from "@prisma/client";
 import type { ActionFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import Decimal from "decimal.js";
+import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 
 import InvoiceForm from "~/forms/InvoiceForm";
@@ -13,12 +14,7 @@ import {
   createOrders,
   schema,
 } from "~/utils/invoiceUtils.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export interface LoaderData {
   creditNotes: {
@@ -58,8 +54,6 @@ export const action: ActionFunction = async ({ request }) => {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -87,34 +81,37 @@ export const action: ActionFunction = async ({ request }) => {
     orders,
     creditNotes,
     rest.currency,
-    rest.date
+    rest.date,
   );
 
-  const invoice = await db.invoice.create({
-    data: {
-      ...rest,
-      amount: amountValue.amount,
-      bnr: amountValue.bnr,
-      bnrAt: amountValue.bnrAt,
-      client: {
-        connect: { id: clientId },
+  try {
+    const invoice = await db.invoice.create({
+      data: {
+        ...rest,
+        amount: amountValue.amount,
+        bnr: amountValue.bnr,
+        bnrAt: amountValue.bnrAt,
+        client: {
+          connect: { id: clientId },
+        },
+        creditNotes: {
+          connect: creditNotesIds
+            ?.split(",")
+            .map((cn) => ({ id: parseInt(cn) })),
+        },
+        ...createIdentification(identification),
+        ...createOrders(orders),
       },
-      creditNotes: {
-        connect: creditNotesIds?.split(",").map((cn) => ({ id: parseInt(cn) })),
-      },
-      ...createIdentification(identification),
-      ...createOrders(orders),
-    },
-  });
-
-  if (invoice) {
-    session.flash("toastMessage", "Invoice created successfully.");
-    return redirect("/invoices", {
-      headers: { "Set-Cookie": await commitSession(session) },
     });
-  }
 
-  return null;
+    if (invoice) {
+      redirectWithSuccess("/invoices", "Invoice created successfully.");
+    } else {
+      jsonWithError(null, "Invoice could not be created.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
+  }
 };
 
 export default function NewInvoice() {

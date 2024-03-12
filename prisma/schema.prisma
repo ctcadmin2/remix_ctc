@@ -31,6 +31,7 @@ model User {
   language  Language  @default(en)
   role      Role      @default(user)
   active    Boolean   @default(false)
+  invoices  Invoice[]
   createdAt DateTime? @default(now()) @db.Date
   updatedAt DateTime? @updatedAt @db.Date
 }
@@ -113,6 +114,8 @@ model Invoice {
   identification Identification?
   createdAt      DateTime?       @default(now()) @db.Date
   updatedAt      DateTime?       @updatedAt @db.Date
+  createdBy      User?           @relation(fields: [createdById], references: [id])
+  createdById    Int?
 }
 
 model Identification {

@@ -5,22 +5,15 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
-import { redirectBack } from "remix-utils/redirect-back";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
 import RepairForm from "~/forms/RepairForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
-import {
-  DEFAULT_REDIRECT,
-  authenticator,
-  commitSession,
-  getSession,
-} from "~/utils/session.server";
-
-
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 const schema = zfd.formData({
   date: zfd.text(),
@@ -62,8 +55,6 @@ export const action: ActionFunction = async ({
     vehicleId: zx.NumAsString,
   });
 
-  const session = await getSession(request.headers.get("Cookie"));
-
   try {
     await csrf.validate(request);
   } catch (error) {
@@ -75,24 +66,23 @@ export const action: ActionFunction = async ({
 
   const data = schema.parse(await request.formData());
 
-  const repair = await db.repair.update({
-    data,
-    where: { id: repairId },
-  });
-
-  if (repair) {
-    session.flash("toastMessage", "Repair updated successfully.");
-    return redirectBack(request, {
-      fallback: `/vehicle/${vehicleId}/repairs`,
-      headers: { "Set-Cookie": await commitSession(session) },
+  try {
+    const repair = await db.repair.update({
+      data,
+      where: { id: repairId },
     });
-  }
 
-  session.flash("toastMessage", "Repair failed to update.");
-  return redirectBack(request, {
-    fallback: `/vehicle/${vehicleId}/repairs`,
-    headers: { "Set-Cookie": await commitSession(session) },
-  });
+    if (repair) {
+      redirectWithSuccess(
+        `/vehicle/${vehicleId}/repairs`,
+        "Repair data was edited successfully.",
+      );
+    } else {
+      jsonWithError(null, "Repair data could not be edited.");
+    }
+  } catch (error) {
+    jsonWithError(null, `An error has occured: ${error}`);
+  }
 };
 
 const EditRepair = () => {

@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
+import { zx } from "zodix";
 
 import { db } from "~/utils/db.server";
 import generateInvoicePDF from "~/utils/pdf/generateInvoicePDF.server";
@@ -32,12 +33,16 @@ export type CompanyInfo = Prisma.SettingGetPayload<{
 }>;
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-  const user = await authenticator.isAuthenticated(request, {
+  await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
+  const { invoiceId } = zx.parseParams(params, {
+    invoiceId: zx.NumAsString,
+  });
+
   const invoice = await db.invoice.findUnique({
-    where: { id: parseInt(params.id as string) },
+    where: { id: invoiceId },
     include: {
       client: true,
       creditNotes: { select: { number: true, amount: true, currency: true } },
@@ -57,5 +62,5 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     select: { name: true, value: true },
   });
 
-  return pdf(await generateInvoicePDF(invoice, company, user));
+  return pdf(await generateInvoicePDF(invoice, company));
 }
