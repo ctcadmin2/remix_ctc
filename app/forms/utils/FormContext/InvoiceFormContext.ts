@@ -15,7 +15,7 @@ interface FormValues {
   orders: {
     id?: string;
     description: string;
-    quantity: number;
+    quantity: string;
     amount: string;
     total: string;
   }[];

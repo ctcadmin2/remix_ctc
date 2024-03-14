@@ -23,10 +23,10 @@ export const schema = zfd.formData({
       z.object({
         id: zfd.text(z.string().optional()),
         description: zfd.text(),
-        quantity: zfd.numeric(),
+        quantity: zfd.text(),
         amount: zfd.text(),
         total: zfd.text(),
-      })
+      }),
     )
     .optional(),
 });
@@ -41,7 +41,7 @@ export const calculateAmount = async (
   orders:
     | {
         description: string;
-        quantity: number;
+        quantity: string;
         amount: string;
         total: string;
       }[]
@@ -53,7 +53,7 @@ export const calculateAmount = async (
       }[]
     | undefined,
   currency: string,
-  date: string
+  date: string,
 ) => {
   const amount: amount = {
     amount: new Decimal(0),
@@ -65,7 +65,7 @@ export const calculateAmount = async (
     amount.amount = creditNotes.reduce(
       (accumulator, currentValue) =>
         new Decimal(accumulator).add(new Decimal(currentValue.amount)),
-      new Decimal(0)
+      new Decimal(0),
     );
 
     const xChange = creditNotes.filter((cn) => cn.currency !== currency);
@@ -80,7 +80,7 @@ export const calculateAmount = async (
     amount.amount = orders.reduce(
       (accumulator, currentValue) =>
         new Decimal(accumulator).plus(new Decimal(currentValue.total)),
-      new Decimal(0)
+      new Decimal(0),
     );
   }
   return amount;
@@ -93,7 +93,7 @@ export const createIdentification = (
         expId: string;
         expVeh: string;
       }
-    | undefined
+    | undefined,
 ) => {
   if (
     identification &&
@@ -114,7 +114,7 @@ export const updateIdentification = (
         expId: string;
         expVeh: string;
       }
-    | undefined
+    | undefined,
 ) => {
   if (
     identification &&
@@ -134,10 +134,10 @@ export const createOrders = (
         id?: string;
         amount: string;
         description: string;
-        quantity: number;
+        quantity: string;
         total: string;
       }[]
-    | undefined
+    | undefined,
 ) => {
   if (orders && orders.length > 0) {
     return {
@@ -157,10 +157,10 @@ export const updateOrders = (
         id?: string;
         amount: string;
         description: string;
-        quantity: number;
+        quantity: string;
         total: string;
       }[]
-    | undefined
+    | undefined,
 ) => {
   if (orders && orders.length > 0) {
     return {

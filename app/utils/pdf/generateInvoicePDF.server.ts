@@ -149,7 +149,7 @@ const generateInvoicePDF = async (
           alignment: "justify",
         },
         {
-          text: `${order.quantity}`,
+          text: `${new Decimal(order.quantity).toString()}`,
           border: [false, false, false, false],
           alignment: "center",
         },

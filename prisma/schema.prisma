@@ -131,7 +131,7 @@ model Order {
   id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   description String
   amount      Decimal @db.Decimal(8, 2)
-  quantity    Int
+  quantity    Decimal @db.Decimal(8, 2)
   total       Decimal @db.Decimal(8, 2)
   currency    String  @default("EUR")
   invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)

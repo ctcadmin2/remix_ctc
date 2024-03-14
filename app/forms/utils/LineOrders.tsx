@@ -92,7 +92,7 @@ const LineOrders = ({ disabled }: Props) => {
           onClick={() =>
             form.insertListItem("orders", {
               description: "",
-              quantity: 0,
+              quantity: "0",
               amount: "0",
               total: "0",
             })
