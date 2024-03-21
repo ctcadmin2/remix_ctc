@@ -292,7 +292,7 @@ const generateInvoicePDF = async (
               },
               { text: "", border: [false, false, false, false] },
               {
-                text: `C.U.I: ${invoice.client.vatNumber}`,
+                text: `C.U.I: ${invoice.client.vatValid ? invoice.client.country : ""}${invoice.client.vatNumber}`,
                 alignment: "justify",
                 border: [false, false, true, false],
               },

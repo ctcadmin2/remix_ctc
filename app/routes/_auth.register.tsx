@@ -8,54 +8,13 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { type LoaderFunction, type ActionFunctionArgs } from "@remix-run/node";
-import { useActionData, useSearchParams } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
 import { useEffect } from "react";
-import { jsonWithError } from "remix-toast";
+import { jsonWithError, redirectWithInfo } from "remix-toast";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 
 import { db } from "~/utils/db.server";
-import {
-  authenticator,
-  createUserSession,
-  register,
-} from "~/utils/session.server";
-
-const schema = zfd.formData({
-  redirectTo: zfd.text(),
-  firstName: zfd.text(),
-  lastName: zfd.text(),
-  email: zfd.text(),
-  password: zfd.text(),
-  passCheck: zfd.text(),
-  language: zfd.text(z.union([z.literal("en"), z.literal("ro")])),
-});
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const data = schema.parse(await request.formData());
-
-  const { passCheck, redirectTo, ...rest } = data;
-
-  if (passCheck !== rest.password) {
-    return jsonWithError(null, "Password doesn't match.");
-  }
-
-  const emailExists = await db.user.findFirst({
-    where: { email: rest.email },
-  });
-  if (emailExists) {
-    return jsonWithError(null, `User with email ${rest.email} already exists.`);
-  }
-  // create the user
-  // create their session and redirect to last route
-  const user = await register({ ...rest });
-
-  if (!user) {
-    return jsonWithError(null, `User could not be created.`);
-  }
-
-  return createUserSession(user.id, redirectTo);
-};
+import { authenticator, register } from "~/utils/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   return await authenticator.isAuthenticated(request, {
@@ -63,53 +22,128 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formPayload = Object.fromEntries(await request.formData());
+
+  const schema = z
+    .object({
+      firstName: z.string().min(1, { message: "First name is required" }),
+      lastName: z.string().min(1, { message: "Last name is required" }),
+      email: z
+        .string()
+        .min(1, { message: "Email is required" })
+        .email("Must be a valid email"),
+      password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters." }),
+
+      passCheck: z.string(),
+      language: z.union([z.literal("en"), z.literal("ro")]),
+    })
+    .superRefine(async (form, ctx) => {
+      if (form.password !== form.passCheck) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["passCheck"],
+          message: "Passwords must match",
+        });
+      }
+
+      if (
+        await db.user.findFirst({
+          where: { email: form.email },
+        })
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["email"],
+          message: "Whoops! That username is taken.",
+        });
+      }
+    });
+
+  const formData = await schema.safeParseAsync(formPayload);
+
+  //process and return form errors
+  if (!formData.success) {
+    let errors = {};
+    formData.error.issues.map(
+      (i) => (errors = { ...errors, [`${i.path[0]}`]: i.message }),
+    );
+
+    console.log(errors);
+
+    return jsonWithError(
+      { values: formPayload, errors },
+      "There are errors on the form.",
+    );
+  }
+
+  // try to add a new user
+  try {
+    // create the user
+    const user = await register({ ...formData.data });
+
+    if (!user) {
+      return jsonWithError(
+        { values: formPayload, errors: {} },
+        `User could not be created.`,
+      );
+    }
+
+    return redirectWithInfo(
+      "/login",
+      "Account created, please wait for admin to activate it.",
+    );
+  } catch (error) {
+    return jsonWithError(
+      { values: formPayload, errors: {} },
+      "An error has occured",
+    );
+  }
+};
+
 const RegisterRoute = () => {
-  const [searchParams] = useSearchParams();
-  const data = useActionData();
+  const data = useActionData<typeof action>();
+
   const { getInputProps, setErrors } = useForm({
     initialValues: {
-      firstName: data?.fields?.firstName || "",
-      lastName: data?.fields?.lastName || "",
-      email: data?.fields?.email || "",
-      password: data?.fields?.password || "",
-      passCheck: data?.fields?.passCheck || "",
-      language: data?.fields?.language || "en",
+      firstName: data?.values.firstName ?? "",
+      lastName: data?.values.lastName ?? "",
+      email: data?.values.email ?? "",
+      language: data?.values.language ?? "en",
+      password: data?.values.password ?? "",
+      passCheck: data?.values.passCheck ?? "",
     },
   });
 
   useEffect(() => {
-    if (data?.fieldErrors) {
-      setErrors(data.fieldErrors);
+    if (data?.errors) {
+      setErrors(data.errors);
     }
-  }, [data, setErrors]);
+  }, [data?.errors, setErrors]);
 
   return (
-    <Container size={600} my={60}>
+    <Container size={700} my={60}>
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <form method="post">
-          <input
-            type="hidden"
-            name="redirectTo"
-            value={searchParams.get("redirectTo") ?? "/"}
-          />
+        <Form method="POST" reloadDocument>
           <TextInput
             name="firstName"
             label="First Name"
-            required
+            type="text"
             {...getInputProps("firstName")}
           />
-
           <TextInput
             name="lastName"
             label="Last Name"
-            required
+            type="text"
             {...getInputProps("lastName")}
             mt="md"
           />
           <TextInput
             name="email"
             label="Email"
-            required
+            type="email"
             {...getInputProps("email")}
             mt="md"
           />
@@ -126,21 +160,21 @@ const RegisterRoute = () => {
           <PasswordInput
             name="password"
             label="Password"
-            required
+            type="password"
             {...getInputProps("password")}
             mt="md"
           />
           <PasswordInput
             name="passCheck"
             label="Confirm password"
-            required
+            type="password"
             {...getInputProps("passCheck")}
             mt="md"
           />
           <Button type="submit" fullWidth mt="xl">
             Register
           </Button>
-        </form>
+        </Form>
       </Paper>
     </Container>
   );

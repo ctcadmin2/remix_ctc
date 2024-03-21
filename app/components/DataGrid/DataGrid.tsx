@@ -1,4 +1,4 @@
-import { ButtonGroup, Divider, Flex, Pagination, Stack } from "@mantine/core";
+import { ButtonGroup, Divider, Flex, Pagination } from "@mantine/core";
 import { useSearchParams } from "@remix-run/react";
 import Decimal from "decimal.js";
 import type { DataTableColumn, DataTableSortStatus } from "mantine-datatable";
@@ -45,7 +45,7 @@ const DataGrid = ({
     if (didMountRef.current && sortStatus.columnAccessor !== undefined) {
       searchParams.set(
         "sort",
-        `${sortStatus.columnAccessor}-${sortStatus.direction}`
+        `${sortStatus.columnAccessor}-${sortStatus.direction}`,
       );
       setSearchParams(searchParams);
     }
@@ -68,11 +68,6 @@ const DataGrid = ({
         sortStatus={sortStatus}
         onSortStatusChange={setSortStatus}
         totalRecords={total}
-        emptyState={
-          <Stack align="center" gap="xs" style={{ pointerEvents: "all" }}>
-            <NewPageButton />
-          </Stack>
-        }
       />
       <Divider orientation="horizontal" my={"lg"} />
       <Flex justify={"space-between"}>

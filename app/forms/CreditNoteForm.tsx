@@ -17,9 +17,13 @@ import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import SettingList from "~/lists/SettingList";
 import VehiclesList from "~/lists/VehicleList";
+import { loader as newLoader } from "~/routes/creditNotes.$creditNoteId.edit";
+import { loader as editLoader } from "~/routes/creditNotes.new";
 
 const CreditNoteForm = () => {
-  const { creditNote, currencies } = useLoaderData();
+  const { creditNote, currencies } = useLoaderData<
+    typeof newLoader | typeof editLoader
+  >();
   const form = useForm({
     initialValues: {
       number: creditNote?.number || "",

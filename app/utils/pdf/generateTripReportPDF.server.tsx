@@ -36,7 +36,7 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
         alignment: "center",
       },
       { text: e.description, alignment: "center" },
-      { svg: check, height: 10 },
+      { svg: e.card ? check : X, height: 10 },
       {
         text: `${new Intl.NumberFormat("ro-RO", {
           style: "currency",

@@ -8,6 +8,7 @@ import type {
   ActionFunctionArgs,
   LoaderFunction,
 } from "@remix-run/server-runtime";
+import dayjs from "dayjs";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import {
@@ -231,7 +232,7 @@ const Employee = () => {
         <MonthPicker
           maxLevel="year"
           value={month}
-          onChange={(v) => setMonth(new Date(v))}
+          onChange={(v) => setMonth(dayjs(v).toDate())}
         />
         <Divider />
         <Flex>

@@ -199,7 +199,9 @@ export default function App() {
                   display={!user ? "none" : "inline"}
                 />
                 <Title order={3} fw={"bolder"}>
-                  CTCAdmin 2
+                  <Link to={"/"} reloadDocument>
+                    CTCAdmin 2
+                  </Link>
                 </Title>
               </Group>
               <Group justify="right">

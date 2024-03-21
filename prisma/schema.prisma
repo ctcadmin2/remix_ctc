@@ -195,7 +195,7 @@ model Employee {
   firstName String
   lastName  String
   ssn       String     @unique
-  activ     Boolean    @default(true)
+  active    Boolean    @default(true)
   payments  Payment[]
   documents Document[]
   createdAt DateTime   @default(now()) @db.Date

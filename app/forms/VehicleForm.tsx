@@ -1,4 +1,3 @@
-
 import {
   Box,
   Button,
@@ -14,9 +13,13 @@ import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import SettingList from "~/lists/SettingList";
+import { loader as editLoader } from "~/routes/vehicles.$vehicleId.edit";
+import { loader as newLoader } from "~/routes/vehicles.new";
 
 const VehicleForm = () => {
-  const { vehicle, categories } = useLoaderData();
+  const { vehicle, categories } = useLoaderData<
+    typeof newLoader | typeof editLoader
+  >();
   const form = useForm({
     initialValues: {
       registration: vehicle?.registration || "",

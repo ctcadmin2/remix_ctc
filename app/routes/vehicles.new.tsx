@@ -31,6 +31,7 @@ export const loader: LoaderFunction = async ({
   });
 
   const data = {
+    vehicle: null,
     categories: await db.setting.findUnique({ where: { name: "vehCat" } }),
   };
 

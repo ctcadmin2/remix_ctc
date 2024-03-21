@@ -1,5 +1,5 @@
 import type { User } from "@prisma/client";
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { createCookieSessionStorage } from "@remix-run/node";
 import bcryptjs from "bcryptjs";
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
@@ -68,12 +68,12 @@ authenticator.use(
       throw new AuthorizationError("Bad Credentials: Password is required");
     if (typeof password !== "string")
       throw new AuthorizationError(
-        "Bad Credentials: Password must be a string"
+        "Bad Credentials: Password must be a string",
       );
 
     return await login({ email, password });
   }),
-  "user-pass"
+  "user-pass",
 );
 
 export const register = async (data: RegisterForm) => {
@@ -87,14 +87,3 @@ export const register = async (data: RegisterForm) => {
 };
 
 export const { getSession, commitSession } = sessionStorage;
-
-export const createUserSession = async (userId: number, redirectTo: string) => {
-  const session = await getSession();
-  session.set("userId", userId);
-  session.flash("toastMessage", "Welcome back.");
-  return redirect(redirectTo, {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-  });
-};

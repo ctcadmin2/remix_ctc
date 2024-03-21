@@ -1,7 +1,6 @@
 import { Company } from "@prisma/client";
 import { validate } from "vies-validate";
 
-import { CountryCodes } from "./countryCodes";
 import { db } from "./db.server";
 
 interface OpenApiProps {
@@ -77,9 +76,9 @@ const processRO = async (vatNr: string) => {
     company = {
       name: data.denumire,
       registration: data.numar_reg_com,
-      vatNumber: `${data.tva ? "RO" : ""}${data.cif}`,
-      vatValid: !data.radiata,
-      address: `${data.adresa}, ${data.judet}, RO-${data.cod_postal}, Romania`,
+      vatNumber: data.cif,
+      vatValid: data.tva ? true : false,
+      address: `${data.adresa}, ${data.judet}`,
       country: "RO",
       phone: data.telefon,
     };
@@ -101,11 +100,11 @@ const processEU = async (country: string, vatNr: string) => {
       name: data.name,
       vatNumber: `${data.countryCode}${data.vatNumber}`,
       vatValid: data.valid,
-      address: `${data.address}, ${
-        CountryCodes[data.countryCode as keyof typeof CountryCodes]
-      }`,
+      address: data.address,
       country: data.countryCode,
     };
+
+    // CountryCodes[data.countryCode as keyof typeof CountryCodes]
   }
 
   return { data: company, status: 200 };

@@ -2,14 +2,16 @@ import { Select } from "@mantine/core";
 import type { Vehicle } from "@prisma/client";
 import { useLoaderData } from "@remix-run/react";
 
+import { loader } from "~/routes/vehicles._index";
+
 const VehiclesList = ({
   value,
   onChange,
 }: {
-  value: string;
+  value?: string;
   onChange: (value: string | null) => void;
 }) => {
-  const { vehicles } = useLoaderData();
+  const { vehicles } = useLoaderData<typeof loader>();
   return (
     <Select
       label="Vehicle"

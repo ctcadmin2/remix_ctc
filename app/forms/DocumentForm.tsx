@@ -1,4 +1,3 @@
-
 import {
   Button,
   Divider,
@@ -10,18 +9,19 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { Document } from "@prisma/client";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 const DocumentForm = () => {
-  const { document } = useLoaderData();
+  const { document } = useLoaderData<Document | undefined>();
 
   const form = useForm({
     initialValues: {
       description: document?.description || "",
-      expire: document?.expire ? new Date(document.expire) : null,
+      expire: document?.expire ? new Date(document.expire) : new Date(),
       comment: document?.comment || "",
       files: [],
     },

@@ -1,5 +1,4 @@
 import { Company } from "@prisma/client";
-import { ShouldRevalidateFunction } from "@remix-run/react";
 import {
   ActionFunction,
   LoaderFunction,
@@ -15,7 +14,6 @@ import {
 } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 
 import CompanyForm from "~/forms/CompanyForm";
 import { csrf } from "~/utils/csrf.server";
@@ -23,21 +21,38 @@ import { db } from "~/utils/db.server";
 import findCompany from "~/utils/findCompany.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
-const schema = zfd.formData({
-  _action: zfd.text(),
-  name: zfd.text(),
-  registration: zfd.text(z.string().optional()),
-  vatNumber: zfd.text(),
-  vatValid: zfd.checkbox(),
-  accRon: zfd.text(z.string().optional()),
-  accEur: zfd.text(z.string().optional()),
-  address: zfd.text(z.string().optional()),
-  country: zfd.text(),
-  bank: zfd.text(z.string().optional()),
-  capital: zfd.text(z.string().optional()),
-  email: zfd.text(z.string().optional()),
-  phone: zfd.text(z.string().optional()),
-});
+interface CheckboxOpts {
+  trueValue?: string;
+}
+
+const checkbox = ({ trueValue = "on" }: CheckboxOpts = {}) =>
+  z.union([
+    z.literal(trueValue).transform(() => true),
+    z.literal(undefined).transform(() => false),
+  ]);
+
+const schema = z.discriminatedUnion("_action", [
+  z.object({
+    _action: z.literal("search"),
+    vatNumber: z.string(),
+    country: z.string(),
+  }),
+  z.object({
+    _action: z.literal("create"),
+    name: z.string(),
+    registration: z.string().optional(),
+    vatNumber: z.string(),
+    vatValid: checkbox(),
+    accRon: z.string().optional(),
+    accEur: z.string().optional(),
+    address: z.string().optional(),
+    country: z.string(),
+    bank: z.string().optional(),
+    capital: z.string().optional(),
+    email: z.string().optional(),
+    phone: z.string().optional(),
+  }),
+]);
 
 interface SearchCompanyProps {
   data: Partial<Company> | null;
@@ -69,7 +84,8 @@ export const action: ActionFunction = async ({ request }) => {
     }
   }
 
-  const { _action, ...rest } = schema.parse(await request.formData());
+  const formPayload = Object.fromEntries(await request.formData());
+  const { _action, ...rest } = schema.parse(formPayload);
 
   if (_action === "search") {
     const data: SearchCompanyProps = await findCompany(
@@ -84,31 +100,30 @@ export const action: ActionFunction = async ({ request }) => {
       case 404:
         return jsonWithWarning(data.data, "Company could not be found.");
       case 503:
-        return jsonWithError(data.data, "OpenAPI servive unavailable.");
+        return jsonWithError(data.data, "OpenAPI service unavailable.");
       default:
         return jsonWithError(data.data, "An error has occured.");
     }
   } else {
     try {
-      const company = await db.company.create({
-        data: rest,
-      });
-      if (company) {
-        return redirectWithSuccess(
-          "/companies",
-          "Company was created successfully.",
-        );
-      } else {
-        return jsonWithError(null, "Company could not be created.");
+      if ("name" in rest) {
+        const company = await db.company.create({
+          data: rest,
+        });
+        if (company) {
+          return redirectWithSuccess(
+            "/companies",
+            "Company was created successfully.",
+          );
+        } else {
+          return jsonWithError(null, "Company could not be created.");
+        }
       }
+      return jsonWithError(null, "There has been an error.");
     } catch (error) {
       return jsonWithError(null, `There has been and error: ${error}`);
     }
   }
-};
-
-export const shouldRevalidate: ShouldRevalidateFunction = () => {
-  return true;
 };
 
 const NewCompany = () => {

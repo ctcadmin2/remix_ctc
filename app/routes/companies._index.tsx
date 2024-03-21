@@ -90,7 +90,7 @@ export const action: ActionFunction = async ({
   } catch (error) {
     return redirectWithError(
       "/companies",
-      `Company could not be deleted: ${error}`
+      `Company could not be deleted: ${error}`,
     );
   }
 };
@@ -114,6 +114,9 @@ const Companies = () => {
     {
       accessor: "vatNumber",
       textAlign: "center",
+      render: ({ vatNumber, vatValid, country }) => {
+        return `${vatValid ? country : ""}${vatNumber}`;
+      },
     },
     {
       accessor: "phone",
