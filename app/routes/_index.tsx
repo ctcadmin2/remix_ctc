@@ -1,4 +1,4 @@
-import { ScrollAreaAutosize, Title } from "@mantine/core";
+import { ScrollArea, Title } from "@mantine/core";
 import { Prisma } from "@prisma/client";
 import type { LoaderFunction } from "@remix-run/node";
 import { json, useLoaderData } from "@remix-run/react";
@@ -80,7 +80,7 @@ const Main = () => {
         allowMultiple: true,
         trigger: "always",
         content: (source) => (
-          <ScrollAreaAutosize>
+          <ScrollArea.Autosize mah={"25vh"} type="auto" offsetScrollbars>
             <DataTable
               highlightOnHover
               noHeader
@@ -88,9 +88,9 @@ const Main = () => {
               verticalSpacing={"sm"}
               rowBackgroundColor={({ expire }) => {
                 if (dayjs().diff(dayjs(expire), "days") <= 7) {
-                  return "yellow";
+                  return "yellow.3";
                 } else {
-                  return "red";
+                  return "red.5";
                 }
               }}
               columns={[
@@ -126,7 +126,7 @@ const Main = () => {
                   : data.filter((e) => e.employeeId)
               }
             />
-          </ScrollAreaAutosize>
+          </ScrollArea.Autosize>
         ),
       }}
     />
