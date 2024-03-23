@@ -1,4 +1,4 @@
-import type { Payment, Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import type {
   ActionFunctionArgs,
   ActionFunction,
@@ -6,6 +6,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import Decimal from "decimal.js";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
@@ -36,6 +37,10 @@ const schema = zfd.formData({
     .optional(),
 });
 
+export type PaymentType = Prisma.PaymentGetPayload<{
+  include: { indemnizations: true };
+}>;
+
 export const loader: LoaderFunction = async ({
   request,
   params,
@@ -48,12 +53,28 @@ export const loader: LoaderFunction = async ({
     paymentId: zx.NumAsString,
   });
 
-  const data: Payment | null = await db.payment.findUnique({
+  const perDay = await db.setting.findUnique({
+    where: { name: "perDay" },
+    select: {
+      name: true,
+      value: true,
+    },
+  });
+
+  const salary = await db.setting.findUnique({
+    where: { name: "salary" },
+    select: {
+      name: true,
+      value: true,
+    },
+  });
+
+  const payment: PaymentType | null = await db.payment.findUnique({
     where: { id: paymentId },
     include: { indemnizations: true },
   });
 
-  return json({ payment: data, settings: null });
+  return json({ payment, perDay, salary });
 };
 
 export const action: ActionFunction = async ({
@@ -133,5 +154,13 @@ export const action: ActionFunction = async ({
 };
 
 export default function EditPayment() {
-  return <PaymentForm />;
+  const { payment, perDay, salary } = useLoaderData<typeof loader>();
+
+  return (
+    <PaymentForm
+      payment={payment}
+      perDay={perDay.value[0] ?? "0"}
+      salary={salary.value[0] ?? "0"}
+    />
+  );
 }

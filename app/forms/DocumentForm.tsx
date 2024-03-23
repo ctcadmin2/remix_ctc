@@ -10,14 +10,16 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { Document } from "@prisma/client";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-const DocumentForm = () => {
-  const { document } = useLoaderData<Document | undefined>();
+interface Props {
+  document?: Document | null;
+}
 
+const DocumentForm = ({ document = null }: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       description: document?.description || "",

@@ -15,6 +15,14 @@ type documents = Prisma.DocumentGetPayload<{
   };
 }>[];
 
+interface headersType {
+  id: number;
+  owner: string;
+  description: string;
+  expire: string;
+  comment: string;
+}
+
 export const loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
@@ -39,12 +47,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 const Main = () => {
   const data = useLoaderData<documents>();
 
-  const headers = [
+  const headers: headersType[] = [
     { id: 1, owner: "Vehicle", description: "", expire: "", comment: "" },
     { id: 2, owner: "Employee", description: "", expire: "", comment: "" },
   ];
 
-  const columns: DataTableColumn<typeof headers> = [
+  const columns: DataTableColumn<headersType>[] = [
     {
       accessor: "owner",
 
@@ -74,13 +82,14 @@ const Main = () => {
       verticalSpacing={"sm"}
       borderRadius={"md"}
       minHeight={"65vh"}
+      withTableBorder
       columns={columns}
       records={headers}
       rowExpansion={{
         allowMultiple: true,
         trigger: "always",
         content: (source) => (
-          <ScrollArea.Autosize mah={"25vh"} type="auto" offsetScrollbars>
+          <ScrollArea.Autosize mah={"30vh"} type="auto" offsetScrollbars>
             <DataTable
               highlightOnHover
               noHeader
@@ -99,8 +108,8 @@ const Main = () => {
                   width: "15%",
                   render(record) {
                     return record.employeeId
-                      ? `${record.Employee.firstName} ${record.Employee.lastName}`
-                      : record.Vehicle.registration;
+                      ? `${record.Employee?.firstName} ${record.Employee?.lastName}`
+                      : record.Vehicle?.registration;
                   },
                 },
                 {

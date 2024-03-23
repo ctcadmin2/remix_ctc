@@ -270,4 +270,6 @@ model Attachment {
   documentId             Int?                  @unique
   createdAt              DateTime?             @default(now()) @db.Date
   updatedAt              DateTime?             @updatedAt @db.Date
+
+  @@unique([id, type])
 }

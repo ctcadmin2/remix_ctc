@@ -5,6 +5,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
@@ -38,13 +39,11 @@ export const loader: LoaderFunction = async ({
     documentId: zx.NumAsString,
   });
 
-  const data = {
-    document: await db.document.findUnique({
-      where: { id: documentId },
-    }),
-  };
+  const document = await db.document.findUnique({
+    where: { id: documentId },
+  });
 
-  return json(data);
+  return json(document);
 };
 
 export const action: ActionFunction = async ({
@@ -94,7 +93,8 @@ export const action: ActionFunction = async ({
 };
 
 const EditRepair = () => {
-  return <DocumentForm />;
+  const document = useLoaderData<typeof loader>();
+  return <DocumentForm document={document} />;
 };
 
 export default EditRepair;

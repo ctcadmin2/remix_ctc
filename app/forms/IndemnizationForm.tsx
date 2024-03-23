@@ -10,7 +10,7 @@ import { useEffect, useRef } from "react";
 import { Calendar, X } from "react-feather";
 
 import { usePaymentFormContext } from "./utils/FormContext/PaymentFormContext";
-console.log("render");
+
 const IndemnizationForm = () => {
   const { values, getInputProps, removeListItem } = usePaymentFormContext();
   const ref = useRef<HTMLInputElement>(null);

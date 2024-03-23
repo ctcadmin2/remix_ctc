@@ -1,17 +1,22 @@
 import { Select } from "@mantine/core";
-import type { Vehicle } from "@prisma/client";
-import { useLoaderData } from "@remix-run/react";
+import type { Prisma } from "@prisma/client";
 
-import { loader } from "~/routes/vehicles._index";
+export type VehiclesListType = Prisma.VehicleGetPayload<{
+  select: {
+    id: true;
+    registration: true;
+  };
+}>;
 
 const VehiclesList = ({
+  vehicles,
   value,
   onChange,
 }: {
+  vehicles: VehiclesListType[] | null;
   value?: string;
   onChange: (value: string | null) => void;
 }) => {
-  const { vehicles } = useLoaderData<typeof loader>();
   return (
     <Select
       label="Vehicle"
@@ -23,9 +28,9 @@ const VehiclesList = ({
       searchable
       data={
         vehicles
-          ? vehicles.map((vehicle: Vehicle) => {
+          ? vehicles.map((vehicle: VehiclesListType) => {
               return {
-                label: vehicle.registration,
+                label: String(vehicle.registration),
                 value: String(vehicle.id),
               };
             })

@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  return json({ document: undefined });
+  return json(undefined);
 };
 
 export const action: ActionFunction = async ({

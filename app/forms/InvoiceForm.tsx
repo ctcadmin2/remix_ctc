@@ -9,15 +9,17 @@ import {
   TextInput,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import CompanyList from "~/lists/CompanyList";
+import CompanyList, { CompaniesListType } from "~/lists/CompanyList";
 import SettingList from "~/lists/SettingList";
-import type { LoaderData as editInvoice } from "~/routes/invoices.$invoiceId.edit";
-import type { LoaderData as newInvoice } from "~/routes/invoices.new";
+import {
+  InvoiceCreditNoteType,
+  InvoiceType,
+} from "~/routes/invoices.$invoiceId.edit";
 
 import {
   InvoiceFormProvider,
@@ -25,11 +27,21 @@ import {
 } from "./utils/FormContext/InvoiceFormContext";
 import LineOrders from "./utils/LineOrders";
 
-const InvoiceForm = () => {
-  const { invoice, creditNotes, currencies, vatRates, clients } = useLoaderData<
-    newInvoice & editInvoice
-  >();
+interface Props {
+  invoice?: InvoiceType | null;
+  creditNotes: InvoiceCreditNoteType[];
+  currencies: string[];
+  vatRates: string[];
+  clients: CompaniesListType[];
+}
 
+const InvoiceForm = ({
+  invoice = null,
+  creditNotes,
+  currencies,
+  vatRates,
+  clients,
+}: Props): JSX.Element => {
   const form = useInvoiceForm({
     initialValues: {
       number: invoice?.number || "",

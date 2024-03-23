@@ -5,6 +5,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
@@ -30,12 +31,9 @@ export const loader: LoaderFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const data = {
-    vehicle: null,
-    categories: await db.setting.findUnique({ where: { name: "vehCat" } }),
-  };
+  const categories = await db.setting.findUnique({ where: { name: "vehCat" } });
 
-  return json(data);
+  return json(categories);
 };
 
 export const action: ActionFunction = async ({
@@ -75,5 +73,7 @@ export const action: ActionFunction = async ({
 };
 
 export default function NewCreditNote() {
-  return <VehicleForm />;
+  const categories = useLoaderData<typeof loader>();
+
+  return <VehicleForm categories={categories?.value ?? []} />;
 }

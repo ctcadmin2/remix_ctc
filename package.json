@@ -5,7 +5,7 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "prisma": {
     "seed": "node --require esbuild-register prisma/seed.js"
   },
@@ -14,7 +14,7 @@
     "build": "remix vite:build",
     "start": "remix-serve ./build/server/index.js",
     "lint": "eslint .",
-    "ts": "tsc -b"
+    "ts": "tsc --pretty"
   },
   "eslintIgnore": [
     "/node_modules",

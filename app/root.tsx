@@ -21,7 +21,6 @@ import { DatesProvider } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
-import type { User } from "@prisma/client";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import {
@@ -38,7 +37,7 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import { type ReactNode, useEffect, useState } from "react";
-import { getToast, type ToastMessage } from "remix-toast";
+import { getToast } from "remix-toast";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 
 import LinksGroup from "./components/LinksGroup/LinksGroup";
@@ -53,12 +52,6 @@ export const meta: MetaFunction = () => {
     { viewport: "width=device-width,initial-scale=1" },
   ];
 };
-
-interface LoaderData {
-  csrf: string;
-  user: Partial<User> | null;
-  toast: ToastMessage | undefined;
-}
 
 export const loader: LoaderFunction = async ({ request }) => {
   // console.log("root loader");
@@ -148,7 +141,7 @@ export default function App() {
   const location = useLocation();
   const [linkPath, setLinkPath] = useState({ name: "", to: "" });
 
-  const { csrf, user, toast } = useLoaderData<LoaderData>();
+  const { csrf, user, toast } = useLoaderData<typeof loader>();
   const [opened, { toggle }] = useDisclosure(false);
   const submit = useSubmit();
 

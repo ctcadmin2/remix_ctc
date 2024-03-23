@@ -11,21 +11,26 @@ import {
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { TripExpense } from "@prisma/client";
+import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useEffect, useRef } from "react";
 import { Calendar, Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import SettingList from "~/lists/SettingList";
-import { loader as editLoader } from "~/routes/nationalExpenses.$nationalExpenseId.edit";
-import { loader as newLoader } from "~/routes/nationalExpenses.new";
 
-const TripExpenseForm = () => {
-  const { expense, descriptions, currencies } = useLoaderData<
-    typeof newLoader | typeof editLoader
-  >();
+interface Props {
+  expense?: TripExpense | null;
+  descriptions: string[];
+  currencies: string[];
+}
 
+const TripExpenseForm = ({
+  expense = null,
+  descriptions,
+  currencies,
+}: Props): JSX.Element => {
   const { getInputProps, values } = useForm({
     initialValues: {
       intNr: expense?.intNr || 0,

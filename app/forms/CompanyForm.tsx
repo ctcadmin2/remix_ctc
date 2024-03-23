@@ -12,35 +12,42 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Company } from "@prisma/client";
-import { Form, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, useFetcher, useNavigate } from "@remix-run/react";
 import { useRef, useEffect, useState } from "react";
 import { Search } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import { CountrySelect } from "~/utils/countryCodes";
-const CompanyForm = ({ data = undefined }: { data?: Company | undefined }) => {
-  const company = useLoaderData<Company | null>();
 
+interface Props {
+  data?: Company | undefined;
+  readOnly?: boolean;
+}
+
+const CompanyForm = ({
+  data = undefined,
+  readOnly = false,
+}: Props): JSX.Element => {
   const { values, initialize, getInputProps, reset } = useForm<
     Partial<Company>
   >({
     initialValues: {
-      name: company?.name || "",
-      registration: company?.registration || "",
-      vatNumber: company?.vatNumber || "",
-      vatValid: company?.vatValid || false,
-      accRon: company?.accRon || "",
-      accEur: company?.accEur || "",
-      address: company?.address || "",
-      country: company?.country || "",
-      bank: company?.bank || "",
-      capital: company?.capital || "",
-      email: company?.email || "",
-      phone: company?.phone || "",
+      name: data?.name || "",
+      registration: data?.registration || "",
+      vatNumber: data?.vatNumber || "",
+      vatValid: data?.vatValid || false,
+      accRon: data?.accRon || "",
+      accEur: data?.accEur || "",
+      address: data?.address || "",
+      country: data?.country || "",
+      bank: data?.bank || "",
+      capital: data?.capital || "",
+      email: data?.email || "",
+      phone: data?.phone || "",
     },
   });
 
-  const [manual, setManual] = useState(company ?? false);
+  const [manual, setManual] = useState(data ?? false);
   const ref = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const fetcher = useFetcher({ key: "findCompany" });
@@ -127,21 +134,21 @@ const CompanyForm = ({ data = undefined }: { data?: Company | undefined }) => {
                 name="name"
                 required
                 ref={ref}
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("name")}
               />
               <TextInput
                 label="VAT number"
                 name="vatNumber"
                 required
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("vatNumber")}
               />
               <Switch
                 labelPosition="left"
                 label="Vies valid"
                 name="vatValid"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 size="md"
                 my={16}
                 {...getInputProps("vatValid", { type: "checkbox" })}
@@ -149,14 +156,14 @@ const CompanyForm = ({ data = undefined }: { data?: Company | undefined }) => {
               <TextInput
                 label="Registration"
                 name="registration"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("registration")}
               />
               <Select
                 label="Country"
                 placeholder="Select country"
                 name="country"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 required
                 withAsterisk
                 data={CountrySelect()}
@@ -165,52 +172,52 @@ const CompanyForm = ({ data = undefined }: { data?: Company | undefined }) => {
               <TextInput
                 label="Address"
                 name="address"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("address")}
               />
               <TextInput
                 label="RON Account"
                 name="accountRon"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("accountRon")}
               />
               <TextInput
                 label="EUR Account"
                 name="accountEur"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("accountEur")}
               />
               <TextInput label="Bank" name="bank" {...getInputProps("bank")} />
               <TextInput
                 label="Capital"
                 name="capital"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("capital")}
               />
               <TextInput
                 label="Phone"
                 name="phone"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("phone")}
               />
               <TextInput
                 label="Email"
                 name="email"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 autoComplete=""
                 {...getInputProps("email")}
               />
               <TextInput
                 label="Contact"
                 name="contact"
-                readOnly={data ? true : false}
+                readOnly={readOnly}
                 {...getInputProps("contact")}
               />
             </div>
           </ScrollArea.Autosize>
         ) : null}
         <Divider size={"sm"} mt="xl" mb="xl" />
-        {!data ? (
+        {!readOnly ? (
           <Group justify="center" gap={"sm"}>
             {manual ? (
               <>

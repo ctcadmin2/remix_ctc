@@ -77,7 +77,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 const Settings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { settings } = useLoaderData<LoaderData>();
+  const { settings } = useLoaderData<typeof loader>();
 
   return (
     <Tabs

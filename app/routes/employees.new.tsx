@@ -17,7 +17,7 @@ const schema = zfd.formData({
   firstName: zfd.text(),
   lastName: zfd.text(),
   ssn: zfd.text(),
-  activ: zfd.checkbox(),
+  active: zfd.checkbox(),
 });
 
 export const loader: LoaderFunction = async ({

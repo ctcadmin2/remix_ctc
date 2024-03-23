@@ -1,4 +1,3 @@
-import type { Employee } from "@prisma/client";
 import type {
   ActionFunctionArgs,
   ActionFunction,
@@ -6,6 +5,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zfd } from "zod-form-data";
@@ -20,7 +20,7 @@ const schema = zfd.formData({
   firstName: zfd.text(),
   lastName: zfd.text(),
   ssn: zfd.text(),
-  activ: zfd.checkbox(),
+  active: zfd.checkbox(),
 });
 
 export const loader: LoaderFunction = async ({
@@ -35,11 +35,11 @@ export const loader: LoaderFunction = async ({
     employeeId: zx.NumAsString,
   });
 
-  const data: Employee | null = await db.employee.findUnique({
+  const employee = await db.employee.findUnique({
     where: { id: employeeId },
   });
 
-  return json(data);
+  return json(employee);
 };
 
 export const action: ActionFunction = async ({
@@ -86,5 +86,6 @@ export const action: ActionFunction = async ({
 };
 
 export default function EditEmployee() {
-  return <EmployeeForm />;
+  const employee = useLoaderData<typeof loader>();
+  return <EmployeeForm employee={employee} />;
 }

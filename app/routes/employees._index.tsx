@@ -70,7 +70,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       where,
       take: parseInt(process.env.ITEMS_PER_PAGE),
       skip: offset,
-      orderBy: [{ activ: "desc" }, { lastName: "asc" }],
+      orderBy: [{ active: "desc" }, { lastName: "asc" }],
     }),
     total: await db.employee.count({ where }),
     perPage: parseInt(process.env.ITEMS_PER_PAGE),
@@ -125,9 +125,9 @@ const Employee = () => {
       textAlign: "center",
     },
     {
-      accessor: "activ",
+      accessor: "active",
       textAlign: "center",
-      render: (record) => <BooleanIcon value={record.activ} />,
+      render: (record) => <BooleanIcon value={record.active} />,
     },
     {
       accessor: "ssn",

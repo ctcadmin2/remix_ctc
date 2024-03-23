@@ -10,24 +10,29 @@ import {
 } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { InternationalExpense } from "@prisma/client";
+import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useEffect, useRef } from "react";
 import { Calendar, Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import CompanyList from "~/lists/CompanyList";
+import CompanyList, { type CompaniesListType } from "~/lists/CompanyList";
 import SettingList from "~/lists/SettingList";
-import { loader as editLoader } from "~/routes/internationalExpenses.$internationalExpenseId.edit";
-import { loader as newLoader } from "~/routes/internationalExpenses.new";
 
-const InternationalExpenseForm = () => {
-  const { expense, descriptions, suppliers, currencies } = useLoaderData<
-    typeof newLoader | typeof editLoader
-  >();
+interface Props {
+  expense?: InternationalExpense | null;
+  descriptions: string[];
+  suppliers: CompaniesListType[];
+  currencies: string[];
+}
 
-  console.log(suppliers);
-
+const InternationalExpenseForm = ({
+  expense = null,
+  descriptions,
+  suppliers,
+  currencies,
+}: Props): JSX.Element => {
   const { getInputProps, values } = useForm({
     initialValues: {
       number: expense?.number || "",

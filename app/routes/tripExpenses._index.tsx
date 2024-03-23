@@ -103,18 +103,18 @@ export const action: ActionFunction = async ({
     await db.tripExpense.delete({ where: { id } });
     return redirectWithSuccess(
       "/tripExpenses",
-      "Expense deleted successfully."
+      "Expense deleted successfully.",
     );
   } catch (error) {
     return redirectWithError(
       "/tripExpenses",
-      `Expense could not be deleted: ${error}`
+      `Expense could not be deleted: ${error}`,
     );
   }
 };
 
 const TripExpenses = () => {
-  const { expenses, total, perPage } = useLoaderData<LoaderData>();
+  const { expenses, total, perPage } = useLoaderData<typeof loader>();
   const [delOpen, setDelOpen] = useState(false);
   const [expense, setExpense] = useState<TripExpense>();
 

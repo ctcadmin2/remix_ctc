@@ -1,10 +1,18 @@
 import { Select } from "@mantine/core";
+import { type Prisma } from "@prisma/client";
 
 import { capitalize } from "~/utils/stringUtils";
 
+export type CompaniesListType = Prisma.CompanyGetPayload<{
+  select: {
+    id: true;
+    name: true;
+  };
+}>;
+
 interface PropType {
   type: string;
-  companies: { id: number; name: string }[];
+  companies: CompaniesListType[];
   required: boolean;
   value?: string;
   onChange: (value: string | null) => void;

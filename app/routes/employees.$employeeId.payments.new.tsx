@@ -6,6 +6,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import Decimal from "decimal.js";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
@@ -43,22 +44,23 @@ export const loader: LoaderFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const setttingsArr = await db.setting.findMany({
-    where: {
-      OR: [{ name: { equals: "perDay" } }, { name: { equals: "salary" } }],
-    },
+  const perDay = await db.setting.findUnique({
+    where: { name: "perDay" },
     select: {
       name: true,
       value: true,
     },
   });
 
-  const settings = {};
-  setttingsArr.map((s) => {
-    Object.assign(settings, { [s.name]: s.value[0] });
+  const salary = await db.setting.findUnique({
+    where: { name: "salary" },
+    select: {
+      name: true,
+      value: true,
+    },
   });
 
-  return json({ payment: null, settings });
+  return json({ perDay, salary });
 };
 
 export const action: ActionFunction = async ({
@@ -136,7 +138,13 @@ export const action: ActionFunction = async ({
 };
 
 const NewPayment = () => {
-  return <PaymentForm />;
+  const { perDay, salary } = useLoaderData<typeof loader>();
+  return (
+    <PaymentForm
+      perDay={perDay.value[0] ?? "0"}
+      salary={salary.value[0] ?? "0"}
+    />
+  );
 };
 
 export default NewPayment;

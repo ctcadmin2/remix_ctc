@@ -7,27 +7,27 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 
 import NewPageButton from "../NewPageButton/NewPageButton";
 
-interface Props {
-  data: unknown[];
-  columns: DataTableColumn<unknown>[];
+interface Props<T> {
+  data: T[];
+  columns: DataTableColumn<T>[];
   total: number;
   perPage: number;
   extraButton?: ReactNode | undefined;
 }
 
-const DataGrid = ({
+function DataGrid<T>({
   data,
   columns,
   total,
   perPage,
   extraButton = undefined,
-}: Props) => {
+}: Props<T>): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const sort = searchParams.get("sort");
   const didMountRef = useRef(false);
 
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus>(() => {
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<T>>(() => {
     if (sort && sort.split("-").length > 0) {
       const sortParams = sort.split("-");
       return {
@@ -45,7 +45,7 @@ const DataGrid = ({
     if (didMountRef.current && sortStatus.columnAccessor !== undefined) {
       searchParams.set(
         "sort",
-        `${sortStatus.columnAccessor}-${sortStatus.direction}`,
+        `${String(sortStatus.columnAccessor)}-${sortStatus.direction}`,
       );
       setSearchParams(searchParams);
     }
@@ -57,6 +57,7 @@ const DataGrid = ({
       <DataTable
         striped
         highlightOnHover
+        withTableBorder={false}
         // withBorder
         // minHeight={550}
         horizontalSpacing={"xl"}
@@ -67,7 +68,6 @@ const DataGrid = ({
         columns={columns}
         sortStatus={sortStatus}
         onSortStatusChange={setSortStatus}
-        totalRecords={total}
       />
       <Divider orientation="horizontal" my={"lg"} />
       <Flex justify={"space-between"}>
@@ -89,6 +89,6 @@ const DataGrid = ({
       </Flex>
     </>
   );
-};
+}
 
 export default DataGrid;

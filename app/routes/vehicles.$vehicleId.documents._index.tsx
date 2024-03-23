@@ -149,7 +149,7 @@ export const action: ActionFunction = async ({
 };
 
 const Documents = () => {
-  const { documents, total, perPage } = useLoaderData<LoaderData>();
+  const { documents, total, perPage } = useLoaderData<typeof loader>();
   const [opened, setOpened] = useState(false);
   const [document, setDocument] = useState<DocumentWithAttachement>();
 

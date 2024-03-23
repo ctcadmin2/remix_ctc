@@ -8,18 +8,19 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Vehicle } from "@prisma/client";
+import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import SettingList from "~/lists/SettingList";
-import { loader as editLoader } from "~/routes/vehicles.$vehicleId.edit";
-import { loader as newLoader } from "~/routes/vehicles.new";
 
-const VehicleForm = () => {
-  const { vehicle, categories } = useLoaderData<
-    typeof newLoader | typeof editLoader
-  >();
+interface Props {
+  vehicle?: Vehicle | null;
+  categories: string[];
+}
+
+const VehicleForm = ({ vehicle, categories }: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       registration: vehicle?.registration || "",

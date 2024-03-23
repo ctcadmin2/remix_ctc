@@ -1,5 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
@@ -25,7 +26,6 @@ const schema = zfd.formData({
 
 export const loader = async () => {
   const data = {
-    expense: null,
     suppliers: await db.company.findMany({
       where: { country: { not: { equals: "RO" } } },
       select: { id: true, name: true },
@@ -87,5 +87,13 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function NewNationalExpense() {
-  return <InternationalExpenseForm />;
+  const { suppliers, currencies, descriptions } =
+    useLoaderData<typeof loader>();
+  return (
+    <InternationalExpenseForm
+      descriptions={descriptions?.value ?? []}
+      suppliers={suppliers}
+      currencies={currencies?.value ?? []}
+    />
+  );
 }

@@ -9,18 +9,20 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Employee } from "@prisma/client";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { useRef, useEffect } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-const EmployeeForm = () => {
-  const employee = useLoaderData<Employee | null>();
+interface Props {
+  employee?: Employee | null;
+}
 
+const EmployeeForm = ({ employee = null }: Props): JSX.Element => {
   const { getInputProps } = useForm<Partial<Employee> | null>({
     initialValues: {
       firstName: employee?.firstName || "",
       lastName: employee?.lastName || "",
-      activ: employee?.activ || false,
+      active: employee?.active || false,
       ssn: employee?.ssn || "",
     },
   });
@@ -53,11 +55,11 @@ const EmployeeForm = () => {
             />
             <Switch
               labelPosition="left"
-              label="Activ"
-              name="activ"
+              label="Active"
+              name="active"
               size="md"
               my={16}
-              {...getInputProps("activ", { type: "checkbox" })}
+              {...getInputProps("active", { type: "checkbox" })}
             />
             <TextInput label="SSN" name="ssn" {...getInputProps("ssn")} />
           </div>

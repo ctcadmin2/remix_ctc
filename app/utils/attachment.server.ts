@@ -5,13 +5,18 @@ import type { Attachment } from "@prisma/client";
 import { db } from "./db.server";
 
 export const processAttachment = async (
-  type: string,
+  type:
+    | "creditNote"
+    | "internationalExpense"
+    | "nationalExpense"
+    | "tripExpense"
+    | "document",
   id: number,
   name: string,
 ) => {
   try {
     const oldFile = await db.attachment.findUnique({
-      where: { [`${type}Id`]: id },
+      where: { id_type: { id, type } },
     });
 
     if (oldFile) {
@@ -20,7 +25,7 @@ export const processAttachment = async (
           console.log("error on delete: ", err);
         }
       });
-      await db.attachment.delete({ where: { id: oldFile?.id } });
+      await db.attachment.delete({ where: { id: oldFile.id } });
     }
 
     await db.attachment.create({

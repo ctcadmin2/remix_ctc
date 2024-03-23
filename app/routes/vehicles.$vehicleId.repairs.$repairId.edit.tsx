@@ -5,6 +5,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zfd } from "zod-form-data";
@@ -33,13 +34,11 @@ export const loader: LoaderFunction = async ({
     repairId: zx.NumAsString,
   });
 
-  const data = {
-    repair: await db.repair.findUnique({
-      where: { id: repairId },
-    }),
-  };
+  const repair = await db.repair.findUnique({
+    where: { id: repairId },
+  });
 
-  return json(data);
+  return json(repair);
 };
 
 export const action: ActionFunction = async ({
@@ -86,7 +85,8 @@ export const action: ActionFunction = async ({
 };
 
 const EditRepair = () => {
-  return <RepairForm />;
+  const repair = useLoaderData<typeof loader>();
+  return <RepairForm repair={repair} />;
 };
 
 export default EditRepair;

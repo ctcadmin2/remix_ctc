@@ -1,13 +1,14 @@
 import { createFormContext } from "@mantine/form";
+import type Decimal from "decimal.js";
 
-interface FormValues {
+export interface FormValues {
   month: Date;
   salaryRon: string;
   indemnizations: {
     id?: string;
     period: [Date | null, Date | null];
     perDay: number;
-    avans: number;
+    avans: Decimal;
     delegation: boolean;
   }[];
 }

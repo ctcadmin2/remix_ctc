@@ -161,7 +161,7 @@ export const action: ActionFunction = async ({
 
 const CreditNotes = () => {
   const { pathname } = useLocation();
-  const { creditNotes, total, perPage } = useLoaderData<LoaderData>();
+  const { creditNotes, total, perPage } = useLoaderData<typeof loader>();
   const [opened, setOpened] = useState(false);
   const [creditNote, setVehicle] = useState<CreditNoteWithAttachement>();
 

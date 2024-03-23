@@ -5,6 +5,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
@@ -121,5 +122,13 @@ export const action: ActionFunction = async ({
 };
 
 export default function EditCreditNote() {
-  return <CreditNoteForm />;
+  const { creditNote, vehicles, currencies } = useLoaderData<typeof loader>();
+
+  return (
+    <CreditNoteForm
+      creditNote={creditNote}
+      currencies={currencies?.value ?? []}
+      vehicles={vehicles}
+    />
+  );
 }

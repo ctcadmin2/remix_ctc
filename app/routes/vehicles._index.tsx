@@ -140,7 +140,7 @@ export const action: ActionFunction = async ({
 };
 
 const Vehicles = () => {
-  const { vehicles, total, perPage } = useLoaderData<LoaderData>();
+  const { vehicles, total, perPage } = useLoaderData<typeof loader>();
   const [opened, setOpened] = useState(false);
   const [vehicle, setVehicle] = useState<Vehicle>();
 

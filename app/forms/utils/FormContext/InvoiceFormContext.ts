@@ -1,4 +1,5 @@
 import { createFormContext } from "@mantine/form";
+import Decimal from "decimal.js";
 
 interface FormValues {
   number: string;
@@ -15,9 +16,9 @@ interface FormValues {
   orders: {
     id?: string;
     description: string;
-    quantity: string;
-    amount: string;
-    total: string;
+    quantity: Decimal;
+    amount: Decimal;
+    total: Decimal;
   }[];
 }
 export const [InvoiceFormProvider, useInvoiceFormContext, useInvoiceForm] =

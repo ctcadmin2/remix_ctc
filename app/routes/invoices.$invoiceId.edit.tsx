@@ -6,12 +6,13 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import Decimal from "decimal.js";
+import { useLoaderData } from "@remix-run/react";
 import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zx } from "zodix";
 
 import InvoiceForm from "~/forms/InvoiceForm";
+import { CompaniesListType } from "~/lists/CompanyList";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import {
@@ -22,24 +23,23 @@ import {
 } from "~/utils/invoiceUtils.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
-export interface LoaderData {
-  invoice: Prisma.InvoiceGetPayload<{
-    include: {
-      creditNotes: { select: { id: true } };
-      orders: true;
-      identification: { select: { expName: true; expId: true; expVeh: true } };
-    };
-  }> | null;
-  creditNotes:
-    | {
-        id: number;
-        number: string;
-        amount: Decimal;
-        currency: string;
-      }[]
-    | null;
+export type InvoiceType = Prisma.InvoiceGetPayload<{
+  include: {
+    creditNotes: { select: { id: true } };
+    orders: true;
+    identification: { select: { expName: true; expId: true; expVeh: true } };
+  };
+}>;
+
+export type InvoiceCreditNoteType = Prisma.CreditNoteGetPayload<{
+  select: { id: true; number: true; amount: true; currency: true };
+}>;
+
+interface LoaderData {
+  invoice: InvoiceType | null;
+  creditNotes: InvoiceCreditNoteType[] | null;
   currencies: Setting | null;
-  clients: { id: number; name: string }[];
+  clients: CompaniesListType[];
   vatRates: Setting | null;
 }
 
@@ -159,5 +159,16 @@ export const action: ActionFunction = async ({
 };
 
 export default function EditCreditNote() {
-  return <InvoiceForm />;
+  const { invoice, creditNotes, currencies, vatRates, clients } =
+    useLoaderData<typeof loader>();
+
+  return (
+    <InvoiceForm
+      invoice={invoice}
+      creditNotes={creditNotes}
+      currencies={currencies?.value ?? []}
+      vatRates={vatRates?.value ?? []}
+      clients={clients}
+    />
+  );
 }

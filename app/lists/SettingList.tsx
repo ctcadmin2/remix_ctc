@@ -1,11 +1,10 @@
 import type { SelectStylesNames } from "@mantine/core";
 import { Select } from "@mantine/core";
-import type { Setting } from "@prisma/client";
 
 import { camalize } from "~/utils/stringUtils";
 
 interface Props {
-  setting: Setting | null;
+  setting: string[];
   label: string;
   value?: string | null;
   onChange: ((value: string | null) => void) | undefined;
@@ -31,7 +30,7 @@ const SettingList = ({
       allowDeselect
       clearable
       searchable
-      data={setting?.value}
+      data={setting}
       value={value}
       onChange={onChange}
       styles={styles}

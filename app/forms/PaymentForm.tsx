@@ -7,30 +7,57 @@ import {
   TextInput,
 } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Indemnization } from "@prisma/client";
+import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useRef, useEffect } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import { loader as editLoader } from "~/routes/employees.$employeeId.payments.$paymentId.edit";
-import { loader as newLoader } from "~/routes/employees.$employeeId.payments.new";
+import { PaymentType } from "~/routes/employees.$employeeId.payments.$paymentId.edit";
 
 import IndemnizationForm from "./IndemnizationForm";
 import {
+  FormValues,
   PaymentFormProvider,
   usePaymentForm,
 } from "./utils/FormContext/PaymentFormContext";
 
-const PaymentForm = () => {
-  const { payment, settings } = useLoaderData<
-    typeof newLoader | typeof editLoader
-  >();
+interface Props {
+  payment?: PaymentType | null;
+  perDay: string;
+  salary: string;
+}
 
+const prepIndemization = (indemnizations: Indemnization[]) => {
+  const data: FormValues["indemnizations"] = indemnizations.map((i) => {
+    const { startDate, days, ...rest } = i;
+    return {
+      ...rest,
+      period: [
+        new Date(startDate),
+        new Date(
+          dayjs(startDate)
+            .add(days - 1, "day")
+            .toDate(),
+        ),
+      ],
+    };
+  });
+  return data;
+};
+
+const PaymentForm = ({
+  payment = null,
+  perDay,
+  salary,
+}: Props): JSX.Element => {
   const form = usePaymentForm({
     initialValues: {
       month: dayjs(payment?.month).toDate() ?? new Date(Date.now()),
-      salaryRon: payment?.salaryRon ?? settings?.salary ?? "0",
-      indemnizations: payment?.indemnizations ?? [],
+      salaryRon: payment?.salaryRon.toString() ?? salary ?? "0",
+      indemnizations: payment?.indemnizations
+        ? prepIndemization(payment.indemnizations)
+        : [],
     },
   });
 
@@ -73,8 +100,8 @@ const PaymentForm = () => {
               onClick={() =>
                 form.insertListItem("indemnizations", {
                   period: [null, null],
-                  perDay: parseInt(settings?.perDay) ?? 0,
-                  avans: 200,
+                  perDay: parseInt(perDay) ?? 0,
+                  avans: 0,
                   delegation: false,
                 })
               }

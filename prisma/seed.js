@@ -198,7 +198,7 @@ async function seed() {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     ssn: faker.string.numeric(13),
-    activ: faker.datatype.boolean(),
+    active: faker.datatype.boolean(),
   }));
 
   await db.user.create({
@@ -249,7 +249,7 @@ async function seed() {
             },
           },
         },
-      })
+      }),
   );
 }
 

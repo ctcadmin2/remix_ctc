@@ -103,7 +103,7 @@ export const action: ActionFunction = async ({
 };
 
 const InternationalExpenses = () => {
-  const { expenses, total, perPage } = useLoaderData<LoaderData>();
+  const { expenses, total, perPage } = useLoaderData<typeof loader>();
   const [delOpen, setDelOpen] = useState(false);
   const [expense, setExpense] = useState<InternationalExpense>();
 

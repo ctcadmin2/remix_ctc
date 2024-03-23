@@ -1,11 +1,12 @@
 import type { Setting } from "@prisma/client";
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import Decimal from "decimal.js";
+import { useLoaderData } from "@remix-run/react";
 import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 
 import InvoiceForm from "~/forms/InvoiceForm";
+import { CompaniesListType } from "~/lists/CompanyList";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import {
@@ -16,19 +17,16 @@ import {
 } from "~/utils/invoiceUtils.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
-export interface LoaderData {
-  creditNotes: {
-    id: number;
-    number: string;
-    amount: Decimal;
-    currency: string;
-  }[];
-  clients: { id: number; name: string }[];
-  currencies: Partial<Setting> | null;
-  vatRates: Partial<Setting> | null;
+import { InvoiceCreditNoteType } from "./invoices.$invoiceId.edit";
+
+interface LoaderData {
+  creditNotes: InvoiceCreditNoteType[];
+  clients: CompaniesListType[];
+  currencies: Setting | null;
+  vatRates: Setting | null;
 }
 
-export const loader = async () => {
+export const loader: LoaderFunction = async () => {
   const data: LoaderData = {
     creditNotes: await db.creditNote.findMany({
       where: { invoiceId: null },
@@ -39,11 +37,9 @@ export const loader = async () => {
     }),
     currencies: await db.setting.findUnique({
       where: { name: "currencies" },
-      select: { value: true },
     }),
     vatRates: await db.setting.findUnique({
       where: { name: "vatRates" },
-      select: { value: true },
     }),
   };
   return json(data);
@@ -114,6 +110,17 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export default function NewInvoice() {
-  return <InvoiceForm />;
-}
+const NewInvoice = () => {
+  const { creditNotes, currencies, vatRates, clients } =
+    useLoaderData<typeof loader>();
+
+  return (
+    <InvoiceForm
+      creditNotes={creditNotes}
+      currencies={currencies?.value ?? []}
+      vatRates={vatRates?.value ?? []}
+      clients={clients}
+    />
+  );
+};
+export default NewInvoice;

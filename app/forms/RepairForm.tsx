@@ -9,14 +9,16 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { Repair } from "@prisma/client";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-const RepairForm = () => {
-  const { repair }: { repair: Repair } = useLoaderData();
+interface Props {
+  repair?: Repair | null;
+}
 
+const RepairForm = ({ repair = null }: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       date: repair ? dayjs(repair.date) : new Date(),

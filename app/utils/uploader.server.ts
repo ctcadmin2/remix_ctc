@@ -22,7 +22,12 @@ const processImage = (img: PDFImage, pdfDoc: PDFDocument) => {
 
 const FileUploader = async (
   files: Blob[],
-  type: string,
+  type:
+    | "creditNote"
+    | "internationalExpense"
+    | "nationalExpense"
+    | "tripExpense"
+    | "document",
   id: number,
 ): Promise<void> => {
   try {

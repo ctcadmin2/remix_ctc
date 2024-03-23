@@ -96,7 +96,7 @@ export const action: ActionFunction = async ({
 };
 
 const Companies = () => {
-  const { companies, total, perPage } = useLoaderData<LoaderData>();
+  const { companies, total, perPage } = useLoaderData<typeof loader>();
   const [delOpen, setDelOpen] = useState(false);
   const [company, setCompany] = useState<Company>();
   const [infoOpen, setInfoOpen] = useState(false);
@@ -199,7 +199,7 @@ const Companies = () => {
     <>
       <DataGrid
         data={companies}
-        columns={columns as DataTableColumn<unknown>[]}
+        columns={columns}
         total={total}
         perPage={perPage}
       />
@@ -213,7 +213,7 @@ const Companies = () => {
       <DetailsModal
         opened={infoOpen}
         setOpened={setInfoOpen}
-        form={<CompanyForm data={company} />}
+        form={<CompanyForm data={company} readOnly />}
       />
     </>
   );
