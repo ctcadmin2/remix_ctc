@@ -44,7 +44,6 @@ COPY --from=deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
 ADD prisma prisma
 
 RUN yarn prisma generate
-RUN yarn prisma migrate deploy
 
 ADD . .
 
