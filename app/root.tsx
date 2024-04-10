@@ -119,19 +119,22 @@ export function Layout({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
-        />
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1" />
         <Meta />
         <Links />
         <ColorSchemeScript />
       </head>
       <body>
         {/* children will be the root Component, ErrorBoundary, or HydrateFallback */}
-        {children}
-        <Scripts />
+        <MantineProvider theme={theme}>
+          {" "}
+          <ModalsProvider>
+            <Notifications />
+            {children}
+          </ModalsProvider>
+        </MantineProvider>
         <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );
@@ -169,86 +172,80 @@ export default function App() {
   ));
 
   return (
-    <MantineProvider theme={theme}>
-      <ModalsProvider>
-        <Notifications />
-        <AppShell
-          padding={"md"}
-          header={{ height: 60 }}
-          navbar={{
-            width: 200,
-            breakpoint: "sm",
-            collapsed: { mobile: !opened, desktop: !user },
-          }}
+    <AppShell
+      padding={"md"}
+      header={{ height: 60 }}
+      navbar={{
+        width: 200,
+        breakpoint: "sm",
+        collapsed: { mobile: !opened, desktop: !user },
+      }}
+    >
+      <AppShell.Header p={"md"}>
+        <Group justify="apart" grow>
+          <Group justify="apart">
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              size="md"
+              hiddenFrom="sm"
+              display={!user ? "none" : "inline"}
+            />
+            <Title order={3} fw={"bolder"}>
+              <Link to={"/"} reloadDocument>
+                CTCAdmin 2
+              </Link>
+            </Title>
+          </Group>
+          <Group justify="right">
+            <Button>Language</Button>
+
+            {user ? (
+              <Button
+                type="submit"
+                onClick={() =>
+                  submit(null, { method: "post", action: "/logout" })
+                }
+              >
+                Logout
+              </Button>
+            ) : null}
+            {!user ? (
+              <Button component={Link} to={linkPath.to}>
+                {linkPath.name}
+              </Button>
+            ) : null}
+          </Group>
+        </Group>
+      </AppShell.Header>
+
+      <AppShell.Navbar pl="md" mt={"1rem"} h={"85vh"} hidden={true}>
+        <AppShell.Section grow component={ScrollArea}>
+          {links}
+        </AppShell.Section>
+      </AppShell.Navbar>
+      <AppShell.Main>
+        <Paper
+          shadow="sm"
+          radius="md"
+          p="xl"
+          withBorder
+          style={{ height: "85vh", width: "auto" }}
         >
-          <AppShell.Header p={"md"}>
-            <Group justify="apart" grow>
-              <Group justify="apart">
-                <Burger
-                  opened={opened}
-                  onClick={toggle}
-                  size="md"
-                  hiddenFrom="sm"
-                  display={!user ? "none" : "inline"}
-                />
-                <Title order={3} fw={"bolder"}>
-                  <Link to={"/"} reloadDocument>
-                    CTCAdmin 2
-                  </Link>
-                </Title>
-              </Group>
-              <Group justify="right">
-                <Button>Language</Button>
-
-                {user ? (
-                  <Button
-                    type="submit"
-                    onClick={() =>
-                      submit(null, { method: "post", action: "/logout" })
-                    }
-                  >
-                    Logout
-                  </Button>
-                ) : null}
-                {!user ? (
-                  <Button component={Link} to={linkPath.to}>
-                    {linkPath.name}
-                  </Button>
-                ) : null}
-              </Group>
-            </Group>
-          </AppShell.Header>
-
-          <AppShell.Navbar pl="md" mt={"1rem"} h={"85vh"} hidden={true}>
-            <AppShell.Section grow component={ScrollArea}>
-              {links}
-            </AppShell.Section>
-          </AppShell.Navbar>
-          <AppShell.Main>
-            <Paper
-              shadow="sm"
-              radius="md"
-              p="xl"
-              withBorder
-              style={{ height: "85vh", width: "auto" }}
-            >
-              <Container fluid px={0}>
-                <AuthenticityTokenProvider token={csrf}>
-                  <DatesProvider
-                    settings={{
-                      consistentWeeks: true,
-                      locale: user ? user.language : "en",
-                    }}
-                  >
-                    <Outlet />
-                  </DatesProvider>
-                </AuthenticityTokenProvider>
-              </Container>
-            </Paper>
-          </AppShell.Main>
-        </AppShell>
-        <Scripts />
-      </ModalsProvider>
-    </MantineProvider>
+          <Container fluid px={0}>
+            <AuthenticityTokenProvider token={csrf}>
+              <DatesProvider
+                settings={{
+                  consistentWeeks: true,
+                  locale: user ? user.language : "en",
+                }}
+              >
+                <Outlet />
+              </DatesProvider>
+            </AuthenticityTokenProvider>
+          </Container>
+        </Paper>
+      </AppShell.Main>
+    </AppShell>
   );
 }

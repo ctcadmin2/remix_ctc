@@ -79,7 +79,7 @@ const CompanyForm = ({
               searchable
               clearable
               name="country"
-              ref={ref}
+              ref={focusTrapRef}
               data={CountrySelect()}
               {...getInputProps("country")}
             />
