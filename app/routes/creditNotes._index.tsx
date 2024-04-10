@@ -295,7 +295,7 @@ const CreditNotes = () => {
         perPage={perPage}
       />
       <DeleteModal<CreditNoteWithAttachement>
-        name="expense"
+        name="credit note"
         title={creditNote?.number}
         opened={opened}
         setOpened={setOpened}

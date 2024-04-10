@@ -27,7 +27,7 @@ import Decimal from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useEffect, useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import { jsonWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithSuccess, jsonWithError, jsonWithWarning } from "remix-toast";
 import { useAuthenticityToken } from "remix-utils/csrf/react";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
@@ -198,7 +198,7 @@ export const action: ActionFunction = async ({
       (i) => (errors = { ...errors, [`${i.path[0]}`]: i.message }),
     );
 
-    return jsonWithError(
+    return jsonWithWarning(
       { formPayload, errors },
       "Order number already assign.",
     );
@@ -256,6 +256,9 @@ export const action: ActionFunction = async ({
       return jsonWithError(null, "An error has occured.");
   }
 };
+
+//TODO fix redirect on update
+//TODO add loading spinner
 
 const CreditNotes = () => {
   const { creditNotes, total, perPage } = useLoaderData<typeof loader>();

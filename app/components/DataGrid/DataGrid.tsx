@@ -15,6 +15,8 @@ interface Props<T> {
   extraButton?: ReactNode | undefined;
 }
 
+//TODO fix pagination when filtering
+
 function DataGrid<T>({
   data,
   columns,
