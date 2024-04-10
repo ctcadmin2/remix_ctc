@@ -26,6 +26,7 @@ import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
   select: {
     id: true;
+    orderNr: true;
     number: true;
     start: true;
     end: true;
@@ -110,6 +111,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       orderBy: sortOrder({ orderNr: "asc" }, sort),
       select: {
         id: true,
+        orderNr: true,
         number: true,
         start: true,
         end: true,

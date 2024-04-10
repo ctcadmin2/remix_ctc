@@ -8,10 +8,10 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { useFocusTrap } from "@mantine/hooks";
 import { Repair } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
-import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 interface Props {
@@ -26,12 +26,8 @@ const RepairForm = ({ repair = null }: Props): JSX.Element => {
       comment: repair?.comment || "",
     },
   });
-  const ref = useRef<HTMLInputElement>(null);
+  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   return (
     <Form method="post" reloadDocument>
@@ -40,6 +36,7 @@ const RepairForm = ({ repair = null }: Props): JSX.Element => {
         <TextInput
           label="Km"
           name="km"
+          ref={focusTrapRef}
           required
           {...form.getInputProps("km")}
         />

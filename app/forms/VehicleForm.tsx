@@ -8,9 +8,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useFocusTrap } from "@mantine/hooks";
 import { Vehicle } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
-import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import SettingList from "~/lists/SettingList";
@@ -30,12 +30,8 @@ const VehicleForm = ({ vehicle, categories }: Props): JSX.Element => {
       nickname: vehicle?.nickname || "",
     },
   });
-  const ref = useRef<HTMLInputElement>(null);
+  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   return (
     <Box p={"sm"}>
@@ -48,14 +44,13 @@ const VehicleForm = ({ vehicle, categories }: Props): JSX.Element => {
               label="Registration"
               name="registration"
               required
-              ref={ref}
+              ref={focusTrapRef}
               {...form.getInputProps("registration")}
             />
             <TextInput
               label="VIN"
               name="vin"
               required
-              ref={ref}
               {...form.getInputProps("vin")}
             />
             <SettingList
@@ -75,7 +70,6 @@ const VehicleForm = ({ vehicle, categories }: Props): JSX.Element => {
             <TextInput
               label="Nickname"
               name="nickname"
-              ref={ref}
               {...form.getInputProps("nickname")}
             />
           </div>

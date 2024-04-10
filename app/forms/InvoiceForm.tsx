@@ -9,9 +9,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { useFocusTrap } from "@mantine/hooks";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
-import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import CompanyList, { CompaniesListType } from "~/lists/CompanyList";
@@ -58,12 +58,8 @@ const InvoiceForm = ({
       orders: invoice?.orders || [],
     },
   });
-  const ref = useRef<HTMLInputElement>(null);
+  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   const cnSelectData = () => {
     if (creditNotes) {
@@ -91,7 +87,7 @@ const InvoiceForm = ({
                 label="Number"
                 name="number"
                 required
-                ref={ref}
+                ref={focusTrapRef}
                 {...form.getInputProps("number")}
               />
               <CompanyList

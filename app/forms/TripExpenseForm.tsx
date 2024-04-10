@@ -11,10 +11,10 @@ import {
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { useFocusTrap } from "@mantine/hooks";
 import { TripExpense } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
-import { useEffect, useRef } from "react";
 import { Calendar, Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
@@ -44,12 +44,8 @@ const TripExpenseForm = ({
       files: [],
     },
   });
-  const ref = useRef<HTMLInputElement>(null);
+  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   return (
     <Box p={"sm"}>
@@ -66,14 +62,13 @@ const TripExpenseForm = ({
               label="Internal number"
               name="intNr"
               required
-              ref={ref}
+              ref={focusTrapRef}
               {...getInputProps("intNr")}
             />
             <TextInput
               label="Number"
               name="number"
               required
-              ref={ref}
               {...getInputProps("number")}
             />
             <DatePickerInput

@@ -9,9 +9,9 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { useFocusTrap } from "@mantine/hooks";
 import { Document } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
-import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
@@ -28,12 +28,8 @@ const DocumentForm = ({ document = null }: Props): JSX.Element => {
       files: [],
     },
   });
-  const ref = useRef<HTMLInputElement>(null);
+  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   return (
     <Form
@@ -50,6 +46,7 @@ const DocumentForm = ({ document = null }: Props): JSX.Element => {
         <TextInput
           label="Description"
           name="description"
+          ref={focusTrapRef}
           required
           {...form.getInputProps("description")}
         />

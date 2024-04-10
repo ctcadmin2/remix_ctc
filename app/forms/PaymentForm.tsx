@@ -10,7 +10,6 @@ import { MonthPickerInput } from "@mantine/dates";
 import { Indemnization } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
-import { useRef, useEffect } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import { PaymentType } from "~/routes/employees.$employeeId.payments.$paymentId.edit";
@@ -61,12 +60,7 @@ const PaymentForm = ({
     },
   });
 
-  const ref = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   return (
     <Box p={"sm"}>
@@ -79,7 +73,6 @@ const PaymentForm = ({
                 label="Month"
                 name="month"
                 required
-                // ref={ref}
                 {...form.getInputProps("month")}
               />
               <TextInput

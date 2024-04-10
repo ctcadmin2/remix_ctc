@@ -11,9 +11,10 @@ import {
   rem,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useFocusTrap } from "@mantine/hooks";
 import { Company } from "@prisma/client";
 import { Form, useFetcher, useNavigate } from "@remix-run/react";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
@@ -48,7 +49,7 @@ const CompanyForm = ({
   });
 
   const [manual, setManual] = useState(data ?? false);
-  const ref = useRef<HTMLInputElement>(null);
+  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
   const fetcher = useFetcher({ key: "findCompany" });
 
@@ -64,10 +65,6 @@ const CompanyForm = ({
       return;
     }
   }, [data, fetcher.data, initialize]);
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   return (
     <Box p={"sm"}>
@@ -133,7 +130,7 @@ const CompanyForm = ({
                 label="Name"
                 name="name"
                 required
-                ref={ref}
+                ref={focusTrapRef}
                 readOnly={readOnly}
                 {...getInputProps("name")}
               />

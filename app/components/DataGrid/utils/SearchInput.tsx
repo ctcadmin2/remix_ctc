@@ -1,5 +1,5 @@
 import { TextInput, ThemeIcon } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useFocusTrap } from "@mantine/hooks";
 import { useSearchParams } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 import { Search, X } from "react-feather";
@@ -8,14 +8,10 @@ const SearchInput = () => {
   //use to skip useEffect on first render
   //https://stackoverflow.com/questions/53179075/with-useeffect-how-can-i-skip-applying-an-effect-upon-the-initial-render
   const didMountRef = useRef(false);
-  const queryRef = useRef<HTMLInputElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("filter") || "");
   const [debouncedQuery] = useDebouncedValue(query, 300);
-
-  useEffect(() => {
-    queryRef?.current?.focus();
-  });
+  const focusTrapRef = useFocusTrap(true);
 
   useEffect(() => {
     if (didMountRef.current) {
@@ -33,7 +29,7 @@ const SearchInput = () => {
   return (
     <TextInput
       placeholder="Search..."
-      ref={queryRef}
+      ref={focusTrapRef}
       leftSection={<Search size={"16px"} strokeWidth="3px" />}
       rightSection={
         query.length === 0 ? null : (

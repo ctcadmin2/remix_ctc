@@ -8,9 +8,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useFocusTrap } from "@mantine/hooks";
 import { Employee } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
-import { useRef, useEffect } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 interface Props {
@@ -26,13 +26,8 @@ const EmployeeForm = ({ employee = null }: Props): JSX.Element => {
       ssn: employee?.ssn || "",
     },
   });
-
-  const ref = useRef<HTMLInputElement>(null);
+  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   return (
     <Box p={"sm"}>
@@ -44,7 +39,7 @@ const EmployeeForm = ({ employee = null }: Props): JSX.Element => {
               label="First name"
               name="firstName"
               required
-              ref={ref}
+              ref={focusTrapRef}
               {...getInputProps("firstName")}
             />
             <TextInput
