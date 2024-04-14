@@ -28,8 +28,6 @@ import { db } from "./db.server";
 
 Decimal.set({ precision: 8, rounding: 4 });
 
-const account = await db.setting.findFirst({ where: { name: "accRon" } });
-
 const XMLBuilder = async (invoice: eInvoice) => {
   if (invoice === null) {
     return null;
@@ -47,6 +45,8 @@ const XMLBuilder = async (invoice: eInvoice) => {
     .dividedBy(100)
     .toDP(2)
     .toString();
+
+  const account = await db.setting.findFirst({ where: { name: "accRon" } });
 
   const xml = new Invoice(id, {
     issuer: {
