@@ -77,8 +77,9 @@ const processRO = async (vatNr: string) => {
       name: data.denumire,
       registration: data.numar_reg_com,
       vatNumber: data.cif,
-      vatValid: data.tva ? true : false,
-      address: `${data.adresa}, ${data.judet}`,
+      vatValid: data.tva.length > 0 ? true : false,
+      address: data.adresa,
+      county: data.judet,
       country: "RO",
       phone: data.telefon,
     };

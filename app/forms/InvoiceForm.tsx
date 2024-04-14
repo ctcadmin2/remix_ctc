@@ -50,6 +50,7 @@ const InvoiceForm = ({
       vatRate: String(invoice?.vatRate) || "0",
       creditNotesIds: invoice?.creditNotes?.map((cn) => String(cn.id)) || [],
       clientId: invoice?.clientId || null,
+      paymentTerms: invoice?.paymentTerms ?? "",
       identification: invoice?.identification || {
         expName: "",
         expId: "",
@@ -129,6 +130,12 @@ const InvoiceForm = ({
                 label="Vat rate"
                 {...form.getInputProps("vatRate")}
                 required
+              />
+              <TextInput
+                label="Payment terms"
+                name="paymentTerms"
+                required
+                {...form.getInputProps("paymentTerms")}
               />
             </div>
             <Accordion style={{ width: "100%" }}>

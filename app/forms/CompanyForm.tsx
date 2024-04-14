@@ -19,6 +19,7 @@ import { Search } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import { CountrySelect } from "~/utils/countryCodes";
+import { RoCountySelect } from "~/utils/roCountyCodes";
 
 interface Props {
   data?: Company | undefined;
@@ -40,6 +41,7 @@ const CompanyForm = ({
       accRon: data?.accRon || "",
       accEur: data?.accEur || "",
       address: data?.address || "",
+      county: data?.county || "",
       country: data?.country || "",
       bank: data?.bank || "",
       capital: data?.capital || "",
@@ -172,6 +174,18 @@ const CompanyForm = ({
                 readOnly={readOnly}
                 {...getInputProps("address")}
               />
+              {values.country === "RO" ? (
+                <Select
+                  label="County"
+                  placeholder="Select county"
+                  name="county"
+                  readOnly={readOnly}
+                  required
+                  withAsterisk
+                  data={RoCountySelect()}
+                  {...getInputProps("county")}
+                />
+              ) : null}
               <TextInput
                 label="RON Account"
                 name="accountRon"

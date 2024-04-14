@@ -8,6 +8,7 @@ interface FormValues {
   vatRate: string;
   creditNotesIds: string[];
   clientId: number | null;
+  paymentTerms: string;
   identification: {
     expName: string | null;
     expId: string | null;

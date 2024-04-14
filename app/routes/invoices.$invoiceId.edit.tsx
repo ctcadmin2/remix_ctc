@@ -108,7 +108,8 @@ export const action: ActionFunction = async ({
     invoiceId: zx.NumAsString,
   });
 
-  const data = schema.parse(await request.formData());
+  const formPayload = Object.fromEntries(await request.formData());
+  const data = schema.parse(formPayload);
 
   const { clientId, creditNotesIds, identification, orders, ...rest } = data;
 

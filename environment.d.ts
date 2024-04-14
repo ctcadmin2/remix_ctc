@@ -9,6 +9,10 @@ declare global {
       OPENAPI_KEY: string;
       CSRF_SECRET: string;
       COOKIE_SECRETS: string[];
+      ANAF_AUTH_URL: string;
+      ANAF_TOKEN_URL: string;
+      ANAF_REVOKE_URL: string;
+      TOKEN: string;
     }
   }
 }

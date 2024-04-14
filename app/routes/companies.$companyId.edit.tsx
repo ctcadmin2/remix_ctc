@@ -10,7 +10,6 @@ import { useLoaderData } from "@remix-run/react";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
 import CompanyForm from "~/forms/CompanyForm";
@@ -18,19 +17,30 @@ import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
-const schema = zfd.formData({
-  name: zfd.text(z.string().optional()),
-  registration: zfd.text(z.string().optional()),
-  vatNumber: zfd.text(),
-  vatValid: zfd.checkbox(),
-  accRon: zfd.text(z.string().optional()),
-  accEur: zfd.text(z.string().optional()),
-  address: zfd.text(z.string().optional()),
-  country: zfd.text(),
-  bank: zfd.text(z.string().optional()),
-  capital: zfd.text(z.string().optional()),
-  email: zfd.text(z.string().optional()),
-  phone: zfd.text(z.string().optional()),
+interface CheckboxOpts {
+  trueValue?: string;
+}
+
+const checkbox = ({ trueValue = "on" }: CheckboxOpts = {}) =>
+  z.union([
+    z.literal(trueValue).transform(() => true),
+    z.literal(undefined).transform(() => false),
+  ]);
+
+const schema = z.object({
+  name: z.string().optional(),
+  registration: z.string().optional(),
+  vatNumber: z.string(),
+  vatValid: checkbox(),
+  accRon: z.string().optional(),
+  accEur: z.string().optional(),
+  address: z.string().optional(),
+  county: z.string().optional(),
+  country: z.string(),
+  bank: z.string().optional(),
+  capital: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
 });
 
 export const loader: LoaderFunction = async ({
@@ -75,7 +85,8 @@ export const action: ActionFunction = async ({
     companyId: zx.NumAsString,
   });
 
-  const data = schema.parse(await request.formData());
+  const formPayload = Object.fromEntries(await request.formData());
+  const data = schema.parse(formPayload);
 
   try {
     const company = await db.company.update({

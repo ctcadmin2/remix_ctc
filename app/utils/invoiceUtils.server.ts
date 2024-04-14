@@ -1,16 +1,15 @@
 import Decimal from "decimal.js";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 
 import bnrRate from "./bnrRate.server";
 
-export const schema = zfd.formData({
-  number: zfd.text(), //required
-  date: zfd.text(z.string().datetime()), //required
-  currency: zfd.text(), //required
-  vatRate: zfd.numeric(), //required
-  clientId: zfd.numeric(), //required
-  creditNotesIds: zfd.text(z.string().optional()),
+export const schema = z.object({
+  number: z.string(), //required
+  date: z.string().datetime(), //required
+  currency: z.string(), //required
+  vatRate: z.number(), //required
+  clientId: z.number(), //required
+  creditNotesIds: z.string().optional(),
   identification: z
     .object({
       expName: z.string(),
@@ -21,11 +20,11 @@ export const schema = zfd.formData({
   orders: z
     .array(
       z.object({
-        id: zfd.text(z.string().optional()),
-        description: zfd.text(),
-        quantity: zfd.text(),
-        amount: zfd.text(),
-        total: zfd.text(),
+        id: z.string().optional(),
+        description: z.string(),
+        quantity: z.string(),
+        amount: z.string(),
+        total: z.string(),
       }),
     )
     .optional(),

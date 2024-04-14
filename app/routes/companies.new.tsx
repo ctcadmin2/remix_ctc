@@ -46,6 +46,7 @@ const schema = z.discriminatedUnion("_action", [
     accRon: z.string().optional(),
     accEur: z.string().optional(),
     address: z.string().optional(),
+    county: z.string().optional(),
     country: z.string(),
     bank: z.string().optional(),
     capital: z.string().optional(),

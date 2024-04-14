@@ -48,7 +48,9 @@
     "remix-auth-form": "^1.4.0",
     "remix-toast": "^1.2.0",
     "remix-utils": "^7.6.0",
+    "ubl-builder": "lssjbrolli/ubl-builder#5b7c37f4f1975f4a2594c501810e1d68e1c8a162",
     "vies-validate": "^1.0.5",
+    "xml2js": "^0.6.2",
     "zod": "^3.22.4",
     "zod-form-data": "^2.0.2",
     "zodix": "^0.4.4"

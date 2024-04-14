@@ -59,7 +59,8 @@ export const action: ActionFunction = async ({ request }) => {
     console.log("other error");
   }
 
-  const data = schema.parse(await request.formData());
+  const formPayload = Object.fromEntries(await request.formData());
+  const data = schema.parse(formPayload);
 
   const { clientId, creditNotesIds, identification, orders, ...rest } = data;
 
@@ -95,6 +96,10 @@ export const action: ActionFunction = async ({ request }) => {
             ?.split(",")
             .map((cn) => ({ id: parseInt(cn) })),
         },
+        ...((await db.company.findUnique({ where: { id: clientId } }))
+          ?.country === "RO"
+          ? { EFactura: { create: { status: "nproc" } } }
+          : {}),
         ...createIdentification(identification),
         ...createOrders(orders),
       },

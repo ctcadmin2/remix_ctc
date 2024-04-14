@@ -8,12 +8,14 @@ import {
   useLoaderData,
   useSubmit,
   json,
+  useFetcher,
 } from "@remix-run/react";
 import type {
   ActionFunction,
   ActionFunctionArgs,
   LoaderFunction,
 } from "@remix-run/server-runtime";
+import dayjs from "dayjs";
 import { Decimal } from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
@@ -27,6 +29,7 @@ import { zx } from "zodix";
 import DataGrid from "~/components/DataGrid/DataGrid";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import SearchInput from "~/components/DataGrid/utils/SearchInput";
+import EFacturaStatus from "~/components/EFacturaStatus/EFacturaStatus";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
@@ -43,8 +46,10 @@ export type Invoice = Prisma.InvoiceGetPayload<{
     client: {
       select: {
         name: true;
+        country: true;
       };
     };
+    EFactura: { select: { status: true } };
   };
 }>;
 const schema = zfd.formData({
@@ -118,8 +123,10 @@ export const loader: LoaderFunction = async ({ request }) => {
         client: {
           select: {
             name: true,
+            country: true,
           },
         },
+        EFactura: { select: { status: true } },
       },
     }),
     total: await db.invoice.count({ where }),
@@ -164,10 +171,16 @@ const Invoices = () => {
   const [opened, setOpened] = useState(false);
   const [invoice, setInvoice] = useState<Invoice>();
   const submit = useSubmit();
+  const getNew = useFetcher({ key: "getNew" });
+  const efactura = useFetcher({ key: "efactura" });
 
   const handleDelete = (row: Invoice) => {
     setInvoice(row);
     setOpened(!opened);
+  };
+
+  const handleEFactura = (id: number) => {
+    efactura.submit({ id }, { action: "/efactura", method: "POST" });
   };
 
   const columns: DataTableColumn<Invoice>[] = [
@@ -243,6 +256,12 @@ const Invoices = () => {
                   />
                 </Menu.Target>
                 <Menu.Dropdown>
+                  {row.client.country === "RO" &&
+                  dayjs(row.date).isAfter(dayjs("2024-01-01")) ? (
+                    <Menu.Item onClick={() => handleEFactura(row.id)}>
+                      <EFacturaStatus status={row.EFactura?.status} />
+                    </Menu.Item>
+                  ) : null}
                   <Menu.Item
                     component={Link}
                     leftSection={
@@ -295,7 +314,17 @@ const Invoices = () => {
             columns={columns as DataTableColumn<unknown>[]}
             total={total}
             perPage={perPage}
-            extraButton={null}
+            extraButton={
+              <Button
+                variant="outline"
+                loading={getNew.state === "loading"}
+                onClick={() =>
+                  getNew.submit(null, { action: "/efactura", method: "GET" })
+                }
+              >
+                Load E-Factura
+              </Button>
+            }
           />
         </Tabs.Panel>
 
