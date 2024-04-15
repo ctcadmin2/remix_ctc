@@ -9,7 +9,7 @@ import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { NumAsString, parseForm } from "zodix";
 
 import { db } from "~/utils/db.server";
-import { validate } from "~/utils/efactura.server";
+import { upload, validate } from "~/utils/efactura.server";
 
 export type eInvoice = Prisma.InvoiceGetPayload<{
   include: {
@@ -82,12 +82,16 @@ export const action: ActionFunction = async ({
         `There have been ${data.Messages.length} errors.`,
       );
     }
-    case "validated":
-      console.log("validated");
-      break;
-    default:
-      break;
-  }
+    case "validated": {
+      const data = await upload(invoice);
 
-  return null;
+      if (data?.stare === "ok") {
+        return jsonWithSuccess(null, data.message);
+      }
+
+      return jsonWithError(null, data?.message);
+    }
+    default:
+      return jsonWithError(null, "No defined action.");
+  }
 };

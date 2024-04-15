@@ -25,6 +25,7 @@ enum Role {
 enum eStatus {
   nproc
   validated
+  uploaded
   invalid
 }
 
