@@ -7,18 +7,18 @@ import { eInvoice } from "~/routes/efactura";
 import { db } from "./db.server";
 import XMLBuilder from "./xmlBuilder.server";
 
+const parser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: "",
+  ignoreDeclaration: true,
+});
+
 export const upload = async (invoice: eInvoice) => {
   const url = `https://api.anaf.ro/prod/FCTEL/rest/upload?standard=UBL&cif=17868720`;
 
   if (!invoice) {
     return null;
   }
-
-  const parser = new XMLParser({
-    ignoreAttributes: false,
-    attributeNamePrefix: "",
-    ignoreDeclaration: true,
-  });
 
   try {
     const response = await fetch(url, {
@@ -75,17 +75,63 @@ export const upload = async (invoice: eInvoice) => {
   }
 };
 
-export const checkStatus = async (loadIndex: string) => {
-  const url = `https://api.anaf.ro/test/FCTEL/rest/upload?id_incarcare=${loadIndex}`;
+export const checkStatus = async (id: number, loadIndex: string | null) => {
+  if (!loadIndex) {
+    return { stare: "nok", Errors: [{ errorMessage: "No load index." }] };
+  }
+
+  const url = `https://api.anaf.ro/prod/FCTEL/rest/stareMesaj?id_incarcare=${loadIndex}`;
 
   try {
     const response = await fetch(url, {
       method: "GET",
       headers: { Authorization: `Bearer ${env.TOKEN}` },
     });
-    console.log(response);
+
+    if (response.status === 200) {
+      const data: {
+        header: { id_descarcare?: string; Errors?: { errorMessage: string } };
+      } = parser.parse(await response.text());
+
+      if (data.header.id_descarcare) {
+        try {
+          const valid = await db.invoice.update({
+            where: { id },
+            data: {
+              EFactura: {
+                update: {
+                  downloadId: data.header.id_descarcare,
+                  status: "valid",
+                },
+              },
+            },
+          });
+          if (valid) {
+            return { stare: "ok", message: "Invoice valid." };
+          }
+          return {
+            stare: "nok",
+            message: `Invoice could not be updated.`,
+          };
+        } catch (error) {
+          return {
+            stare: "nok",
+            message: `There has been an error: ${error}`,
+          };
+        }
+      }
+      return {
+        stare: "nok",
+        message: `Error while validating: ${data.header.Errors?.errorMessage}`,
+      };
+    }
+
+    return { stare: "nok", message: await response.json() };
   } catch (error) {
-    console.error(error);
+    return {
+      stare: "nok",
+      message: `Error while uploading ${error}`,
+    };
   }
 };
 

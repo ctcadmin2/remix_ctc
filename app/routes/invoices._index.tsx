@@ -29,7 +29,7 @@ import { zx } from "zodix";
 import DataGrid from "~/components/DataGrid/DataGrid";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import SearchInput from "~/components/DataGrid/utils/SearchInput";
-import EFacturaStatus from "~/components/EFacturaStatus/EFacturaStatus";
+import EFacturaHandler from "~/components/EFactura/EFacturaHandler/EFacturaHandler";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
@@ -172,15 +172,10 @@ const Invoices = () => {
   const [invoice, setInvoice] = useState<Invoice>();
   const submit = useSubmit();
   const getNew = useFetcher({ key: "getNew" });
-  const efactura = useFetcher({ key: "efactura" });
 
   const handleDelete = (row: Invoice) => {
     setInvoice(row);
     setOpened(!opened);
-  };
-
-  const handleEFactura = (id: number) => {
-    efactura.submit({ id }, { action: "/efactura", method: "POST" });
   };
 
   const columns: DataTableColumn<Invoice>[] = [
@@ -258,9 +253,7 @@ const Invoices = () => {
                 <Menu.Dropdown>
                   {row.client.country === "RO" &&
                   dayjs(row.date).isAfter(dayjs("2024-01-01")) ? (
-                    <Menu.Item onClick={() => handleEFactura(row.id)}>
-                      <EFacturaStatus status={row.EFactura?.status} />
-                    </Menu.Item>
+                    <EFacturaHandler invoice={row} />
                   ) : null}
                   <Menu.Item
                     component={Link}

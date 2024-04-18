@@ -27,6 +27,8 @@ enum eStatus {
   validated
   uploaded
   invalid
+  valid
+  store
 }
 
 model User {
@@ -132,6 +134,7 @@ model EFactura {
   id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   xml               String?          @db.Xml
   loadIndex         String?
+  downloadId        String?
   status            eStatus          @default(nproc)
   invoice           Invoice?         @relation(fields: [invoiceId], references: [id])
   invoiceId         Int?             @unique

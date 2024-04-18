@@ -5,11 +5,16 @@ import type {
   ActionFunction,
   ActionFunctionArgs,
 } from "@remix-run/node";
-import { jsonWithError, jsonWithSuccess } from "remix-toast";
-import { NumAsString, parseForm } from "zodix";
+import {
+  jsonWithError,
+  jsonWithSuccess,
+  redirectWithError,
+  redirectWithSuccess,
+} from "remix-toast";
+import { NumAsString, parseForm, parseQuery, zx } from "zodix";
 
 import { db } from "~/utils/db.server";
-import { upload, validate } from "~/utils/efactura.server";
+import { checkStatus, upload, validate } from "~/utils/efactura.server";
 
 export type eInvoice = Prisma.InvoiceGetPayload<{
   include: {
@@ -31,16 +36,31 @@ export type eInvoice = Prisma.InvoiceGetPayload<{
 export const loader: LoaderFunction = async ({
   request,
 }: LoaderFunctionArgs) => {
-  console.log("loader");
+  const { id } = parseQuery(request, {
+    id: zx.NumAsString,
+  });
 
-  // const { id, validate } = parseQuery(request, {
-  //   id: NumAsString,
-  //   validate: BoolAsString,
-  // });
+  const invoice = await db.invoice.findUnique({
+    where: { id },
+    include: { EFactura: true },
+  });
 
-  // const invoice = await db.invoice.findUnique({ where: { id } });
+  switch (invoice?.EFactura?.status) {
+    case "uploaded": {
+      const data = await checkStatus(id, invoice.EFactura.loadIndex);
 
-  return null;
+      if (data?.stare === "ok") {
+        return redirectWithSuccess("/invoices", "Invoice valid.");
+      }
+      return redirectWithError(
+        "/invoices",
+        `There have been ${data?.Errors?.length} errors.`,
+      );
+    }
+
+    default:
+      return jsonWithError(null, "No defined loader.");
+  }
 };
 
 export const action: ActionFunction = async ({
@@ -76,7 +96,6 @@ export const action: ActionFunction = async ({
       if (data.stare === "ok") {
         return jsonWithSuccess(null, "XML validated");
       }
-      console.log(data);
       return jsonWithError(
         data.Messages,
         `There have been ${data.Messages.length} errors.`,
