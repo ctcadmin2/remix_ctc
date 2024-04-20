@@ -158,8 +158,15 @@ export const download = async (downloadId: string | null) => {
       if (response.headers.get("content-type") === "application/zip") {
         const blob: Blob = await response.blob();
         try {
-          efactura && (await FileUploader([blob], "eFactura", efactura?.id));
-          return { stare: "ok", message: "File saved." };
+          if (efactura) {
+            await FileUploader([blob], "eFactura", efactura?.id);
+            await db.eFactura.update({
+              where: { id: efactura.id },
+              data: { status: "store" },
+            });
+            return { stare: "ok", message: "File saved." };
+          }
+          return { stare: "nok", message: "Download index not found." };
         } catch (error) {
           return {
             stare: "nok",
