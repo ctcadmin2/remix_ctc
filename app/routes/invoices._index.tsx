@@ -8,7 +8,6 @@ import {
   useLoaderData,
   useSubmit,
   json,
-  useFetcher,
 } from "@remix-run/react";
 import type {
   ActionFunction,
@@ -171,7 +170,6 @@ const Invoices = () => {
   const [opened, setOpened] = useState(false);
   const [invoice, setInvoice] = useState<Invoice>();
   const submit = useSubmit();
-  const getNew = useFetcher({ key: "getNew" });
 
   const handleDelete = (row: Invoice) => {
     setInvoice(row);
@@ -307,17 +305,6 @@ const Invoices = () => {
             columns={columns as DataTableColumn<unknown>[]}
             total={total}
             perPage={perPage}
-            extraButton={
-              <Button
-                variant="outline"
-                loading={getNew.state === "loading"}
-                onClick={() =>
-                  getNew.submit(null, { action: "/efactura", method: "GET" })
-                }
-              >
-                Load E-Factura
-              </Button>
-            }
           />
         </Tabs.Panel>
 

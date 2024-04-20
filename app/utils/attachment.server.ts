@@ -1,4 +1,5 @@
-import { readFileSync, unlink } from "fs";
+import { unlink } from "fs";
+import { readFile } from "fs/promises";
 
 import type { Attachment } from "@prisma/client";
 
@@ -10,16 +11,19 @@ export const processAttachment = async (
     | "internationalExpense"
     | "nationalExpense"
     | "tripExpense"
-    | "document",
-  id: number,
+    | "document"
+    | "eFactura",
+  id: number | string,
   name: string,
 ) => {
   try {
-    const oldFile = await db.attachment.findUnique({
-      where: { id_type: { id, type } },
+    console.log("proc attach: ", type, id, name);
+    const oldFile = await db.attachment.findFirst({
+      where: { [`${type}Id`]: id },
     });
 
     if (oldFile) {
+      console.log("old file");
       unlink(`/storage/${oldFile?.type}/${oldFile?.name}`, (err) => {
         if (err) {
           console.log("error on delete: ", err);
@@ -28,7 +32,7 @@ export const processAttachment = async (
       await db.attachment.delete({ where: { id: oldFile.id } });
     }
 
-    await db.attachment.create({
+    const attach = await db.attachment.create({
       data: {
         type,
         name,
@@ -37,13 +41,14 @@ export const processAttachment = async (
         },
       },
     });
+    console.log("sega: ", attach);
   } catch (error) {
     console.log("processAttachment: ", error);
   }
 };
 
-export const getPdf = async ({ type, name }: Attachment) => {
+export const getFile = async ({ type, name }: Partial<Attachment>) => {
   const path = `/storage/${type}/${name}`;
 
-  return readFileSync(path);
+  return await readFile(path);
 };

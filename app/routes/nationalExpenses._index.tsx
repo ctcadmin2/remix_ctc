@@ -1,6 +1,6 @@
 import { Center, Button, Menu, Divider } from "@mantine/core";
 import type { Prisma } from "@prisma/client";
-import { Link, json, useLoaderData } from "@remix-run/react";
+import { Link, json, useFetcher, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
   ActionFunctionArgs,
@@ -112,6 +112,7 @@ const NationalExpenses = () => {
   const { expenses, total, perPage } = useLoaderData<typeof loader>();
   const [delOpen, setDelOpen] = useState(false);
   const [expense, setExpense] = useState<NationalExpense>();
+  const getNew = useFetcher({ key: "getNew" });
 
   const handleDelete = (row: NationalExpense) => {
     setExpense(row);
@@ -229,7 +230,20 @@ const NationalExpenses = () => {
         columns={columns as DataTableColumn<unknown>[]}
         total={total}
         perPage={perPage}
-        extraButton={null}
+        extraButton={
+          <Button
+            variant="outline"
+            loading={getNew.state === "loading"}
+            onClick={() =>
+              getNew.submit(
+                { getNew: true },
+                { action: "/efactura", method: "GET" },
+              )
+            }
+          >
+            Load E-Factura
+          </Button>
+        }
       />
       <DeleteModal<NationalExpense>
         name="nationalExpense"

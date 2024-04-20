@@ -16,3 +16,6 @@ node_modules
 /storage/*
 yarn-error.log
 migrate
+
+# ignore xml files
+*.xml

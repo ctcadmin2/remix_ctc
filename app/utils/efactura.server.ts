@@ -5,6 +5,7 @@ import { XMLParser } from "fast-xml-parser";
 import { eInvoice } from "~/routes/efactura";
 
 import { db } from "./db.server";
+import FileUploader from "./uploader.server";
 import XMLBuilder from "./xmlBuilder.server";
 
 const parser = new XMLParser({
@@ -40,8 +41,9 @@ export const upload = async (invoice: eInvoice) => {
             data: {
               EFactura: {
                 update: {
-                  loadIndex: data.header.index_incarcare,
+                  uploadId: data.header.index_incarcare,
                   status: "uploaded",
+                  xml: null,
                 },
               },
             },
@@ -75,12 +77,12 @@ export const upload = async (invoice: eInvoice) => {
   }
 };
 
-export const checkStatus = async (id: number, loadIndex: string | null) => {
-  if (!loadIndex) {
+export const checkStatus = async (id: number, uploadId: string | null) => {
+  if (!uploadId) {
     return { stare: "nok", Errors: [{ errorMessage: "No load index." }] };
   }
 
-  const url = `https://api.anaf.ro/prod/FCTEL/rest/stareMesaj?id_incarcare=${loadIndex}`;
+  const url = `https://api.anaf.ro/prod/FCTEL/rest/stareMesaj?id_incarcare=${uploadId}`;
 
   try {
     const response = await fetch(url, {
@@ -135,17 +137,51 @@ export const checkStatus = async (id: number, loadIndex: string | null) => {
   }
 };
 
-export const download = async (downloadIndex: string) => {
-  const url = `https://api.anaf.ro/test/FCTEL/rest//descarcare?id=${downloadIndex}`;
+export const download = async (downloadId: string | null) => {
+  if (!downloadId) {
+    return { stare: "nok", Errors: [{ errorMessage: "No load index." }] };
+  }
+
+  const efactura = await db.eFactura.findUnique({
+    where: { downloadId },
+  });
+
+  const url = `https://api.anaf.ro/prod/FCTEL/rest/descarcare?id=${downloadId}`;
 
   try {
     const response = await fetch(url, {
       method: "GET",
       headers: { Authorization: `Bearer ${env.TOKEN}` },
     });
-    console.log(response);
+
+    if (response.status === 200) {
+      if (response.headers.get("content-type") === "application/zip") {
+        const blob: Blob = await response.blob();
+        try {
+          efactura && (await FileUploader([blob], "eFactura", efactura?.id));
+          return { stare: "ok", message: "File saved." };
+        } catch (error) {
+          return {
+            stare: "nok",
+            message: `Error while attaching file: ${error}`,
+          };
+        }
+      }
+      return {
+        stare: "nok",
+        message: `Server responded with: ${await response.json()}`,
+      };
+    }
+
+    return {
+      stare: "nok",
+      message: `Server responded with: ${response.status} - ${await response.json()}`,
+    };
   } catch (error) {
-    console.error(error);
+    return {
+      stare: "nok",
+      message: `Error while fetching: ${error}`,
+    };
   }
 };
 

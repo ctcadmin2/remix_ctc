@@ -5,16 +5,16 @@ import type {
   ActionFunction,
   ActionFunctionArgs,
 } from "@remix-run/node";
-import {
-  jsonWithError,
-  jsonWithSuccess,
-  redirectWithError,
-  redirectWithSuccess,
-} from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { NumAsString, parseForm, parseQuery, zx } from "zodix";
 
 import { db } from "~/utils/db.server";
-import { checkStatus, upload, validate } from "~/utils/efactura.server";
+import {
+  checkStatus,
+  download,
+  upload,
+  validate,
+} from "~/utils/efactura.server";
 
 export type eInvoice = Prisma.InvoiceGetPayload<{
   include: {
@@ -47,15 +47,24 @@ export const loader: LoaderFunction = async ({
 
   switch (invoice?.EFactura?.status) {
     case "uploaded": {
-      const data = await checkStatus(id, invoice.EFactura.loadIndex);
+      const data = await checkStatus(id, invoice.EFactura.uploadId);
 
       if (data?.stare === "ok") {
-        return redirectWithSuccess("/invoices", "Invoice valid.");
+        return jsonWithSuccess(null, "Invoice valid.");
       }
-      return redirectWithError(
-        "/invoices",
+      return jsonWithError(
+        null,
         `There have been ${data?.Errors?.length} errors.`,
       );
+    }
+
+    case "valid": {
+      const data = await download(invoice.EFactura.downloadId);
+
+      if (data?.stare === "ok") {
+        return jsonWithSuccess(null, "Invoice downloaded.");
+      }
+      return jsonWithError(null, `There has been an error: ${data.message}.`);
     }
 
     default:

@@ -133,13 +133,14 @@ model Invoice {
 model EFactura {
   id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   xml               String?          @db.Xml
-  loadIndex         String?
-  downloadId        String?
+  uploadId          String?          @unique
+  downloadId        String?          @unique
   status            eStatus          @default(nproc)
   invoice           Invoice?         @relation(fields: [invoiceId], references: [id])
   invoiceId         Int?             @unique
   expense           NationalExpense? @relation(fields: [nationalExpenseId], references: [id])
   nationalExpenseId Int?             @unique
+  attachment        Attachment?
 }
 
 model Identification {
@@ -293,8 +294,8 @@ model Attachment {
   tripExpenseId          Int?                  @unique
   document               Document?             @relation(fields: [documentId], references: [id], onDelete: Cascade)
   documentId             Int?                  @unique
+  eFactura               EFactura?             @relation(fields: [eFacturaId], references: [id], onDelete: Cascade)
+  eFacturaId             String?               @unique @db.Uuid
   createdAt              DateTime?             @default(now()) @db.Date
   updatedAt              DateTime?             @updatedAt @db.Date
-
-  @@unique([id, type])
 }

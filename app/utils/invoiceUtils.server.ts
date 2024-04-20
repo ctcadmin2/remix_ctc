@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { z } from "zod";
+import { zx } from "zodix";
 
 import bnrRate from "./bnrRate.server";
 
@@ -7,8 +8,8 @@ export const schema = z.object({
   number: z.string(), //required
   date: z.string().datetime(), //required
   currency: z.string(), //required
-  vatRate: z.number(), //required
-  clientId: z.number(), //required
+  vatRate: zx.NumAsString, //required
+  clientId: zx.NumAsString, //required
   creditNotesIds: z.string().optional(),
   identification: z
     .object({
