@@ -43,6 +43,8 @@ model User {
   invoices  Invoice[]
   createdAt DateTime? @default(now()) @db.Date
   updatedAt DateTime? @updatedAt @db.Date
+  Message   Message?  @relation(fields: [messageId], references: [id])
+  messageId String?   @db.Uuid
 }
 
 model Setting {
@@ -131,16 +133,16 @@ model Invoice {
 }
 
 model EFactura {
-  id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  xml               String?          @db.Xml
-  uploadId          String?          @unique
-  downloadId        String?          @unique
-  status            eStatus          @default(nproc)
-  invoice           Invoice?         @relation(fields: [invoiceId], references: [id])
-  invoiceId         Int?             @unique
-  expense           NationalExpense? @relation(fields: [nationalExpenseId], references: [id])
-  nationalExpenseId Int?             @unique
-  attachment        Attachment?
+  id         String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xml        String?          @db.Xml
+  uploadId   String?          @unique
+  downloadId String?          @unique
+  status     eStatus          @default(nproc)
+  invoice    Invoice?         @relation(fields: [invoiceId], references: [id])
+  invoiceId  Int?             @unique
+  expense    NationalExpense? @relation(fields: [expenseId], references: [id])
+  expenseId  Int?             @unique
+  attachment Attachment?
 }
 
 model Identification {
@@ -167,7 +169,7 @@ model NationalExpense {
   id          Int         @id @default(autoincrement())
   number      String
   date        DateTime    @db.Date
-  description String
+  description String?
   amount      Decimal     @db.Decimal(8, 2)
   paidBy      String?
   supplierId  Int
@@ -298,4 +300,12 @@ model Attachment {
   eFacturaId             String?               @unique @db.Uuid
   createdAt              DateTime?             @default(now()) @db.Date
   updatedAt              DateTime?             @updatedAt @db.Date
+}
+
+model Message {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status    String
+  content   String
+  users     User[]
+  createdAt DateTime? @default(now()) @db.Date
 }

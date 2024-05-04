@@ -1,18 +1,15 @@
 import { env } from "process";
 
-import { XMLParser } from "fast-xml-parser";
+import { parseStringPromise } from "xml2js";
+import { stripPrefix } from "xml2js/lib/processors";
 
 import { eInvoice } from "~/routes/efactura";
 
 import { db } from "./db.server";
+import { type message, processZip } from "./efac/efacUtils.server";
+import XMLBuilder from "./efac/xmlBuilder.server";
+import { emitter } from "./emitter";
 import FileUploader from "./uploader.server";
-import XMLBuilder from "./xmlBuilder.server";
-
-const parser = new XMLParser({
-  ignoreAttributes: false,
-  attributeNamePrefix: "",
-  ignoreDeclaration: true,
-});
 
 export const upload = async (invoice: eInvoice) => {
   const url = `https://api.anaf.ro/prod/FCTEL/rest/upload?standard=UBL&cif=17868720`;
@@ -33,7 +30,12 @@ export const upload = async (invoice: eInvoice) => {
     if (response.status === 200) {
       const data: {
         header: { index_incarcare?: string; Errors?: { errorMessage: string } };
-      } = parser.parse(await response.text());
+      } = await parseStringPromise(response.text(), {
+        trim: true,
+        explicitArray: false,
+        ignoreAttrs: true,
+        tagNameProcessors: [stripPrefix],
+      });
       if (data.header.index_incarcare) {
         try {
           const upload = await db.invoice.update({
@@ -93,7 +95,12 @@ export const checkStatus = async (id: number, uploadId: string | null) => {
     if (response.status === 200) {
       const data: {
         header: { id_descarcare?: string; Errors?: { errorMessage: string } };
-      } = parser.parse(await response.text());
+      } = await parseStringPromise(response.text(), {
+        trim: true,
+        explicitArray: false,
+        ignoreAttrs: true,
+        tagNameProcessors: [stripPrefix],
+      });
 
       if (data.header.id_descarcare) {
         try {
@@ -237,5 +244,79 @@ export const validate = async (invoice: eInvoice) => {
   } catch (error) {
     console.error("error: ", error);
     return { stare: "nok", Messages: [{ message: `${error}` }] };
+  }
+};
+
+export const getExpenses = async () => {
+  const url = `https://api.anaf.ro/prod/FCTEL/rest/listaMesajeFactura?cif=17868720&zile=10&filtru=P`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${env.TOKEN}` },
+    });
+
+    if (response.status === 200) {
+      const data: {
+        eroare?: string;
+        mesaje: message[];
+      } = await response.json();
+      console.log(`there are ${data.mesaje.length} messages`);
+      await processMessages(data.mesaje);
+      return { stare: "ok", message: "OK" };
+    }
+    const error = await response.json();
+    return { stare: "nok !200", message: error };
+  } catch (error) {
+    return {
+      stare: "nok e",
+      message: `Error while uploading ${error}`,
+    };
+  }
+};
+
+const processMessages = async (mesaje: message[]) => {
+  mesaje.map(async (m) => {
+    const data = await messageDownloader(m.id);
+    if (data) {
+      const response = await processZip(
+        Buffer.from(await data.arrayBuffer()),
+        m.id,
+        m.id_solicitare,
+      );
+      try {
+        const message = await db.message.create({
+          data: { status: response.status, content: response.message },
+        });
+        if (message) {
+          emitter.emit("messages");
+        }
+      } catch (error) {
+        console.log(`There was an error while creating message: ${error}`);
+      }
+    }
+  });
+};
+
+const messageDownloader = async (downloadId: string) => {
+  const url = `https://api.anaf.ro/prod/FCTEL/rest/descarcare?id=${downloadId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${env.TOKEN}` },
+    });
+
+    if (response.status === 200) {
+      if (response.headers.get("content-type") === "application/zip") {
+        return await response.blob();
+      }
+      console.log("downloader error: ", await response.json());
+      return null;
+    }
+
+    return null;
+  } catch (error) {
+    return null;
   }
 };

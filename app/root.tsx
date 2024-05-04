@@ -16,6 +16,7 @@ import {
   Title,
   ColorSchemeScript,
   ScrollArea,
+  ActionIcon,
 } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
@@ -37,10 +38,12 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import { type ReactNode, useEffect, useState } from "react";
+import { LogOut } from "react-feather";
 import { getToast } from "remix-toast";
 import { AuthenticityTokenProvider } from "remix-utils/csrf/react";
 
 import LinksGroup from "./components/LinksGroup/LinksGroup";
+import Messages from "./components/Messages/Messages";
 import { theme } from "./theme";
 import { csrf } from "./utils/csrf.server";
 import handleNotification from "./utils/notifications";
@@ -198,17 +201,19 @@ export default function App() {
             </Title>
           </Group>
           <Group justify="right">
+            <Messages />
             <Button>Language</Button>
 
             {user ? (
-              <Button
+              <ActionIcon
+                variant="transparent"
                 type="submit"
                 onClick={() =>
                   submit(null, { method: "post", action: "/logout" })
                 }
               >
-                Logout
-              </Button>
+                <LogOut />
+              </ActionIcon>
             ) : null}
             {!user ? (
               <Button component={Link} to={linkPath.to}>

@@ -24,7 +24,7 @@ import {
 
 import { eInvoice } from "~/routes/efactura";
 
-import { db } from "./db.server";
+import { db } from "../db.server";
 
 Decimal.set({ precision: 8, rounding: 4 });
 
@@ -118,7 +118,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
       party: new Party({
         postalAddress: new PostalAddress({
           streetName: `${invoice.client.address?.split(", ").slice(0, -1).join(", ")}`,
-          cityName: `${invoice.client.address?.split(", ").pop()?.split(" ").join("")}`,
+          cityName: `${invoice.client.address?.split(", ").pop()?.split(" ").join("").toUpperCase()}`,
           countrySubentity: `${invoice.client.county}`,
           country: new Country({ identificationCode: "RO" }),
         }),

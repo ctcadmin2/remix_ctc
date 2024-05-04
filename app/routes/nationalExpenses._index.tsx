@@ -235,10 +235,7 @@ const NationalExpenses = () => {
             variant="outline"
             loading={getNew.state === "loading"}
             onClick={() =>
-              getNew.submit(
-                { getNew: true },
-                { action: "/efactura", method: "GET" },
-              )
+              getNew.submit({ getNew: true }, { action: "/efactura" })
             }
           >
             Load E-Factura

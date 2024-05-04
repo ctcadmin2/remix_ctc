@@ -19,3 +19,6 @@ migrate
 
 # ignore xml files
 *.xml
+
+# ignore zip files
+*.zip

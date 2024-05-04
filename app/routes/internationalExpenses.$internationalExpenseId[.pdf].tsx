@@ -2,7 +2,7 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { jsonWithError } from "remix-toast";
 import { zx } from "zodix";
 
-import { getPdf } from "~/utils/attachment.server";
+import { getFile } from "~/utils/attachment.server";
 import { db } from "~/utils/db.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -16,7 +16,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     });
 
     if (attachement) {
-      const pdf = await getPdf(attachement);
+      const pdf = await getFile(attachement);
 
       return new Response(pdf, {
         status: 200,
