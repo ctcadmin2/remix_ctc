@@ -1,0 +1,102 @@
+/*
+  Warnings:
+
+  - You are about to drop the column `messageId` on the `User` table. All the data in the column will be lost.
+
+*/
+-- DropForeignKey
+ALTER TABLE "User" DROP CONSTRAINT "User_messageId_fkey";
+
+-- AlterTable
+ALTER TABLE "Attachment" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Company" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "CreditNote" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Document" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "EFactura" ADD COLUMN     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "updatedAt" TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Employee" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Identification" ADD COLUMN     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "updatedAt" TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Indemnization" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "InternationalExpense" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Invoice" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Message" ADD COLUMN     "updatedAt" TIMESTAMP,
+ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "NationalExpense" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Order" ADD COLUMN     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "updatedAt" TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Payment" ALTER COLUMN "createdAt" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Repair" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "TripExpense" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "TripReport" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "User" DROP COLUMN "messageId",
+ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Vehicle" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMP,
+ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMP;
+
+-- CreateTable
+CREATE TABLE "_MessageToUser" (
+    "A" UUID NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_MessageToUser_AB_unique" ON "_MessageToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_MessageToUser_B_index" ON "_MessageToUser"("B");
+
+-- AddForeignKey
+ALTER TABLE "_MessageToUser" ADD CONSTRAINT "_MessageToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Message"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_MessageToUser" ADD CONSTRAINT "_MessageToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

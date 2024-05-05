@@ -1,53 +1,83 @@
-import { Menu, Indicator, ActionIcon } from "@mantine/core";
+import {
+  Indicator,
+  ActionIcon,
+  Drawer,
+  ScrollAreaAutosize,
+  FocusTrapInitialFocus,
+  Alert,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { Message } from "@prisma/client";
+import { useFetcher } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import { Mail } from "react-feather";
 import { useEventSource } from "remix-utils/sse/react";
 import { parse } from "superjson";
 
 const Messages = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [opened, { open, close }] = useDisclosure(false);
   const lastMessage = useEventSource("/messages");
+  const fetcher = useFetcher({ key: "checkMessage" });
 
+  //TODO improve solution
   useEffect(() => {
-    setMessages((datums) => {
+    if (messages.length === 0) {
+      fetcher.submit({}, { action: "/messages" });
+    }
+    setMessages((curentMessages) => {
       if (lastMessage !== null) {
-        console.log(parse(lastMessage));
-        return datums.concat(parse(lastMessage));
+        return parse(lastMessage);
       }
-      return datums;
+      return curentMessages;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastMessage]);
 
   return (
-    <Menu shadow="md" position="bottom-end" trigger="click-hover">
-      <Menu.Target>
-        <Indicator color="red" label={messages.length} size={16}>
-          <ActionIcon
-            variant="transparent"
-            size={"xl"}
-            aria-label="Messages"
-            color="blue"
+    <>
+      <Drawer
+        styles={{ content: { overflowY: "hidden" } }}
+        opened={opened}
+        onClose={close}
+        withCloseButton={false}
+        position="right"
+        offset={8}
+        radius="md"
+        scrollAreaComponent={ScrollAreaAutosize}
+      >
+        <FocusTrapInitialFocus />
+        {messages.map((message, index) => (
+          <Alert
+            styles={{ root: { margin: "1rem" } }}
+            key={index}
+            variant="light"
+            color={message.status === "ok" ? "green" : "yellow"}
+            withCloseButton={true}
+            onClose={() =>
+              fetcher.submit(
+                { id: message.id },
+                { action: "/messages", method: "POST" },
+              )
+            }
           >
-            <Mail size={32} />
-          </ActionIcon>
-        </Indicator>
-      </Menu.Target>
+            {message.content}
+          </Alert>
+        ))}
+      </Drawer>
 
-      <Menu.Dropdown>
-        {messages ? (
-          messages.map((message, messageIdx) => (
-            <Menu.Item
-              // color={message.status === "nok" ? "red" : "gray.1"}
-              key={messageIdx}
-            >
-              {message}
-            </Menu.Item>
-          ))
-        ) : (
-          <Menu.Item>No messages</Menu.Item>
-        )}
-      </Menu.Dropdown>
-    </Menu>
+      <Indicator color="red" label={messages.length} size={16}>
+        <ActionIcon
+          variant="transparent"
+          size={"xl"}
+          aria-label="Messages"
+          color="blue"
+          onClick={() => open()}
+        >
+          <Mail size={32} />
+        </ActionIcon>
+      </Indicator>
+    </>
   );
 };
 

@@ -41,10 +41,9 @@ model User {
   role      Role      @default(user)
   active    Boolean   @default(false)
   invoices  Invoice[]
-  createdAt DateTime? @default(now()) @db.Date
-  updatedAt DateTime? @updatedAt @db.Date
-  Message   Message?  @relation(fields: [messageId], references: [id])
-  messageId String?   @db.Uuid
+  messages  Message[]
+  createdAt DateTime? @default(now()) @db.Timestamp
+  updatedAt DateTime? @updatedAt @db.Timestamp
 }
 
 model Setting {
@@ -65,8 +64,8 @@ model Vehicle {
   documents    Document[]
   creditNotes  CreditNote[]
   repairs      Repair[]
-  createdAt    DateTime?    @default(now()) @db.Date
-  updatedAt    DateTime?    @updatedAt @db.Date
+  createdAt    DateTime?    @default(now()) @db.Timestamp
+  updatedAt    DateTime?    @updatedAt @db.Timestamp
 }
 
 model CreditNote {
@@ -84,8 +83,8 @@ model CreditNote {
   invoiceId  Int?
   invoice    Invoice?    @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
   attachment Attachment?
-  createdAt  DateTime?   @default(now()) @db.Date
-  updatedAt  DateTime?   @updatedAt @db.Date
+  createdAt  DateTime?   @default(now()) @db.Timestamp
+  updatedAt  DateTime?   @updatedAt @db.Timestamp
 }
 
 model Company {
@@ -104,10 +103,10 @@ model Company {
   email                String?
   phone                String?
   invoices             Invoice[]
-  createdAt            DateTime?              @default(now()) @db.Date
-  updatedAt            DateTime?              @updatedAt @db.Date
   NationalExpense      NationalExpense[]
   InternationalExpense InternationalExpense[]
+  createdAt            DateTime?              @default(now()) @db.Timestamp
+  updatedAt            DateTime?              @updatedAt @db.Timestamp
 }
 
 model Invoice {
@@ -125,11 +124,11 @@ model Invoice {
   clientId       Int
   client         Company         @relation(fields: [clientId], references: [id], onDelete: Cascade)
   identification Identification?
-  createdAt      DateTime?       @default(now()) @db.Date
-  updatedAt      DateTime?       @updatedAt @db.Date
   createdBy      User?           @relation(fields: [createdById], references: [id])
   createdById    Int?
   EFactura       EFactura?
+  createdAt      DateTime?       @default(now()) @db.Timestamp
+  updatedAt      DateTime?       @updatedAt @db.Timestamp
 }
 
 model EFactura {
@@ -143,26 +142,32 @@ model EFactura {
   expense    NationalExpense? @relation(fields: [expenseId], references: [id])
   expenseId  Int?             @unique
   attachment Attachment?
+  createdAt  DateTime?        @default(now()) @db.Timestamp
+  updatedAt  DateTime?        @updatedAt @db.Timestamp
 }
 
 model Identification {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   expName   String?
   expId     String?
   expVeh    String?
-  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId Int     @unique
+  Invoice   Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId Int       @unique
+  createdAt DateTime? @default(now()) @db.Timestamp
+  updatedAt DateTime? @updatedAt @db.Timestamp
 }
 
 model Order {
-  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   description String
-  amount      Decimal @db.Decimal(8, 2)
-  quantity    Decimal @db.Decimal(8, 2)
-  total       Decimal @db.Decimal(8, 2)
-  currency    String  @default("EUR")
-  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  amount      Decimal   @db.Decimal(8, 2)
+  quantity    Decimal   @db.Decimal(8, 2)
+  total       Decimal   @db.Decimal(8, 2)
+  currency    String    @default("EUR")
+  invoice     Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   invoiceId   Int
+  createdAt   DateTime? @default(now()) @db.Timestamp
+  updatedAt   DateTime? @updatedAt @db.Timestamp
 }
 
 model NationalExpense {
@@ -175,9 +180,9 @@ model NationalExpense {
   supplierId  Int
   supplier    Company     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   attachment  Attachment?
-  createdAt   DateTime?   @default(now()) @db.Date
-  updatedAt   DateTime?   @updatedAt @db.Date
   EFactura    EFactura?
+  createdAt   DateTime?   @default(now()) @db.Timestamp
+  updatedAt   DateTime?   @updatedAt @db.Timestamp
 }
 
 model InternationalExpense {
@@ -190,8 +195,8 @@ model InternationalExpense {
   supplierId  Int
   supplier    Company     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   attachment  Attachment?
-  createdAt   DateTime?   @default(now()) @db.Date
-  updatedAt   DateTime?   @updatedAt @db.Date
+  createdAt   DateTime?   @default(now()) @db.Timestamp
+  updatedAt   DateTime?   @updatedAt @db.Timestamp
 }
 
 model TripExpense {
@@ -205,17 +210,17 @@ model TripExpense {
   amountEur    Decimal     @db.Decimal(8, 2)
   card         Boolean     @default(true)
   attachment   Attachment?
-  createdAt    DateTime    @default(now()) @db.Date
-  updatedAt    DateTime    @updatedAt @db.Date
   TripReport   TripReport? @relation(fields: [tripReportId], references: [id], onDelete: SetNull)
   tripReportId Int?
+  createdAt    DateTime    @default(now()) @db.Timestamp
+  updatedAt    DateTime    @updatedAt @db.Timestamp
 }
 
 model TripReport {
   id        Int           @id @default(autoincrement())
   expenses  TripExpense[]
-  createdAt DateTime      @default(now()) @db.Date
-  updatedAt DateTime      @updatedAt @db.Date
+  createdAt DateTime      @default(now()) @db.Timestamp
+  updatedAt DateTime      @updatedAt @db.Timestamp
 }
 
 model Employee {
@@ -226,8 +231,8 @@ model Employee {
   active    Boolean    @default(true)
   payments  Payment[]
   documents Document[]
-  createdAt DateTime   @default(now()) @db.Date
-  updatedAt DateTime   @updatedAt @db.Date
+  createdAt DateTime   @default(now()) @db.Timestamp
+  updatedAt DateTime   @updatedAt @db.Timestamp
 }
 
 model Payment {
@@ -238,8 +243,8 @@ model Payment {
   indemnizations Indemnization[]
   employee       Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   employeeId     Int
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt      DateTime?       @default(now()) @db.Timestamp
+  updatedAt      DateTime        @updatedAt @db.Timestamp
 }
 
 model Document {
@@ -250,10 +255,10 @@ model Document {
   Employee    Employee?   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   employeeId  Int?
   attachment  Attachment?
-  createdAt   DateTime    @default(now()) @db.Date
-  updatedAt   DateTime    @updatedAt @db.Date
   Vehicle     Vehicle?    @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   vehicleId   Int?
+  createdAt   DateTime    @default(now()) @db.Timestamp
+  updatedAt   DateTime    @updatedAt @db.Timestamp
 }
 
 model Indemnization {
@@ -267,8 +272,8 @@ model Indemnization {
   delegation Boolean
   Payment    Payment?  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
   paymentId  Int?
-  createdAt  DateTime? @default(now()) @db.Date
-  updatedAt  DateTime? @updatedAt @db.Date
+  createdAt  DateTime? @default(now()) @db.Timestamp
+  updatedAt  DateTime? @updatedAt @db.Timestamp
 }
 
 model Repair {
@@ -278,8 +283,8 @@ model Repair {
   comment   String
   vehicleId Int
   vehicle   Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  createdAt DateTime? @default(now()) @db.Date
-  updatedAt DateTime? @updatedAt @db.Date
+  createdAt DateTime? @default(now()) @db.Timestamp
+  updatedAt DateTime? @updatedAt @db.Timestamp
 }
 
 model Attachment {
@@ -298,8 +303,8 @@ model Attachment {
   documentId             Int?                  @unique
   eFactura               EFactura?             @relation(fields: [eFacturaId], references: [id], onDelete: Cascade)
   eFacturaId             String?               @unique @db.Uuid
-  createdAt              DateTime?             @default(now()) @db.Date
-  updatedAt              DateTime?             @updatedAt @db.Date
+  createdAt              DateTime?             @default(now()) @db.Timestamp
+  updatedAt              DateTime?             @updatedAt @db.Timestamp
 }
 
 model Message {
@@ -307,5 +312,6 @@ model Message {
   status    String
   content   String
   users     User[]
-  createdAt DateTime? @default(now()) @db.Date
+  createdAt DateTime? @default(now()) @db.Timestamp
+  updatedAt DateTime? @updatedAt @db.Timestamp
 }

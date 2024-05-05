@@ -46,6 +46,7 @@ import LinksGroup from "./components/LinksGroup/LinksGroup";
 import Messages from "./components/Messages/Messages";
 import { theme } from "./theme";
 import { csrf } from "./utils/csrf.server";
+import { emitter } from "./utils/emitter";
 import handleNotification from "./utils/notifications";
 import { authenticator } from "./utils/session.server";
 
@@ -64,6 +65,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const { toast, headers } = await getToast(request);
   const mainHeaders = new Headers(headers);
   const [token, csrfHeader] = await csrf.commitToken(request);
+  emitter.emit("messages");
   if (csrfHeader) {
     mainHeaders.append("set-cookie", csrfHeader);
   }

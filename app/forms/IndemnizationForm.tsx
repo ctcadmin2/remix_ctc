@@ -37,6 +37,7 @@ const IndemnizationForm = () => {
                 <Table.Td>
                   <DatePickerInput
                     type="range"
+                    allowSingleDateInRange
                     name={`indemnizations[${i}].period`}
                     {...getInputProps(`indemnizations.${i}.period`, {
                       withFocus: false,
