@@ -22,13 +22,22 @@ enum Role {
   user
 }
 
-enum eStatus {
+enum EStatus {
   nproc
   validated
   uploaded
   invalid
   valid
   store
+}
+
+enum AttachmentType {
+  creditNote
+  internationalExpense
+  nationalExpense
+  tripExpense
+  document
+  eFactura
 }
 
 model User {
@@ -136,7 +145,7 @@ model EFactura {
   xml        String?          @db.Xml
   uploadId   String?          @unique
   downloadId String?          @unique
-  status     eStatus          @default(nproc)
+  status     EStatus          @default(nproc)
   invoice    Invoice?         @relation(fields: [invoiceId], references: [id])
   invoiceId  Int?             @unique
   expense    NationalExpense? @relation(fields: [expenseId], references: [id])
@@ -289,7 +298,7 @@ model Repair {
 
 model Attachment {
   id                     Int                   @id @default(autoincrement())
-  type                   String
+  type                   AttachmentType
   name                   String
   creditNote             CreditNote?           @relation(fields: [creditNoteId], references: [id], onDelete: Cascade)
   creditNoteId           Int?                  @unique

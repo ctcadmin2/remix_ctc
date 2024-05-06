@@ -141,7 +141,7 @@ const NationalExpenses = () => {
         Intl.NumberFormat("ro-RO", {
           style: "currency",
           maximumFractionDigits: 2,
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 2,
           currency: "RON",
         }).format(new Decimal(amount).toNumber()),
     },

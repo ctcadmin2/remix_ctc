@@ -248,7 +248,7 @@ export const validate = async (invoice: eInvoice) => {
 };
 
 export const getExpenses = async () => {
-  const url = `https://api.anaf.ro/prod/FCTEL/rest/listaMesajeFactura?cif=17868720&zile=10&filtru=P`;
+  const url = `https://api.anaf.ro/prod/FCTEL/rest/listaMesajeFactura?cif=17868720&zile=60&filtru=P`;
 
   try {
     const response = await fetch(url, {
@@ -259,11 +259,17 @@ export const getExpenses = async () => {
     if (response.status === 200) {
       const data: {
         eroare?: string;
-        mesaje: message[];
+        mesaje?: message[];
       } = await response.json();
-      console.log(`there are ${data.mesaje.length} messages`);
-      await processMessages(data.mesaje);
-      return { stare: "ok", message: "OK" };
+
+      if (data.mesaje) {
+        console.log(`there are ${data.mesaje.length} messages`);
+
+        await processMessages(data.mesaje);
+        return { stare: "ok", message: "OK" };
+      }
+
+      return { stare: "nok", message: data.eroare };
     }
     const error = await response.json();
     return { stare: "nok !200", message: error };

@@ -16,7 +16,6 @@ import {
   upload,
   validate,
 } from "~/utils/efactura.server";
-// import { emitter } from "~/utils/emitter";
 
 export type eInvoice = Prisma.InvoiceGetPayload<{
   include: {
@@ -45,11 +44,11 @@ export const loader: LoaderFunction = async ({
 
   if (getNew) {
     try {
-      console.log("get new");
       const data = await getExpenses();
-      // emitter.emit("messages");
-      console.log("returned getExpenses", data);
-      return null;
+      if (data.stare === "ok") {
+        return jsonWithSuccess(null, data.message);
+      }
+      return jsonWithError(null, data.message);
     } catch (error) {
       return jsonWithError(null, `There was an error: ${error}`);
     }

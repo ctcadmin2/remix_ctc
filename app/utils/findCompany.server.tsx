@@ -1,4 +1,4 @@
-import { Company } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { validate } from "vies-validate";
 
 import { db } from "./db.server";
@@ -35,6 +35,7 @@ interface OpenApiProps {
   };
 }
 
+// Find better API for data
 const findCompany = async (country: string | null, vatNr: string | null) => {
   //parameter guard
   if (country == null || vatNr == null) {
@@ -42,73 +43,85 @@ const findCompany = async (country: string | null, vatNr: string | null) => {
   }
 
   // check if company already is in db
-  const local = await db.company.findFirst({ where: { vatNumber: vatNr } });
-  if (local) {
-    return { data: null, status: 204 };
-  }
+  try {
+    const local = await db.company.findFirst({
+      where: { vatNumber: { search: vatNr } },
+    });
 
-  if (country === "RO") {
-    return await processRO(vatNr);
-  } else {
-    return processEU(country, vatNr);
+    if (local) {
+      return { data: local, status: 204 };
+    }
+
+    if (country === "RO") {
+      return await processRO(vatNr);
+    } else {
+      return processEU(country, vatNr);
+    }
+  } catch (error) {
+    return { data: null, status: 500 };
   }
 };
 
 const processRO = async (vatNr: string) => {
   const url = `https://api.openapi.ro/api/companies/${vatNr}`;
-  let company: Partial<Company> | null = null;
 
-  const res = await fetch(url, {
-    headers: {
-      "x-api-key": `${process.env.OPENAPI_KEY}`,
-    },
-  });
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "x-api-key": `${process.env.OPENAPI_KEY}`,
+      },
+    });
 
-  if (res.status === 202 || res.status === 404) {
+    if (res.status === 202 || res.status === 404) {
+      return { data: null, status: 404 };
+    } else if (res.status !== 200) {
+      return { data: null, status: 503 };
+    }
+
+    const data: OpenApiProps = await res.json();
+
+    if (data) {
+      const company: Prisma.CompanyCreateInput = {
+        name: data.denumire,
+        registration: data.numar_reg_com,
+        vatNumber: data.cif,
+        vatValid: data.tva?.length > 0 ? true : false,
+        address: data.adresa,
+        county: data.judet,
+        country: "RO",
+        phone: data.telefon,
+      };
+      return { data: company, status: 200 };
+    }
+
     return { data: null, status: 404 };
-  } else if (res.status !== 200) {
-    return { data: null, status: 503 };
+  } catch (error) {
+    return { data: null, status: 500 };
   }
-
-  const data: OpenApiProps = await res.json();
-
-  if (data) {
-    company = {
-      name: data.denumire,
-      registration: data.numar_reg_com,
-      vatNumber: data.cif,
-      vatValid: data.tva.length > 0 ? true : false,
-      address: data.adresa,
-      county: data.judet,
-      country: "RO",
-      phone: data.telefon,
-    };
-  }
-
-  return { data: company, status: 200 };
 };
 
 const processEU = async (country: string, vatNr: string) => {
-  let company: Partial<Company> | null = null;
+  try {
+    const { data, error } = await validate(country, vatNr);
+    if (error || data?.valid === false) {
+      return { data: null, status: 404 };
+    }
 
-  const { data, error } = await validate(country, vatNr);
-  if (error || data?.valid === false) {
+    if (data) {
+      const company: Prisma.CompanyCreateInput = {
+        name: data.name ?? "",
+        vatNumber: data.vatNumber,
+        vatValid: data.valid,
+        address: data.address,
+        country: data.countryCode,
+      };
+      return { data: company, status: 200 };
+    }
+
     return { data: null, status: 404 };
+  } catch (error) {
+    return { data: null, status: 500 };
   }
-
-  if (data) {
-    company = {
-      name: data.name,
-      vatNumber: `${data.countryCode}${data.vatNumber}`,
-      vatValid: data.valid,
-      address: data.address,
-      country: data.countryCode,
-    };
-
-    // CountryCodes[data.countryCode as keyof typeof CountryCodes]
-  }
-
-  return { data: company, status: 200 };
 };
 
 export default findCompany;

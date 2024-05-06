@@ -9,7 +9,7 @@ import EFacturaStatus from "../EFacturaStatus/EFacturaStatus";
 const EFacturaHandler = ({ invoice }: { invoice: Invoice }): JSX.Element => {
   const efactura = useFetcher({ key: "efactura" });
 
-  const handleEFactura = (id: number, status: $Enums.eStatus | undefined) => {
+  const handleEFactura = (id: number, status: $Enums.EStatus | undefined) => {
     if (!status || status === "store") {
       return;
     }

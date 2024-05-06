@@ -40,8 +40,6 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  console.log(user);
-
   const { id } = await parseForm(request, {
     id: z.string(),
   });
