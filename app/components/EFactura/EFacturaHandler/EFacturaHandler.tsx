@@ -1,25 +1,30 @@
 import { Menu } from "@mantine/core";
 import type { $Enums } from "@prisma/client";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useRevalidator } from "@remix-run/react";
 
 import type { Invoice } from "~/routes/invoices._index";
 
 import EFacturaStatus from "../EFacturaStatus/EFacturaStatus";
 
 const EFacturaHandler = ({ invoice }: { invoice: Invoice }): JSX.Element => {
-  const efactura = useFetcher({ key: "efactura" });
+  const fetcher = useFetcher({ key: "efactura" });
+  const revalidator = useRevalidator();
 
-  const handleEFactura = (id: number, status: $Enums.EStatus | undefined) => {
-    if (!status || status === "store") {
+  const handleEFactura = async (
+    id: number,
+    status: $Enums.EStatus | undefined,
+  ) => {
+    //if efactura is already stored do nothing
+    if (status === "store") {
       return;
     }
 
-    if (status === undefined || status === "nproc" || status === "validated") {
-      console.log("post");
-      return efactura.submit({ id }, { action: "/efactura", method: "POST" });
+    if (!status || status === "nproc" || status === "validated") {
+      return fetcher.submit({ id }, { action: "/efactura", method: "POST" });
     }
-    console.log("get");
-    return efactura.submit({ id }, { action: "/efactura" });
+
+    fetcher.submit({ id }, { action: "/efactura" });
+    revalidator.revalidate();
   };
 
   return (

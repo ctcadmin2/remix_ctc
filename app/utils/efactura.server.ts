@@ -1,14 +1,12 @@
 import { env } from "process";
 
 import { parseStringPromise } from "xml2js";
-import { stripPrefix } from "xml2js/lib/processors";
 
 import { eInvoice } from "~/routes/efactura";
 
 import { db } from "./db.server";
-import { type message, processZip } from "./efac/efacUtils.server";
+import { processMessages, type message } from "./efac/efacUtils.server";
 import XMLBuilder from "./efac/xmlBuilder.server";
-import { emitter } from "./emitter";
 import FileUploader from "./uploader.server";
 
 export const upload = async (invoice: eInvoice) => {
@@ -30,12 +28,12 @@ export const upload = async (invoice: eInvoice) => {
     if (response.status === 200) {
       const data: {
         header: { index_incarcare?: string; Errors?: { errorMessage: string } };
-      } = await parseStringPromise(response.text(), {
+      } = await parseStringPromise(await response.text(), {
         trim: true,
         explicitArray: false,
-        ignoreAttrs: true,
-        tagNameProcessors: [stripPrefix],
+        mergeAttrs: true,
       });
+
       if (data.header.index_incarcare) {
         try {
           const upload = await db.invoice.update({
@@ -95,12 +93,13 @@ export const checkStatus = async (id: number, uploadId: string | null) => {
     if (response.status === 200) {
       const data: {
         header: { id_descarcare?: string; Errors?: { errorMessage: string } };
-      } = await parseStringPromise(response.text(), {
+      } = await parseStringPromise(await response.text(), {
         trim: true,
         explicitArray: false,
-        ignoreAttrs: true,
-        tagNameProcessors: [stripPrefix],
+        mergeAttrs: true,
       });
+
+      console.log(data);
 
       if (data.header.id_descarcare) {
         try {
@@ -249,7 +248,7 @@ export const validate = async (invoice: eInvoice) => {
 
 export const getExpenses = async () => {
   const url = `https://api.anaf.ro/prod/FCTEL/rest/listaMesajeFactura?cif=17868720&zile=60&filtru=P`;
-
+  // return { stare: "ok", message: "called" };
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -278,51 +277,5 @@ export const getExpenses = async () => {
       stare: "nok e",
       message: `Error while uploading ${error}`,
     };
-  }
-};
-
-const processMessages = async (mesaje: message[]) => {
-  mesaje.map(async (m) => {
-    const data = await messageDownloader(m.id);
-    if (data) {
-      const response = await processZip(
-        Buffer.from(await data.arrayBuffer()),
-        m.id,
-        m.id_solicitare,
-      );
-      try {
-        const message = await db.message.create({
-          data: { status: response.status, content: response.message },
-        });
-        if (message) {
-          emitter.emit("messages");
-        }
-      } catch (error) {
-        console.log(`There was an error while creating message: ${error}`);
-      }
-    }
-  });
-};
-
-const messageDownloader = async (downloadId: string) => {
-  const url = `https://api.anaf.ro/prod/FCTEL/rest/descarcare?id=${downloadId}`;
-
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${env.TOKEN}` },
-    });
-
-    if (response.status === 200) {
-      if (response.headers.get("content-type") === "application/zip") {
-        return await response.blob();
-      }
-      console.log("downloader error: ", await response.json());
-      return null;
-    }
-
-    return null;
-  } catch (error) {
-    return null;
   }
 };

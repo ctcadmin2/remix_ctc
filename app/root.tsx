@@ -22,6 +22,7 @@ import { DatesProvider } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
+import { Message } from "@prisma/client";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import {
@@ -46,7 +47,7 @@ import LinksGroup from "./components/LinksGroup/LinksGroup";
 import Messages from "./components/Messages/Messages";
 import { theme } from "./theme";
 import { csrf } from "./utils/csrf.server";
-import { emitter } from "./utils/emitter";
+import { db } from "./utils/db.server";
 import handleNotification from "./utils/notifications";
 import { authenticator } from "./utils/session.server";
 
@@ -65,12 +66,21 @@ export const loader: LoaderFunction = async ({ request }) => {
   const { toast, headers } = await getToast(request);
   const mainHeaders = new Headers(headers);
   const [token, csrfHeader] = await csrf.commitToken(request);
-  emitter.emit("messages");
+
+  let messages: Message[] = [];
+
+  if (user) {
+    messages = await db.message.findMany({
+      where: { users: { none: { id: user.id } } },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
   if (csrfHeader) {
     mainHeaders.append("set-cookie", csrfHeader);
   }
 
-  return json({ csrf: token, user, toast }, { headers: mainHeaders });
+  return json({ csrf: token, user, toast, messages }, { headers: mainHeaders });
 };
 
 const navLinks = [
@@ -203,7 +213,7 @@ export default function App() {
             </Title>
           </Group>
           <Group justify="right">
-            <Messages />
+            {user ? <Messages /> : null}
             <Button>Language</Button>
 
             {user ? (

@@ -5,34 +5,30 @@ import {
   ScrollAreaAutosize,
   FocusTrapInitialFocus,
   Alert,
+  Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Message } from "@prisma/client";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import { Mail } from "react-feather";
 import { useEventSource } from "remix-utils/sse/react";
 import { parse } from "superjson";
 
-const Messages = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [opened, { open, close }] = useDisclosure(false);
-  const lastMessage = useEventSource("/messages");
-  const fetcher = useFetcher({ key: "checkMessage" });
+import { loader } from "~/root";
 
-  //TODO improve solution
+const Messages = () => {
+  const data = useLoaderData<typeof loader>();
+  const [opened, { open, close }] = useDisclosure(false);
+  const [messages, setMessages] = useState<Message[]>(data.messages);
+  const newMessages = useEventSource("/messages");
+  const fetcher = useFetcher({ key: "deleteMessage" });
+
   useEffect(() => {
-    if (messages.length === 0) {
-      fetcher.submit({}, { action: "/messages" });
+    if (newMessages) {
+      setMessages(parse(newMessages));
     }
-    setMessages((curentMessages) => {
-      if (lastMessage !== null) {
-        return parse(lastMessage);
-      }
-      return curentMessages;
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastMessage]);
+  }, [newMessages]);
 
   return (
     <>
@@ -47,23 +43,27 @@ const Messages = () => {
         scrollAreaComponent={ScrollAreaAutosize}
       >
         <FocusTrapInitialFocus />
-        {messages.map((message, index) => (
-          <Alert
-            styles={{ root: { margin: "1rem" } }}
-            key={index}
-            variant="light"
-            color={message.status === "ok" ? "green" : "yellow"}
-            withCloseButton={true}
-            onClose={() =>
-              fetcher.submit(
-                { id: message.id },
-                { action: "/messages", method: "POST" },
-              )
-            }
-          >
-            {message.content}
-          </Alert>
-        ))}
+        {messages.length > 0 ? (
+          messages.map((message, index) => (
+            <Alert
+              styles={{ root: { margin: "1rem" } }}
+              key={index}
+              variant="light"
+              color={message.status === "ok" ? "green" : "yellow"}
+              withCloseButton={true}
+              onClose={() =>
+                fetcher.submit(
+                  { id: message.id },
+                  { action: "/messages", method: "POST" },
+                )
+              }
+            >
+              {message.content}
+            </Alert>
+          ))
+        ) : (
+          <Text>No new messages.</Text>
+        )}
       </Drawer>
 
       <Indicator color="red" label={messages.length} size={16}>

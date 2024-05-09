@@ -17,13 +17,17 @@ import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 export const loader: LoaderFunction = async ({
   request,
 }: LoaderFunctionArgs) => {
-  emitter.emit("messages");
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: DEFAULT_REDIRECT,
+  });
+
   return eventStream(request.signal, function setup(send) {
     const handle = async () => {
-      const messages = await db.message.findMany({
-        where: { users: { none: { id: 1 } } },
+      const message = await db.message.findMany({
+        where: { users: { none: { id: user.id } } },
+        orderBy: { createdAt: "desc" },
       });
-      send({ data: stringify(messages) });
+      send({ data: stringify(message) });
     };
     emitter.on("messages", handle);
 
@@ -50,7 +54,6 @@ export const action: ActionFunction = async ({
       data: { users: { connect: { id: user.id } } },
     });
     if (m) {
-      console.log(m);
       emitter.emit("messages");
       return jsonWithSuccess(null, "Message deleted.");
     }

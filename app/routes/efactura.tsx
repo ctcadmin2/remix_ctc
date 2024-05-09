@@ -5,8 +5,9 @@ import type {
   ActionFunction,
   ActionFunctionArgs,
 } from "@remix-run/node";
+import { ShouldRevalidateFunction } from "@remix-run/react";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
-import { NumAsString, parseForm, parseQuery, zx } from "zodix";
+import { BoolAsString, NumAsString, parseForm, parseQuery, zx } from "zodix";
 
 import { db } from "~/utils/db.server";
 import {
@@ -16,6 +17,7 @@ import {
   upload,
   validate,
 } from "~/utils/efactura.server";
+import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
 
 export type eInvoice = Prisma.InvoiceGetPayload<{
   include: {
@@ -37,9 +39,58 @@ export type eInvoice = Prisma.InvoiceGetPayload<{
 export const loader: LoaderFunction = async ({
   request,
 }: LoaderFunctionArgs) => {
-  const { id, getNew } = parseQuery(request, {
-    id: zx.NumAsString.optional(),
-    getNew: zx.BoolAsString.optional(),
+  await authenticator.isAuthenticated(request, {
+    failureRedirect: DEFAULT_REDIRECT,
+  });
+
+  const { id } = parseQuery(request, {
+    id: zx.NumAsString,
+  });
+
+  const invoice = await db.invoice.findUnique({
+    where: { id },
+    include: { EFactura: true },
+  });
+
+  switch (invoice?.EFactura?.status) {
+    case "uploaded": {
+      const data = await checkStatus(id, invoice.EFactura.uploadId);
+
+      console.log(data);
+
+      if (data?.stare === "ok") {
+        return jsonWithSuccess(null, "Invoice valid.");
+      }
+      return jsonWithError(
+        null,
+        `There have been ${data?.Errors?.length} errors.`,
+      );
+    }
+
+    case "valid": {
+      const data = await download(invoice.EFactura.downloadId);
+
+      if (data?.stare === "ok") {
+        return jsonWithSuccess(null, "Invoice downloaded.");
+      }
+      return jsonWithError(null, `There has been an error: ${data.message}.`);
+    }
+
+    default:
+      return jsonWithError(null, "No defined loader.");
+  }
+};
+
+export const action: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
+  await authenticator.isAuthenticated(request, {
+    failureRedirect: DEFAULT_REDIRECT,
+  });
+
+  const { id, getNew } = await parseForm(request, {
+    id: NumAsString.optional(),
+    getNew: BoolAsString.optional(),
   });
 
   if (getNew) {
@@ -52,94 +103,56 @@ export const loader: LoaderFunction = async ({
     } catch (error) {
       return jsonWithError(null, `There was an error: ${error}`);
     }
-  } else if (id) {
-    const invoice = await db.invoice.findUnique({
+  } else {
+    const invoice: eInvoice = await db.invoice.findUnique({
       where: { id },
-      include: { EFactura: true },
+      include: {
+        client: {
+          select: {
+            address: true,
+            county: true,
+            name: true,
+            vatNumber: true,
+            vatValid: true,
+          },
+        },
+        EFactura: true,
+        orders: true,
+        creditNotes: { select: { amount: true, currency: true, number: true } },
+      },
     });
 
     switch (invoice?.EFactura?.status) {
-      case "uploaded": {
-        const data = await checkStatus(id, invoice.EFactura.uploadId);
-
+      case undefined:
+      case "nproc": {
+        console.log("nproc");
+        const data = await validate(invoice);
         console.log(data);
 
-        if (data?.stare === "ok") {
-          return jsonWithSuccess(null, "Invoice valid.");
+        if (data.stare === "ok") {
+          return jsonWithSuccess(null, "XML validated");
         }
         return jsonWithError(
-          null,
-          `There have been ${data?.Errors?.length} errors.`,
+          data.Messages,
+          `There have been ${data.Messages.length} errors.`,
         );
       }
-
-      case "valid": {
-        const data = await download(invoice.EFactura.downloadId);
+      case "validated": {
+        const data = await upload(invoice);
 
         if (data?.stare === "ok") {
-          return jsonWithSuccess(null, "Invoice downloaded.");
+          return jsonWithSuccess(null, data.message);
         }
-        return jsonWithError(null, `There has been an error: ${data.message}.`);
-      }
 
+        return jsonWithError(null, data?.message);
+      }
       default:
-        return jsonWithError(null, "No defined loader.");
+        return jsonWithError(null, "No defined action.");
     }
   }
-
-  return jsonWithError(null, "No defined loader params.");
 };
 
-export const action: ActionFunction = async ({
-  request,
-}: ActionFunctionArgs) => {
-  const { id } = await parseForm(request, {
-    id: NumAsString,
-  });
-
-  const invoice: eInvoice = await db.invoice.findUnique({
-    where: { id },
-    include: {
-      client: {
-        select: {
-          address: true,
-          county: true,
-          name: true,
-          vatNumber: true,
-          vatValid: true,
-        },
-      },
-      EFactura: true,
-      orders: true,
-      creditNotes: { select: { amount: true, currency: true, number: true } },
-    },
-  });
-
-  switch (invoice?.EFactura?.status) {
-    case undefined:
-    case "nproc": {
-      console.log("nproc");
-      const data = await validate(invoice);
-      console.log(data);
-
-      if (data.stare === "ok") {
-        return jsonWithSuccess(null, "XML validated");
-      }
-      return jsonWithError(
-        data.Messages,
-        `There have been ${data.Messages.length} errors.`,
-      );
-    }
-    case "validated": {
-      const data = await upload(invoice);
-
-      if (data?.stare === "ok") {
-        return jsonWithSuccess(null, data.message);
-      }
-
-      return jsonWithError(null, data?.message);
-    }
-    default:
-      return jsonWithError(null, "No defined action.");
-  }
+//TODO fine tune
+export const shouldRevalidate: ShouldRevalidateFunction = () => {
+  return true;
 };

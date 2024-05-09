@@ -112,11 +112,15 @@ const NationalExpenses = () => {
   const { expenses, total, perPage } = useLoaderData<typeof loader>();
   const [delOpen, setDelOpen] = useState(false);
   const [expense, setExpense] = useState<NationalExpense>();
-  const getNew = useFetcher({ key: "getNew" });
+  const fetcher = useFetcher({ key: "getNew" });
 
   const handleDelete = (row: NationalExpense) => {
     setExpense(row);
     setDelOpen(!delOpen);
+  };
+
+  const handleGetNew = () => {
+    fetcher.submit({ getNew: true }, { action: "/efactura", method: "POST" });
   };
 
   const columns: DataTableColumn<NationalExpense>[] = [
@@ -233,10 +237,8 @@ const NationalExpenses = () => {
         extraButton={
           <Button
             variant="outline"
-            loading={getNew.state === "loading"}
-            onClick={() =>
-              getNew.submit({ getNew: true }, { action: "/efactura" })
-            }
+            loading={fetcher.state === "loading"}
+            onClick={handleGetNew}
           >
             Load E-Factura
           </Button>

@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from "node:fs/promises";
+import { env } from "node:process";
 
 import { createId } from "@paralleldrive/cuid2";
 import { Company, Prisma } from "@prisma/client";
@@ -7,6 +8,7 @@ import { parseStringPromise } from "xml2js";
 import { stripPrefix } from "xml2js/lib/processors";
 
 import { db } from "../db.server";
+import { emitter } from "../emitter";
 import findCompany from "../findCompany.server";
 
 export interface message {
@@ -92,12 +94,12 @@ export const processZip = async (
             },
           });
           if (newLocal) {
-            await mkdir(`storage/eFactura/`, { recursive: true });
-            await writeFile(`storage/eFactura/${zipName}`, zip);
+            await mkdir(`/storage/eFactura/`, { recursive: true });
+            await writeFile(`/storage/eFactura/${zipName}`, zip);
             if (invoice.pdf) {
-              await mkdir(`storage/nationalExpense/`, { recursive: true });
+              await mkdir(`/storage/nationalExpense/`, { recursive: true });
               await writeFile(
-                `storage/nationalExpense/${pdfName}`,
+                `/storage/nationalExpense/${pdfName}`,
                 invoice.pdf,
               );
             }
@@ -177,6 +179,53 @@ export const processZip = async (
       status: "nok",
       message: `Something went wrong in unzip: ${error}`,
     };
+  }
+};
+
+export const processMessages = async (mesaje: message[]) => {
+  mesaje.map(async (m) => {
+    const data = await messageDownloader(m.id);
+    if (data) {
+      const response = await processZip(
+        Buffer.from(await data.arrayBuffer()),
+        m.id,
+        m.id_solicitare,
+      );
+      try {
+        const message = await db.message.create({
+          data: { status: response.status, content: response.message },
+        });
+        if (message) {
+          emitter.emit("messages");
+        }
+      } catch (error) {
+        console.log(`There was an error while creating message: ${error}`);
+      }
+    }
+  });
+};
+
+//TODO dry
+const messageDownloader = async (downloadId: string) => {
+  const url = `https://api.anaf.ro/test/FCTEL/rest/descarcare?id=${downloadId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${env.TOKEN}` },
+    });
+
+    if (response.status === 200) {
+      if (response.headers.get("content-type") === "application/zip") {
+        return await response.blob();
+      }
+      console.log("downloader error: ", await response.json());
+      return null;
+    }
+
+    return null;
+  } catch (error) {
+    return null;
   }
 };
 
