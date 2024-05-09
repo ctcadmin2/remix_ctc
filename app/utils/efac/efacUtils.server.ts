@@ -207,7 +207,7 @@ export const processMessages = async (mesaje: message[]) => {
 
 //TODO dry
 const messageDownloader = async (downloadId: string) => {
-  const url = `https://api.anaf.ro/test/FCTEL/rest/descarcare?id=${downloadId}`;
+  const url = `https://api.anaf.ro/prod/FCTEL/rest/descarcare?id=${downloadId}`;
 
   try {
     const response = await fetch(url, {
