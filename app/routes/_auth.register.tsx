@@ -7,8 +7,11 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { type LoaderFunction, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
+import {
+  type LoaderFunction,
+  type ActionFunctionArgs,
+} from "@remix-run/server-runtime";
 import { useEffect } from "react";
 import { jsonWithError, redirectWithInfo } from "remix-toast";
 import { z } from "zod";

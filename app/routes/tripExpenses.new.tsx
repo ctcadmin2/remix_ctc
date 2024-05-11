@@ -1,6 +1,6 @@
-import type { ActionFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import type { ActionFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import { redirectWithSuccess, jsonWithError } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";

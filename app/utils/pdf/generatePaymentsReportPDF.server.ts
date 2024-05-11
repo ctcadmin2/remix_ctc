@@ -11,7 +11,7 @@ const fonts = {
   },
 };
 
-const paymentsReportPDF = async (
+const generatePaymentsReportPDF = async (
   data: reportIndemnizations[] | null,
   date: string,
 ) => {
@@ -212,7 +212,7 @@ const paymentsReportPDF = async (
   return Buffer.concat(buff);
 };
 
-export default paymentsReportPDF;
+export default generatePaymentsReportPDF;
 
 // const build_entry = (left_text, right_text, text_size = 8) => {
 //     left_text_width = font.compute_width_of(left_text, size: text_size)

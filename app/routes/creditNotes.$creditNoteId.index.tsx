@@ -1,5 +1,5 @@
 import type { Attachment } from "@prisma/client";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { zx } from "zodix";
 
 import { getFile } from "~/utils/attachment.server";

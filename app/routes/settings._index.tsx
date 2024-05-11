@@ -1,7 +1,7 @@
 import { Tabs } from "@mantine/core";
 import type { Setting } from "@prisma/client";
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { useSearchParams, useLoaderData, json } from "@remix-run/react";
+import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";

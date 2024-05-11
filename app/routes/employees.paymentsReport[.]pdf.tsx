@@ -6,7 +6,7 @@ import { redirectWithError } from "remix-toast";
 import { pdf } from "remix-utils/responses";
 
 import { db } from "~/utils/db.server";
-import paymentsReportPDF from "~/utils/pdf/paymentsReportPDF.server";
+import paymentsReportPDF from "~/utils/pdf/generatePaymentsReportPDF.server";
 import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
 
 export type reportIndemnizations = Prisma.IndemnizationGetPayload<{
@@ -51,7 +51,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return pdf(
     await paymentsReportPDF(
       indemnizations,
-      dayjs(month).locale("ro").format("MMMM YYYY")
-    )
+      dayjs(month).locale("ro").format("MMMM YYYY"),
+    ),
   );
 }

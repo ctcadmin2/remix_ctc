@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { jsonWithError } from "remix-toast";
 import { zx } from "zodix";
 

@@ -6,8 +6,11 @@ import {
   Button,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { LoaderFunction, ActionFunctionArgs } from "@remix-run/node";
 import { useSearchParams } from "@remix-run/react";
+import type {
+  LoaderFunction,
+  ActionFunctionArgs,
+} from "@remix-run/server-runtime";
 
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 

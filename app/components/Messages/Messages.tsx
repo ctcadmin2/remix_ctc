@@ -28,7 +28,7 @@ const Messages = () => {
       setMessages(JSON.parse(newMessages));
     }
   }, [newMessages]);
-
+  // TODO controls panel
   return (
     <>
       <Drawer

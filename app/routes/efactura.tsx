@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
+import { ShouldRevalidateFunction } from "@remix-run/react";
 import type {
   LoaderFunctionArgs,
   LoaderFunction,
   ActionFunction,
   ActionFunctionArgs,
-} from "@remix-run/node";
-import { ShouldRevalidateFunction } from "@remix-run/react";
+} from "@remix-run/server-runtime";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { BoolAsString, NumAsString, parseForm, parseQuery, zx } from "zodix";
 

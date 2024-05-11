@@ -102,6 +102,7 @@ export const action: ActionFunction = async ({
   }
 };
 
+//TODO fix month representation
 const InternationalExpenses = () => {
   const { expenses, total, perPage } = useLoaderData<typeof loader>();
   const [delOpen, setDelOpen] = useState(false);

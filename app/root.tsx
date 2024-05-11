@@ -23,8 +23,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { Message } from "@prisma/client";
-import { json } from "@remix-run/node";
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import {
   Link,
   Links,
@@ -38,6 +37,8 @@ import {
   useRouteError,
   useSubmit,
 } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import { type ReactNode, useEffect, useState } from "react";
 import { LogOut } from "react-feather";
 import { getToast } from "remix-toast";
