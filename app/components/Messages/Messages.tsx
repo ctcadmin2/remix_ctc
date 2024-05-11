@@ -13,7 +13,6 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import { Mail } from "react-feather";
 import { useEventSource } from "remix-utils/sse/react";
-import { parse } from "superjson";
 
 import { loader } from "~/root";
 
@@ -26,7 +25,7 @@ const Messages = () => {
 
   useEffect(() => {
     if (newMessages) {
-      setMessages(parse(newMessages));
+      setMessages(JSON.parse(newMessages));
     }
   }, [newMessages]);
 

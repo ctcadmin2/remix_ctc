@@ -6,7 +6,6 @@ import {
 } from "@remix-run/server-runtime";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { eventStream } from "remix-utils/sse/server";
-import { stringify } from "superjson";
 import { z } from "zod";
 import { parseForm } from "zodix";
 
@@ -27,7 +26,7 @@ export const loader: LoaderFunction = async ({
         where: { users: { none: { id: user.id } } },
         orderBy: { createdAt: "desc" },
       });
-      send({ data: stringify(message) });
+      send({ data: JSON.stringify(message) });
     };
     emitter.on("messages", handle);
 
