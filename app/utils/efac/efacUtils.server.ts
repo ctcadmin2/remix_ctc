@@ -1,5 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import { env } from "node:process";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 import { createId } from "@paralleldrive/cuid2";
 import { Company, Prisma } from "@prisma/client";
@@ -10,6 +9,10 @@ import { stripPrefix } from "xml2js/lib/processors";
 import { db } from "../db.server";
 import { emitter } from "../emitter";
 import findCompany from "../findCompany.server";
+
+export const getToken = async (): Promise<string> => {
+  return (await readFile("/storage/cert.key")).toString().trim();
+};
 
 export interface message {
   data_creare: string;
@@ -212,7 +215,7 @@ const messageDownloader = async (downloadId: string) => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${env.TOKEN}` },
+      headers: { Authorization: `Bearer ${await getToken()}` },
     });
 
     if (response.status === 200) {

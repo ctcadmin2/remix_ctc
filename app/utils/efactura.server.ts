@@ -1,11 +1,13 @@
-import { env } from "process";
-
 import { parseStringPromise } from "xml2js";
 
 import { eInvoice } from "~/routes/efactura";
 
 import { db } from "./db.server";
-import { processMessages, type message } from "./efac/efacUtils.server";
+import {
+  getToken,
+  processMessages,
+  type message,
+} from "./efac/efacUtils.server";
 import XMLBuilder from "./efac/xmlBuilder.server";
 import FileUploader from "./uploader.server";
 
@@ -20,7 +22,7 @@ export const upload = async (invoice: eInvoice) => {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${env.TOKEN}`,
+        Authorization: `Bearer ${await getToken()}`,
       },
       body: invoice.EFactura?.xml,
     });
@@ -87,7 +89,7 @@ export const checkStatus = async (id: number, uploadId: string | null) => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${env.TOKEN}` },
+      headers: { Authorization: `Bearer ${await getToken()}` },
     });
 
     if (response.status === 200) {
@@ -157,7 +159,7 @@ export const download = async (downloadId: string | null) => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${env.TOKEN}` },
+      headers: { Authorization: `Bearer ${await getToken()}` },
     });
 
     if (response.status === 200) {
@@ -210,7 +212,7 @@ export const validate = async (invoice: eInvoice) => {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${env.TOKEN}`,
+        Authorization: `Bearer ${await getToken()}`,
         "Content-Type": "text/plain",
       },
       body: xml,
@@ -252,8 +254,10 @@ export const getExpenses = async () => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${env.TOKEN}` },
+      headers: { Authorization: `Bearer ${await getToken()}` },
     });
+
+    console.log(response);
 
     if (response.status === 200) {
       const data: {
