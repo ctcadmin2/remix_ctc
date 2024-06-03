@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { validate } from "vies-validate";
 
 import { db } from "./db.server";
+import { RoCountyCodes } from "./roCountyCodes";
 
 interface OpenApiProps {
   cif: string;
@@ -36,7 +37,11 @@ interface OpenApiProps {
 }
 
 // Find better API for data
-const findCompany = async (country: string | null, vatNr: string | null) => {
+const findCompany = async (
+  country: string | null,
+  vatNr: string | null,
+  refresh = false,
+) => {
   //parameter guard
   if (country == null || vatNr == null) {
     return { data: null, status: 500 };
@@ -48,7 +53,7 @@ const findCompany = async (country: string | null, vatNr: string | null) => {
       where: { vatNumber: { search: vatNr } },
     });
 
-    if (local) {
+    if (local && !refresh) {
       return { data: local, status: 204 };
     }
 
@@ -87,7 +92,9 @@ const processRO = async (vatNr: string) => {
         vatNumber: data.cif,
         vatValid: data.tva?.length > 0 ? true : false,
         address: data.adresa,
-        county: data.judet,
+        county: Object.entries(RoCountyCodes).filter(
+          (o) => o[1] === data.judet,
+        )[0][0],
         country: "RO",
         phone: data.telefon,
       };
