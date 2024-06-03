@@ -6,6 +6,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 installGlobals();
 
 export default defineConfig({
+  build: {
+    target: "es2022",
+  },
   server: {
     port: 3000,
   },
