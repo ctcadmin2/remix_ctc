@@ -54,9 +54,9 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const { documentId, vehicleId } = zx.parseParams(params, {
+  const { documentId, employeeId } = zx.parseParams(params, {
     documentId: zx.NumAsString,
-    vehicleId: zx.NumAsString,
+    employeeId: zx.NumAsString,
   });
 
   try {
@@ -80,7 +80,7 @@ export const action: ActionFunction = async ({
       if (files[0]) {
         await FileUploader(files as Blob[], "document", document.id);
         return redirectWithSuccess(
-          `/vehicles/${vehicleId}/documents`,
+          `/employees/${employeeId}/documents`,
           "Document was edited successfully.",
         );
       } else {
@@ -92,9 +92,9 @@ export const action: ActionFunction = async ({
   }
 };
 
-const EditVehicleDocument = () => {
+const EditEmployeeDocument = () => {
   const document = useLoaderData<typeof loader>();
   return <DocumentForm document={document} />;
 };
 
-export default EditVehicleDocument;
+export default EditEmployeeDocument;

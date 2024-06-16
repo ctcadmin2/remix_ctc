@@ -47,7 +47,10 @@ export const processZip = async (
     if (xml) {
       const invoice = await parseXml(xml);
       if (!invoice?.supplier) {
-        return { status: "nok", message: "no supplier" };
+        return {
+          status: "nok",
+          message: `no supplier for invoice ${invoice?.number} with VAT: ${invoice?.vatNumber}`,
+        };
       }
 
       //create new company if not already in db
@@ -180,7 +183,7 @@ export const processZip = async (
   } catch (error) {
     return {
       status: "nok",
-      message: `Something went wrong in unzip: ${error}`,
+      message: `Something went wrong while processing upload ${uploadId} and download ${downloadId}: ${error}`,
     };
   }
 };
@@ -251,7 +254,7 @@ export const parseXml = async (xml: Buffer) => {
     });
     const pdf =
       data.Invoice.AdditionalDocumentReference?.Attachment
-        .EmbeddedDocumentBinaryObject;
+        ?.EmbeddedDocumentBinaryObject;
     const vatNumber =
       data.Invoice.AccountingSupplierParty.Party.PartyTaxScheme.CompanyID.split(
         /(\d+)/,

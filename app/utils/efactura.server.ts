@@ -257,8 +257,6 @@ export const getExpenses = async () => {
       headers: { Authorization: `Bearer ${await getToken()}` },
     });
 
-    console.log(response);
-
     if (response.status === 200) {
       const data: {
         eroare?: string;

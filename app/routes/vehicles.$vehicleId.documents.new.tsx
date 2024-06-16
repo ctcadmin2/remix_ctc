@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  return json(undefined);
+  return json(null);
 };
 
 export const action: ActionFunction = async ({
@@ -71,7 +71,7 @@ export const action: ActionFunction = async ({
         await FileUploader(files as Blob[], "document", document.id);
       }
       return redirectWithSuccess(
-        "`/vehicles/${vehicleId}/documents`",
+        `/vehicles/${vehicleId}/documents`,
         "Document was created successfully.",
       );
     } else {

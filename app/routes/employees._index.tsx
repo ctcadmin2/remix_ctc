@@ -171,6 +171,8 @@ const Employee = () => {
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Item
+                    component={Link}
+                    to={`${row.id}/documents`}
                     leftSection={
                       <FileText
                         size={"16px"}

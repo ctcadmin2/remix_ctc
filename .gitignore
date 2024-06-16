@@ -22,3 +22,6 @@ migrate
 
 # ignore zip files
 *.zip
+
+#ignore local scrap
+/scrap

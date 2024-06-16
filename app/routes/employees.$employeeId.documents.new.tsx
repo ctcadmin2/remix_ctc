@@ -1,4 +1,3 @@
-import { useLoaderData } from "@remix-run/react";
 import type {
   ActionFunctionArgs,
   ActionFunction,
@@ -29,21 +28,12 @@ const schema = zfd.formData({
 
 export const loader: LoaderFunction = async ({
   request,
-  params,
 }: LoaderFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const { documentId } = zx.parseParams(params, {
-    documentId: zx.NumAsString,
-  });
-
-  const document = await db.document.findUnique({
-    where: { id: documentId },
-  });
-
-  return json(document);
+  return json(null);
 };
 
 export const action: ActionFunction = async ({
@@ -52,11 +42,6 @@ export const action: ActionFunction = async ({
 }: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
     failureRedirect: DEFAULT_REDIRECT,
-  });
-
-  const { documentId, vehicleId } = zx.parseParams(params, {
-    documentId: zx.NumAsString,
-    vehicleId: zx.NumAsString,
   });
 
   try {
@@ -68,33 +53,37 @@ export const action: ActionFunction = async ({
     console.log("other error");
   }
 
-  const { files, ...data } = schema.parse(await request.formData());
+  const { employeeId } = zx.parseParams(params, {
+    employeeId: zx.NumAsString,
+  });
+
+  const form = schema.parse(await request.formData());
+
+  const { files, ...data } = form;
 
   try {
-    const document = await db.document.update({
-      data,
-      where: { id: documentId },
+    const document = await db.document.create({
+      data: { employeeId, ...data },
     });
 
     if (document) {
       if (files[0]) {
         await FileUploader(files as Blob[], "document", document.id);
-        return redirectWithSuccess(
-          `/vehicles/${vehicleId}/documents`,
-          "Document was edited successfully.",
-        );
-      } else {
-        return jsonWithError(null, "Document could not be edited.");
       }
+      return redirectWithSuccess(
+        `/employees/${employeeId}/documents`,
+        "Document was created successfully.",
+      );
+    } else {
+      return jsonWithError(null, "Document could not be created.");
     }
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }
 };
 
-const EditVehicleDocument = () => {
-  const document = useLoaderData<typeof loader>();
-  return <DocumentForm document={document} />;
+const NewEmployeeDocument = () => {
+  return <DocumentForm />;
 };
 
-export default EditVehicleDocument;
+export default NewEmployeeDocument;

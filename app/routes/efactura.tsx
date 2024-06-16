@@ -56,8 +56,6 @@ export const loader: LoaderFunction = async ({
     case "uploaded": {
       const data = await checkStatus(id, invoice.EFactura.uploadId);
 
-      console.log(data);
-
       if (data?.stare === "ok") {
         return jsonWithSuccess(null, "Invoice valid.");
       }
@@ -125,9 +123,7 @@ export const action: ActionFunction = async ({
     switch (invoice?.EFactura?.status) {
       case undefined:
       case "nproc": {
-        console.log("nproc");
         const data = await validate(invoice);
-        console.log(data);
 
         if (data.stare === "ok") {
           return jsonWithSuccess(null, "XML validated");

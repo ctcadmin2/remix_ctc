@@ -93,7 +93,12 @@ const processRO = async (vatNr: string) => {
         vatValid: data.tva?.length > 0 ? true : false,
         address: data.adresa,
         county: Object.entries(RoCountyCodes).filter(
-          (o) => o[1] === data.judet,
+          (o) =>
+            o[1] ===
+            data.judet
+              .split(" ")
+              .filter((word) => word != "Municipiul")
+              .join(" "),
         )[0][0],
         country: "RO",
         phone: data.telefon,
