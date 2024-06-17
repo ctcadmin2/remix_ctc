@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
-import { ShouldRevalidateFunction } from "@remix-run/react";
+import type { Prisma } from "@prisma/client";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import type {
-  LoaderFunctionArgs,
-  LoaderFunction,
   ActionFunction,
   ActionFunctionArgs,
+  LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { BoolAsString, NumAsString, parseForm, parseQuery, zx } from "zodix";
@@ -17,7 +17,7 @@ import {
   upload,
   validate,
 } from "~/utils/efactura.server";
-import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export type eInvoice = Prisma.InvoiceGetPayload<{
   include: {

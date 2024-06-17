@@ -1,12 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
-import { redirectWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
@@ -76,9 +76,8 @@ export const action: ActionFunction = async ({
         `/vehicle/${vehicleId}/repairs`,
         "Repair data was edited successfully.",
       );
-    } else {
-      return jsonWithError(null, "Repair data could not be edited.");
     }
+    return jsonWithError(null, "Repair data could not be edited.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

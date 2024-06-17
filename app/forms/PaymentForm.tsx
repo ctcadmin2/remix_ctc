@@ -7,16 +7,16 @@ import {
   TextInput,
 } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
-import { Indemnization } from "@prisma/client";
+import type { Indemnization } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import { PaymentType } from "~/routes/employees.$employeeId.payments.$paymentId.edit";
+import type { PaymentType } from "~/routes/employees.$employeeId.payments.$paymentId.edit";
 
 import IndemnizationForm from "./IndemnizationForm";
 import {
-  FormValues,
+  type FormValues,
   PaymentFormProvider,
   usePaymentForm,
 } from "./utils/FormContext/PaymentFormContext";
@@ -93,7 +93,7 @@ const PaymentForm = ({
               onClick={() =>
                 form.insertListItem("indemnizations", {
                   period: [null, null],
-                  perDay: parseInt(perDay) ?? 0,
+                  perDay: Number.parseInt(perDay) ?? 0,
                   avans: 0,
                   delegation: false,
                 })

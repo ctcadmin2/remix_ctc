@@ -10,7 +10,7 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";
-import { Document } from "@prisma/client";
+import type { Document } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";

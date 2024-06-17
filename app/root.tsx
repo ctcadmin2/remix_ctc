@@ -6,23 +6,23 @@ import "dayjs/locale/en";
 import "dayjs/locale/ro";
 
 import {
-  MantineProvider,
+  ActionIcon,
   AppShell,
   Burger,
   Button,
+  ColorSchemeScript,
   Container,
   Group,
+  MantineProvider,
   Paper,
-  Title,
-  ColorSchemeScript,
   ScrollArea,
-  ActionIcon,
+  Title,
 } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
-import { Message } from "@prisma/client";
+import type { Message } from "@prisma/client";
 import type { MetaFunction } from "@remix-run/node";
 import {
   Link,

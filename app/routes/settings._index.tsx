@@ -1,6 +1,6 @@
 import { Tabs } from "@mantine/core";
 import type { Setting } from "@prisma/client";
-import { useSearchParams, useLoaderData, json } from "@remix-run/react";
+import { json, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
@@ -70,9 +70,8 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (setting) {
     return jsonWithSuccess(null, "Settings updated successfully.");
-  } else {
-    return jsonWithError(null, "An error has occured.");
   }
+  return jsonWithError(null, "An error has occured.");
 };
 
 const Settings = () => {
@@ -104,15 +103,10 @@ const Settings = () => {
                 value={setting.value[0]}
               />
             );
-          } else {
-            return (
-              <Multi
-                key={setting.id}
-                name={setting.name}
-                value={setting.value}
-              />
-            );
           }
+          return (
+            <Multi key={setting.id} name={setting.name} value={setting.value} />
+          );
         })}
       </Tabs.Panel>
 
@@ -126,9 +120,8 @@ const Settings = () => {
                 value={setting.value[0]}
               />
             );
-          } else {
-            return <li key={setting.id}>{setting.name}</li>;
           }
+          return <li key={setting.id}>{setting.name}</li>;
         })}
       </Tabs.Panel>
     </Tabs>

@@ -1,17 +1,17 @@
-import { env } from "process";
+import { env } from "node:process";
 
-import { Center, Button, Menu } from "@mantine/core";
+import { Button, Center, Menu } from "@mantine/core";
 import type { Repair } from "@prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
+  ActionFunctionArgs,
   LoaderFunction,
 } from "@remix-run/server-runtime";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, MoreHorizontal, Trash2 } from "react-feather";
-import { jsonWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -50,7 +50,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     filter: z.string().optional(),
   });
 
-  const offset = ((page || 1) - 1) * parseInt(env.ITEMS_PER_PAGE);
+  const offset = ((page || 1) - 1) * Number.parseInt(env.ITEMS_PER_PAGE);
 
   const where: object = {
     ...(filter
@@ -72,7 +72,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       orderBy: sortOrder({ date: "asc" }, sort),
     }),
     total: await db.repair.count({ where }),
-    perPage: parseInt(env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -101,9 +101,8 @@ export const action: ActionFunction = async ({
 
     if (repair) {
       return jsonWithSuccess(null, "Repair data was deleted successfully.");
-    } else {
-      return jsonWithError(null, "Repair data could not be deleted.");
     }
+    return jsonWithError(null, "Repair data could not be deleted.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

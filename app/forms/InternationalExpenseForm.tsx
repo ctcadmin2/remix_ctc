@@ -11,7 +11,7 @@ import {
 import { MonthPickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";
-import { InternationalExpense } from "@prisma/client";
+import type { InternationalExpense } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { Calendar, Upload } from "react-feather";

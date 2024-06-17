@@ -8,9 +8,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Form, useActionData } from "@remix-run/react";
-import {
-  type LoaderFunction,
-  type ActionFunctionArgs,
+import type {
+  ActionFunctionArgs,
+  LoaderFunction,
 } from "@remix-run/server-runtime";
 import { useEffect } from "react";
 import { jsonWithError, redirectWithInfo } from "remix-toast";
@@ -74,8 +74,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       (i) => (errors = { ...errors, [`${i.path[0]}`]: i.message }),
     );
 
-    console.log(errors);
-
     return jsonWithError(
       { values: formPayload, errors },
       "There are errors on the form.",
@@ -90,7 +88,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (!user) {
       return jsonWithError(
         { values: formPayload, errors: {} },
-        `User could not be created.`,
+        "User could not be created.",
       );
     }
 
@@ -98,7 +96,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       "/login",
       "Account created, please wait for admin to activate it.",
     );
-  } catch (error) {
+  } catch (_error) {
     return jsonWithError(
       { values: formPayload, errors: {} },
       "An error has occured",

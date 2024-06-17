@@ -1,10 +1,10 @@
 import type { Company } from "@prisma/client";
 import { useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
@@ -95,9 +95,8 @@ export const action: ActionFunction = async ({
     });
     if (company) {
       return redirectWithSuccess("/companies", "Company updated successfully.");
-    } else {
-      return jsonWithError(null, "Company could not be updated.");
     }
+    return jsonWithError(null, "Company could not be updated.");
   } catch (error) {
     return jsonWithError(error, `There has been and error: ${error}`);
   }

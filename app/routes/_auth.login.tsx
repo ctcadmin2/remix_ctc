@@ -1,15 +1,15 @@
 import {
+  Button,
   Container,
   Paper,
-  TextInput,
   PasswordInput,
-  Button,
+  TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useSearchParams } from "@remix-run/react";
 import type {
-  LoaderFunction,
   ActionFunctionArgs,
+  LoaderFunction,
 } from "@remix-run/server-runtime";
 
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";

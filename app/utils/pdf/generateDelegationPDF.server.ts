@@ -1,6 +1,6 @@
-import { Indemnization } from "@prisma/client";
+import type { Indemnization } from "@prisma/client";
 import PdfPrinter from "pdfmake";
-import { TDocumentDefinitions } from "pdfmake/interfaces";
+import type { TDocumentDefinitions } from "pdfmake/interfaces";
 
 const fonts = {
   Roboto: {
@@ -75,13 +75,12 @@ const generateDelegationPDF = async (indemnization: Indemnization | null) => {
               ],
             },
             layout: {
-              hLineWidth: function (i, node) {
+              hLineWidth: (i, node) => {
                 // console.log(node);
                 return i === 0 || i === node.table.body.length ? 2 : 0;
               },
-              vLineWidth: function (i, node) {
-                return i === 0 || i === node.table.widths?.length ? 2 : 0;
-              },
+              vLineWidth: (i, node) =>
+                i === 0 || i === node.table.widths?.length ? 2 : 0,
               // hLineColor: function (i, node) {
               //   return i === 0 || i === node.table.body.length
               //     ? "black"

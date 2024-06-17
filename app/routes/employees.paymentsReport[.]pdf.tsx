@@ -1,5 +1,5 @@
-import { Prisma } from "@prisma/client";
-import { LoaderFunctionArgs } from "@remix-run/server-runtime";
+import type { Prisma } from "@prisma/client";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import dayjs from "dayjs";
 import "dayjs/locale/ro";
 import { redirectWithError } from "remix-toast";
@@ -7,7 +7,7 @@ import { pdf } from "remix-utils/responses";
 
 import { db } from "~/utils/db.server";
 import paymentsReportPDF from "~/utils/pdf/generatePaymentsReportPDF.server";
-import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export type reportIndemnizations = Prisma.IndemnizationGetPayload<{
   include: {

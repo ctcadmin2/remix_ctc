@@ -1,16 +1,16 @@
-import { env } from "process";
+import { env } from "node:process";
 
 import {
-  Center,
   Button,
-  Menu,
+  Center,
   Divider,
-  Text,
+  Menu,
   NumberInput,
+  Text,
 } from "@mantine/core";
 import { useClickOutside, useFocusTrap, useMergedRef } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import {
   Link,
   json,
@@ -27,7 +27,7 @@ import Decimal from "decimal.js";
 import type { DataTableColumn } from "mantine-datatable";
 import { useEffect, useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import { jsonWithSuccess, jsonWithError, jsonWithWarning } from "remix-toast";
+import { jsonWithError, jsonWithSuccess, jsonWithWarning } from "remix-toast";
 import { useAuthenticityToken } from "remix-utils/csrf/react";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
@@ -121,7 +121,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     filter: z.string().optional(),
   });
 
-  const offset = ((page || 1) - 1) * parseInt(env.ITEMS_PER_PAGE);
+  const offset = ((page || 1) - 1) * Number.parseInt(env.ITEMS_PER_PAGE);
 
   const where: object = {
     ...(filter
@@ -167,7 +167,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       },
     }),
     total: await db.creditNote.count({ where }),
-    perPage: parseInt(env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -213,9 +213,8 @@ export const action: ActionFunction = async ({
         });
         if (creditNote) {
           return jsonWithSuccess(null, "Credit note updated.");
-        } else {
-          return jsonWithError(null, "Credit note could not updated.");
         }
+        return jsonWithError(null, "Credit note could not updated.");
       } catch (error) {
         return jsonWithError(null, `${error}`);
       }
@@ -231,9 +230,8 @@ export const action: ActionFunction = async ({
         });
         if (creditNote) {
           return jsonWithSuccess(null, "Credit note updated.");
-        } else {
-          return jsonWithError(null, "Credit note could not updated.");
         }
+        return jsonWithError(null, "Credit note could not updated.");
       } catch (error) {
         return jsonWithError(null, `${error}`);
       }
@@ -245,9 +243,8 @@ export const action: ActionFunction = async ({
 
         if (creditNote) {
           return jsonWithSuccess(null, "Credit note deleted successfully.");
-        } else {
-          return jsonWithError(null, "Credit note could not deleted.");
         }
+        return jsonWithError(null, "Credit note could not deleted.");
       } catch (error) {
         return jsonWithError(null, `An error has occured: ${error}`);
       }
@@ -362,7 +359,7 @@ const CreditNotes = () => {
             onKeyDown={(e) =>
               e.key === "Enter" ? handleInline(item.id, item.vehicleId) : null
             }
-          ></NumberInput>
+          />
         );
       },
     },
@@ -398,7 +395,7 @@ const CreditNotes = () => {
       textAlign: "center",
       sortable: true,
       render: (record) => {
-        return <BooleanIcon value={record.invoiceId ? true : false} />;
+        return <BooleanIcon value={!!record.invoiceId} />;
       },
     },
     {

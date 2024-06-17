@@ -1,5 +1,5 @@
-import { unlink } from "fs";
-import { readFile } from "fs/promises";
+import { unlink } from "node:fs";
+import { readFile } from "node:fs/promises";
 
 import type { Attachment } from "@prisma/client";
 

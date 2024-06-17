@@ -1,8 +1,8 @@
 //TODO cleanup files on attach delete
 
-import { env } from "process";
+import { env } from "node:process";
 
-import { Center, Button, Menu, Divider } from "@mantine/core";
+import { Button, Center, Divider, Menu } from "@mantine/core";
 import type { Prisma } from "@prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
@@ -13,7 +13,7 @@ import type {
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Trash2 } from "react-feather";
-import { jsonWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -67,7 +67,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     filter: z.string().optional(),
   });
 
-  const offset = ((page || 1) - 1) * parseInt(env.ITEMS_PER_PAGE);
+  const offset = ((page || 1) - 1) * Number.parseInt(env.ITEMS_PER_PAGE);
 
   const where: object = {
     ...(filter
@@ -111,7 +111,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       },
     }),
     total: await db.document.count({ where }),
-    perPage: parseInt(env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -140,9 +140,8 @@ export const action: ActionFunction = async ({
 
     if (document) {
       return jsonWithSuccess(null, "Document deleted successfully.");
-    } else {
-      return jsonWithError(null, "Document could not be deleted.");
     }
+    return jsonWithError(null, "Document could not be deleted.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

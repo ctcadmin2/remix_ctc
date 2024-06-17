@@ -1,14 +1,14 @@
 import {
-  createTheme,
   Input,
   InputWrapper,
   type MantineThemeOverride,
-  Select,
   MultiSelect,
   PillsInput,
+  PillsInputField,
+  Select,
   Switch,
   Tabs,
-  PillsInputField,
+  createTheme,
 } from "@mantine/core";
 
 import InputCSS from "~/css/Input.module.css";

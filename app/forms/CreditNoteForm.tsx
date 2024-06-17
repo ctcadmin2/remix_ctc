@@ -6,8 +6,8 @@ import {
   Group,
   NumberInput,
   ScrollArea,
-  Textarea,
   TextInput,
+  Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";

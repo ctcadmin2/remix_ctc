@@ -1,5 +1,5 @@
 import { createFormContext } from "@mantine/form";
-import Decimal from "decimal.js";
+import type Decimal from "decimal.js";
 
 interface FormValues {
   number: string;

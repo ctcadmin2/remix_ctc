@@ -1,17 +1,17 @@
-import type { Setting, Prisma } from "@prisma/client";
+import type { Prisma, Setting } from "@prisma/client";
 import { json, useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
-import { redirectWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zx } from "zodix";
 
 import InvoiceForm from "~/forms/InvoiceForm";
-import { CompaniesListType } from "~/lists/CompanyList";
+import type { CompaniesListType } from "~/lists/CompanyList";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import {
@@ -141,7 +141,9 @@ export const action: ActionFunction = async ({
           connect: { id: clientId },
         },
         creditNotes: {
-          set: creditNotesIds?.split(",").map((cn) => ({ id: parseInt(cn) })),
+          set: creditNotesIds
+            ?.split(",")
+            .map((cn) => ({ id: Number.parseInt(cn) })),
         },
         ...updateIdentification(identification),
         ...updateOrders(orders),
@@ -150,9 +152,8 @@ export const action: ActionFunction = async ({
 
     if (invoice) {
       return redirectWithSuccess("/invoices", "Invoice edited successfully.");
-    } else {
-      return jsonWithError(null, "Invoice could not be edited.");
     }
+    return jsonWithError(null, "Invoice could not be edited.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

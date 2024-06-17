@@ -1,18 +1,19 @@
 import { parseStringPromise } from "xml2js";
 
-import { eInvoice } from "~/routes/efactura";
+import type { eInvoice } from "~/routes/efactura";
 
 import { db } from "./db.server";
 import {
   getToken,
-  processMessages,
   type message,
+  processMessages,
 } from "./efac/efacUtils.server";
 import XMLBuilder from "./efac/xmlBuilder.server";
 import FileUploader from "./uploader.server";
 
 export const upload = async (invoice: eInvoice) => {
-  const url = `https://api.anaf.ro/prod/FCTEL/rest/upload?standard=UBL&cif=17868720`;
+  const url =
+    "https://api.anaf.ro/prod/FCTEL/rest/upload?standard=UBL&cif=17868720";
 
   if (!invoice) {
     return null;
@@ -121,7 +122,7 @@ export const checkStatus = async (id: number, uploadId: string | null) => {
           }
           return {
             stare: "nok",
-            message: `Invoice could not be updated.`,
+            message: "Invoice could not be updated.",
           };
         } catch (error) {
           return {
@@ -201,7 +202,7 @@ export const download = async (downloadId: string | null) => {
 };
 
 export const validate = async (invoice: eInvoice) => {
-  const url = `https://api.anaf.ro/prod/FCTEL/rest/validare/FACT1`;
+  const url = "https://api.anaf.ro/prod/FCTEL/rest/validare/FACT1";
   const xml = await XMLBuilder(invoice);
 
   if (!invoice) {
@@ -249,7 +250,8 @@ export const validate = async (invoice: eInvoice) => {
 };
 
 export const getExpenses = async () => {
-  const url = `https://api.anaf.ro/prod/FCTEL/rest/listaMesajeFactura?cif=17868720&zile=60&filtru=P`;
+  const url =
+    "https://api.anaf.ro/prod/FCTEL/rest/listaMesajeFactura?cif=17868720&zile=60&filtru=P";
   // return { stare: "ok", message: "called" };
   try {
     const response = await fetch(url, {

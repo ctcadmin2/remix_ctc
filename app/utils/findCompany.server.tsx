@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { validate } from "vies-validate";
 
 import { db } from "./db.server";
@@ -59,10 +59,9 @@ const findCompany = async (
 
     if (country === "RO") {
       return await processRO(vatNr);
-    } else {
-      return processEU(country, vatNr);
     }
-  } catch (error) {
+    return processEU(country, vatNr);
+  } catch (_error) {
     return { data: null, status: 500 };
   }
 };
@@ -79,7 +78,8 @@ const processRO = async (vatNr: string) => {
 
     if (res.status === 202 || res.status === 404) {
       return { data: null, status: 404 };
-    } else if (res.status !== 200) {
+    }
+    if (res.status !== 200) {
       return { data: null, status: 503 };
     }
 
@@ -90,14 +90,14 @@ const processRO = async (vatNr: string) => {
         name: data.denumire,
         registration: data.numar_reg_com,
         vatNumber: data.cif,
-        vatValid: data.tva?.length > 0 ? true : false,
+        vatValid: data.tva?.length > 0,
         address: data.adresa,
         county: Object.entries(RoCountyCodes).filter(
           (o) =>
             o[1] ===
             data.judet
               .split(" ")
-              .filter((word) => word != "Municipiul")
+              .filter((word) => word !== "Municipiul")
               .join(" "),
         )[0][0],
         country: "RO",
@@ -107,7 +107,7 @@ const processRO = async (vatNr: string) => {
     }
 
     return { data: null, status: 404 };
-  } catch (error) {
+  } catch (_error) {
     return { data: null, status: 500 };
   }
 };
@@ -131,7 +131,7 @@ const processEU = async (country: string, vatNr: string) => {
     }
 
     return { data: null, status: 404 };
-  } catch (error) {
+  } catch (_error) {
     return { data: null, status: 500 };
   }
 };

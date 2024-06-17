@@ -1,11 +1,11 @@
-import { Prisma } from "@prisma/client";
-import { LoaderFunctionArgs } from "@remix-run/server-runtime";
+import type { Prisma } from "@prisma/client";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
 import { zx } from "zodix";
 
 import { db } from "~/utils/db.server";
 import generateInvoicePDF from "~/utils/pdf/generateInvoicePDF.server";
-import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export interface InvoiceData {
   invoice: Prisma.InvoiceGetPayload<{

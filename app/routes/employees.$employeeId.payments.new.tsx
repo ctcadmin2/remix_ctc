@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import dayjs from "dayjs";
@@ -128,9 +128,8 @@ export const action: ActionFunction = async ({
         `/employees/${employeeId}/payments`,
         "Payment created successfully.",
       );
-    } else {
-      return jsonWithError(null, "Payment could not be created.");
     }
+    return jsonWithError(null, "Payment could not be created.");
   } catch (error) {
     console.error(error);
     return jsonWithError(error, "Payment could not be created.");

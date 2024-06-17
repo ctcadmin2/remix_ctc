@@ -1,6 +1,6 @@
-import { Center, Button, Menu, Divider } from "@mantine/core";
+import { Button, Center, Divider, Menu } from "@mantine/core";
 import type { Prisma } from "@prisma/client";
-import { useLocation, Link, useLoaderData, json } from "@remix-run/react";
+import { Link, json, useLoaderData, useLocation } from "@remix-run/react";
 import type {
   ActionFunction,
   ActionFunctionArgs,
@@ -106,7 +106,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const data: LoaderData = {
     creditNotes: await db.creditNote.findMany({
       where,
-      take: parseInt(process.env.ITEMS_PER_PAGE),
+      take: Number.parseInt(process.env.ITEMS_PER_PAGE),
       skip: offset,
       orderBy: sortOrder({ orderNr: "asc" }, sort),
       select: {
@@ -133,7 +133,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       },
     }),
     total: await db.creditNote.count({ where }),
-    perPage: parseInt(process.env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(process.env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -153,9 +153,8 @@ export const action: ActionFunction = async ({
 
     if (creditNote) {
       return jsonWithSuccess(null, "Credit note deleted successfully.");
-    } else {
-      return jsonWithError(null, "Credit note could not be deleted.");
     }
+    return jsonWithError(null, "Credit note could not be deleted.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }
@@ -176,7 +175,7 @@ const CreditNotes = () => {
     {
       accessor: "orderNr",
       title: "Order Nr.",
-      hidden: pathname === "/creditNotes" ? true : false,
+      hidden: pathname === "/creditNotes",
     },
     {
       accessor: "number",
@@ -209,9 +208,7 @@ const CreditNotes = () => {
       title: "Invoiced",
       textAlign: "center",
       sortable: true,
-      render: (record) => (
-        <BooleanIcon value={record.invoiceId ? true : false} />
-      ),
+      render: (record) => <BooleanIcon value={!!record.invoiceId} />,
     },
     {
       accessor: "vehicle.registration",

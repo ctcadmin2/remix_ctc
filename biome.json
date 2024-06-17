@@ -1,0 +1,32 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.1/schema.json",
+  "files": {
+    "ignoreUnknown": true
+  },
+  "organizeImports": { "enabled": true },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "defaultBranch": "main",
+    "useIgnoreFile": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "formatter": { "enabled": true, "indentWidth": 2, "indentStyle": "space" },
+  "overrides": [
+    { "include": ["**/*.{js,jsx,ts,tsx}"], "linter": { "rules": {} } },
+    {
+      "include": ["**/*.{ts,tsx}"],
+      "linter": {
+        "rules": { "correctness": { "noUnusedVariables": "warn" } }
+      }
+    },
+    { "include": [".eslintrc.cjs", "mocks/**/*.js"] },
+    { "include": [".eslintrc.js", "mocks/**/*.js"] }
+  ],
+  "javascript": { "globals": ["React", "JSX"], "jsxRuntime": "transparent" }
+}

@@ -12,7 +12,7 @@ import {
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";
-import { TripExpense } from "@prisma/client";
+import type { TripExpense } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { Calendar, Upload } from "react-feather";

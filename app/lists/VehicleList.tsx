@@ -22,7 +22,7 @@ const VehiclesList = ({
       label="Vehicle"
       name="vehicleId"
       placeholder={vehicles ? "Pick one" : "No options"}
-      disabled={vehicles ? false : true}
+      disabled={!vehicles}
       allowDeselect
       clearable
       searchable

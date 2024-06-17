@@ -1,9 +1,9 @@
 import { useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
@@ -113,9 +113,8 @@ export const action: ActionFunction = async ({
         "/creditNotes",
         "Credit note edited successfully.",
       );
-    } else {
-      return jsonWithError(null, "Credit note could not be edited.");
     }
+    return jsonWithError(null, "Credit note could not be edited.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

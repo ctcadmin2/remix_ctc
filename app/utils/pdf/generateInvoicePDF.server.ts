@@ -1,8 +1,8 @@
 import Decimal from "decimal.js";
 import PdfPrinter from "pdfmake";
-import { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
+import type { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
 
-import { InvoiceData, CompanyInfo } from "~/routes/invoices.$id[.]pdf";
+import type { CompanyInfo, InvoiceData } from "~/routes/invoices.$id[.]pdf";
 
 import { db } from "../db.server";
 

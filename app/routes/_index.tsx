@@ -1,5 +1,5 @@
 import { ScrollArea, Title } from "@mantine/core";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { json, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import dayjs from "dayjs";
@@ -98,9 +98,8 @@ const Main = () => {
               rowBackgroundColor={({ expire }) => {
                 if (dayjs().diff(dayjs(expire), "days") <= 7) {
                   return "yellow.3";
-                } else {
-                  return "red.5";
                 }
+                return "red.5";
               }}
               columns={[
                 {

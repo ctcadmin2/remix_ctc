@@ -1,7 +1,7 @@
 import {
-  ActionFunction,
-  LoaderFunction,
-  LoaderFunctionArgs,
+  type ActionFunction,
+  type LoaderFunction,
+  type LoaderFunctionArgs,
   json,
 } from "@remix-run/server-runtime";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
@@ -56,9 +56,8 @@ export const action: ActionFunction = async ({ request }) => {
         "/employees",
         "Employee created successfully.",
       );
-    } else {
-      return jsonWithError(null, "Employee could not be created.");
     }
+    return jsonWithError(null, "Employee could not be created.");
   } catch (error) {
     return jsonWithError(null, `There has been and error: ${error}`);
   }

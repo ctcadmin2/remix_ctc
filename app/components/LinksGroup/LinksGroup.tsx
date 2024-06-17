@@ -1,9 +1,8 @@
 import { NavLink } from "@mantine/core";
-import { useLocation, Link } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 import type { ReactNode } from "react";
 
 import classes from "../../css/NavLink.module.css";
-
 
 interface LinksGroupProps {
   label: string;
@@ -16,7 +15,7 @@ const LinksGroup = ({ label, path, links }: LinksGroupProps) => {
 
   const hasLinks = Array.isArray(links);
   const activeStatus = (path: string) => {
-    return pathname === path ? true : false;
+    return pathname === path;
   };
 
   const items: ReactNode[] = (hasLinks ? links : []).map((link) => (

@@ -1,18 +1,18 @@
-import { env } from "process";
+import { env } from "node:process";
 
-import { Center, Button, Menu, Divider } from "@mantine/core";
+import { Button, Center, Divider, Menu } from "@mantine/core";
 import type { Prisma } from "@prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import type { DataTableColumn } from "mantine-datatable";
 import { useState } from "react";
 import { Edit, FileText, MoreHorizontal, Tool, Trash2 } from "react-feather";
-import { jsonWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -64,7 +64,7 @@ export const loader: LoaderFunction = async ({
     filter: z.string().optional(),
   });
 
-  const offset = ((page || 1) - 1) * parseInt(env.ITEMS_PER_PAGE);
+  const offset = ((page || 1) - 1) * Number.parseInt(env.ITEMS_PER_PAGE);
 
   const where: object = {
     ...(filter
@@ -102,7 +102,7 @@ export const loader: LoaderFunction = async ({
       },
     }),
     total: await db.vehicle.count({ where }),
-    perPage: parseInt(env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -131,9 +131,8 @@ export const action: ActionFunction = async ({
 
     if (vehicle) {
       return jsonWithSuccess(null, "Vehicle deleted successfully.");
-    } else {
-      return jsonWithError(null, "Vehicle could not be deleted.");
     }
+    return jsonWithError(null, "Vehicle could not be deleted.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

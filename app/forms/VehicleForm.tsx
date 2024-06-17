@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";
-import { Vehicle } from "@prisma/client";
+import type { Vehicle } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 

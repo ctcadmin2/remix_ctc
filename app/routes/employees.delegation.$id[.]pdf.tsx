@@ -1,9 +1,9 @@
-import { LoaderFunctionArgs } from "@remix-run/server-runtime";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
 
 import { db } from "~/utils/db.server";
 import generateDelegationPDF from "~/utils/pdf/generateDelegationPDF.server";
-import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   await authenticator.isAuthenticated(request, {

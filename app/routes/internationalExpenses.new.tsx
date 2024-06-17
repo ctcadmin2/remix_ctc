@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import type { ActionFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
-import { redirectWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -78,9 +78,8 @@ export const action: ActionFunction = async ({ request }) => {
         "/internationalExpenses",
         "Expense added successfully.",
       );
-    } else {
-      return jsonWithError(null, "Expense could not be created.");
     }
+    return jsonWithError(null, "Expense could not be created.");
   } catch (error) {
     return jsonWithError(null, `There has been and error: ${error}`);
   }

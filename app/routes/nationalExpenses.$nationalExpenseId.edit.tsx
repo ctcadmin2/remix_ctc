@@ -1,9 +1,9 @@
 import { useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
@@ -110,9 +110,8 @@ export const action: ActionFunction = async ({
         "/nationalExpenses",
         "Expense updated successfully.",
       );
-    } else {
-      return jsonWithError(null, "Expense could not be updated.");
     }
+    return jsonWithError(null, "Expense could not be updated.");
   } catch (error) {
     return jsonWithError(error, `There has been and error: ${error}`);
   }

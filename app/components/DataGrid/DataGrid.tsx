@@ -3,7 +3,7 @@ import { useSearchParams } from "@remix-run/react";
 import Decimal from "decimal.js";
 import type { DataTableColumn, DataTableSortStatus } from "mantine-datatable";
 import { DataTable } from "mantine-datatable";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type JSX, type ReactNode } from "react";
 
 import NewPageButton from "../NewPageButton/NewPageButton";
 
@@ -25,7 +25,6 @@ function DataGrid<T>({
   extraButton = undefined,
 }: Props<T>): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const sort = searchParams.get("sort");
   const didMountRef = useRef(false);
 
@@ -80,7 +79,7 @@ function DataGrid<T>({
 
         <Pagination
           total={new Decimal(total).dividedBy(perPage).ceil().toNumber()}
-          value={parseInt(searchParams.get("page") || "1")}
+          value={Number.parseInt(searchParams.get("page") || "1")}
           onChange={(page) =>
             setSearchParams((prev) => {
               prev.set("page", String(page));

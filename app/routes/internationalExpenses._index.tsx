@@ -1,4 +1,4 @@
-import { Center, Button, Menu, Divider } from "@mantine/core";
+import { Button, Center, Divider, Menu } from "@mantine/core";
 import type { Prisma } from "@prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
@@ -67,7 +67,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const data: LoaderData = {
     expenses: await db.internationalExpense.findMany({
       where,
-      take: parseInt(process.env.ITEMS_PER_PAGE),
+      take: Number.parseInt(process.env.ITEMS_PER_PAGE),
       skip: offset,
       orderBy: sortOrder({ date: "desc" }, sort),
       include: {
@@ -76,7 +76,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
     }),
     total: await db.internationalExpense.count({ where }),
-    perPage: parseInt(process.env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(process.env.ITEMS_PER_PAGE),
   };
 
   return json(data);

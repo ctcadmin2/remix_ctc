@@ -1,9 +1,9 @@
-import { TripExpense } from "@prisma/client";
+import type { TripExpense } from "@prisma/client";
 import dayjs from "dayjs";
 import "dayjs/locale/ro";
 import Decimal from "decimal.js";
 import PdfPrinter from "pdfmake";
-import { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
+import type { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
 
 const fonts = {
   Roboto: {
@@ -64,7 +64,7 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
       {
         layout: {
           //TODO
-          hLineWidth: function (i, node) {
+          hLineWidth: (i, node) => {
             if (
               i === 0 ||
               i === node.table.body.length ||

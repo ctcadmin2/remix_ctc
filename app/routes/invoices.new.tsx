@@ -2,11 +2,11 @@ import type { Setting } from "@prisma/client";
 import { useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
-import { redirectWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 
 import InvoiceForm from "~/forms/InvoiceForm";
-import { CompaniesListType } from "~/lists/CompanyList";
+import type { CompaniesListType } from "~/lists/CompanyList";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import {
@@ -17,7 +17,7 @@ import {
 } from "~/utils/invoiceUtils.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
-import { InvoiceCreditNoteType } from "./invoices.$invoiceId.edit";
+import type { InvoiceCreditNoteType } from "./invoices.$invoiceId.edit";
 
 interface LoaderData {
   creditNotes: InvoiceCreditNoteType[];
@@ -94,7 +94,7 @@ export const action: ActionFunction = async ({ request }) => {
         creditNotes: {
           connect: creditNotesIds
             ?.split(",")
-            .map((cn) => ({ id: parseInt(cn) })),
+            .map((cn) => ({ id: Number.parseInt(cn) })),
         },
         ...((await db.company.findUnique({ where: { id: clientId } }))
           ?.country === "RO"
@@ -107,9 +107,8 @@ export const action: ActionFunction = async ({ request }) => {
 
     if (invoice) {
       return redirectWithSuccess("/invoices", "Invoice created successfully.");
-    } else {
-      return jsonWithError(null, "Invoice could not be created.");
     }
+    return jsonWithError(null, "Invoice could not be created.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

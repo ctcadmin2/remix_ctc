@@ -1,8 +1,8 @@
-import { Company } from "@prisma/client";
+import type { Company } from "@prisma/client";
 import {
-  ActionFunction,
-  LoaderFunction,
-  LoaderFunctionArgs,
+  type ActionFunction,
+  type LoaderFunction,
+  type LoaderFunctionArgs,
   json,
 } from "@remix-run/server-runtime";
 import {
@@ -105,25 +105,23 @@ export const action: ActionFunction = async ({ request }) => {
       default:
         return jsonWithError(data.data, "An error has occured.");
     }
-  } else {
-    try {
-      if ("name" in rest) {
-        const company = await db.company.create({
-          data: rest,
-        });
-        if (company) {
-          return redirectWithSuccess(
-            "/companies",
-            "Company was created successfully.",
-          );
-        } else {
-          return jsonWithError(null, "Company could not be created.");
-        }
+  }
+  try {
+    if ("name" in rest) {
+      const company = await db.company.create({
+        data: rest,
+      });
+      if (company) {
+        return redirectWithSuccess(
+          "/companies",
+          "Company was created successfully.",
+        );
       }
-      return jsonWithError(null, "There has been an error.");
-    } catch (error) {
-      return jsonWithError(null, `There has been and error: ${error}`);
+      return jsonWithError(null, "Company could not be created.");
     }
+    return jsonWithError(null, "There has been an error.");
+  } catch (error) {
+    return jsonWithError(null, `There has been and error: ${error}`);
   }
 };
 

@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";
-import { Company } from "@prisma/client";
+import type { Company } from "@prisma/client";
 import { Form, useFetcher, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Search } from "react-feather";

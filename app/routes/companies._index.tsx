@@ -1,4 +1,4 @@
-import { Center, Button, Menu, Divider } from "@mantine/core";
+import { Button, Center, Divider, Menu } from "@mantine/core";
 import type { Company } from "@prisma/client";
 import { Link, json, useFetcher, useLoaderData } from "@remix-run/react";
 import type {
@@ -67,12 +67,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   const data: LoaderData = {
     companies: await db.company.findMany({
       where,
-      take: parseInt(process.env.ITEMS_PER_PAGE),
+      take: Number.parseInt(process.env.ITEMS_PER_PAGE),
       skip: offset,
       orderBy: sortOrder({ name: "asc" }, sort),
     }),
     total: await db.company.count({ where }),
-    perPage: parseInt(process.env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(process.env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -119,7 +119,7 @@ export const action: ActionFunction = async ({
           if (company) {
             return jsonWithSuccess(null, "Company refreshed successfully.");
           }
-          return jsonWithError(null, `Company could not be refreshed.`);
+          return jsonWithError(null, "Company could not be refreshed.");
         } catch (error) {
           return jsonWithError(
             null,
@@ -127,7 +127,7 @@ export const action: ActionFunction = async ({
           );
         }
       }
-      return jsonWithError(null, `Company could not be found.`);
+      return jsonWithError(null, "Company could not be found.");
     } catch (error) {
       return jsonWithError(null, `Company could not be refreshed: ${error}`);
     }

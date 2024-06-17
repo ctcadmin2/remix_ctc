@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 import { createId } from "@paralleldrive/cuid2";
-import { Company, Prisma } from "@prisma/client";
+import type { Company, Prisma } from "@prisma/client";
 import AdmZip from "adm-zip";
 import { parseStringPromise } from "xml2js";
 import { stripPrefix } from "xml2js/lib/processors";
@@ -100,10 +100,10 @@ export const processZip = async (
             },
           });
           if (newLocal) {
-            await mkdir(`/storage/eFactura/`, { recursive: true });
+            await mkdir("/storage/eFactura/", { recursive: true });
             await writeFile(`/storage/eFactura/${zipName}`, zip);
             if (invoice.pdf) {
-              await mkdir(`/storage/nationalExpense/`, { recursive: true });
+              await mkdir("/storage/nationalExpense/", { recursive: true });
               await writeFile(
                 `/storage/nationalExpense/${pdfName}`,
                 invoice.pdf,
@@ -157,10 +157,10 @@ export const processZip = async (
           },
         });
         if (ne) {
-          await mkdir(`/storage/eFactura/`, { recursive: true });
+          await mkdir("/storage/eFactura/", { recursive: true });
           await writeFile(`/storage/eFactura/${zipName}`, zip);
           if (invoice.pdf) {
-            await mkdir(`/storage/nationalExpense/`, { recursive: true });
+            await mkdir("/storage/nationalExpense/", { recursive: true });
             await writeFile(`/storage/nationalExpense/${pdfName}`, invoice.pdf);
           }
           return {
@@ -230,7 +230,7 @@ const messageDownloader = async (downloadId: string) => {
     }
 
     return null;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 };

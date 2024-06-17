@@ -1,12 +1,12 @@
-import { env } from "process";
+import { env } from "node:process";
 
-import { Center, Button, Menu, ActionIcon } from "@mantine/core";
+import { ActionIcon, Button, Center, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import type { Indemnization, Payment, Prisma } from "@prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
+  ActionFunctionArgs,
   LoaderFunction,
 } from "@remix-run/server-runtime";
 import Decimal from "decimal.js";
@@ -63,7 +63,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     filter: z.string().optional(),
   });
 
-  const offset = ((page || 1) - 1) * parseInt(env.ITEMS_PER_PAGE);
+  const offset = ((page || 1) - 1) * Number.parseInt(env.ITEMS_PER_PAGE);
 
   const data: LoaderData = {
     payments: await db.payment.findMany({
@@ -74,7 +74,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       orderBy: sortOrder({ month: "desc" }, sort),
     }),
     total: await db.payment.count({ where: { employee: { id: employeeId } } }),
-    perPage: parseInt(env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -102,10 +102,9 @@ export const action: ActionFunction = async ({
     const payment = await db.payment.delete({ where: { id } });
     if (payment) {
       return jsonWithSuccess(null, "Payment deleted successfully.");
-    } else {
-      return jsonWithError(null, "Payment could not be deleted.");
     }
-  } catch (error) {
+    return jsonWithError(null, "Payment could not be deleted.");
+  } catch (_error) {
     return jsonWithError(null, "Payment could not be deleted.");
   }
 };

@@ -1,20 +1,20 @@
 import {
-  Indicator,
   ActionIcon,
-  Drawer,
-  ScrollAreaAutosize,
   Alert,
-  Text,
+  Drawer,
   Flex,
+  Indicator,
+  ScrollAreaAutosize,
+  Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Message } from "@prisma/client";
+import type { Message } from "@prisma/client";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle, Mail, Trash2 } from "react-feather";
 import { useEventSource } from "remix-utils/sse/react";
 
-import { loader } from "~/root";
+import type { loader } from "~/root";
 
 const Messages = () => {
   const data = useLoaderData<typeof loader>();

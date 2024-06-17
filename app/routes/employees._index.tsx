@@ -1,4 +1,4 @@
-import { Center, Button, Menu, Divider, Modal, Flex } from "@mantine/core";
+import { Button, Center, Divider, Flex, Menu, Modal } from "@mantine/core";
 import { MonthPicker } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import type { Employee } from "@prisma/client";
@@ -68,12 +68,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   const data: LoaderData = {
     employees: await db.employee.findMany({
       where,
-      take: parseInt(process.env.ITEMS_PER_PAGE),
+      take: Number.parseInt(process.env.ITEMS_PER_PAGE),
       skip: offset,
       orderBy: [{ active: "desc" }, { lastName: "asc" }],
     }),
     total: await db.employee.count({ where }),
-    perPage: parseInt(process.env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(process.env.ITEMS_PER_PAGE),
   };
 
   return json(data);
@@ -95,15 +95,14 @@ export const action: ActionFunction = async ({
     const employee = await db.employee.delete({ where: { id } });
     if (employee) {
       return jsonWithSuccess(null, "Employee deleted successfully.");
-    } else {
-      return jsonWithError(null, "Employee could not ne deleted.");
     }
+    return jsonWithError(null, "Employee could not ne deleted.");
   } catch (error) {
     return jsonWithError(error, `Employee could not be deleted: ${error}`);
   }
 };
 
-const Employee = () => {
+const Employees = () => {
   const { employees, total, perPage } = useLoaderData<LoaderData>();
   const [delOpen, setDelOpen] = useState(false);
   const [employee, setEmployee] = useState<Employee>();
@@ -252,4 +251,4 @@ const Employee = () => {
   );
 };
 
-export default Employee;
+export default Employees;

@@ -163,7 +163,7 @@ async function seed() {
     date: faker.date.past(),
     amount: faker.number.int({ min: 1000, max: 10000 }),
     currency: faker.finance.currencyCode(),
-    vatRate: parseInt(faker.string.numeric(2)),
+    vatRate: Number.parseInt(faker.string.numeric(2)),
     clientId: faker.number.int({ min: 1, max: 10 }),
   }));
 

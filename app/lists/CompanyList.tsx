@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import { type Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 import { capitalize } from "~/utils/stringUtils";
 
@@ -44,7 +44,7 @@ const CompanyList = ({
       label={`${capitalize(type)}`}
       name={`${type}Id`}
       placeholder={companies ? "Pick one" : "No options"}
-      disabled={companies ? false : true}
+      disabled={!companies}
       allowDeselect
       clearable
       searchable

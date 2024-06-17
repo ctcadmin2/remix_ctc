@@ -12,13 +12,10 @@
     "dev": "remix vite:dev",
     "build": "remix vite:build",
     "start": "remix-serve ./build/server/index.js",
-    "lint": "eslint .",
+    "lint": "biome check --fix .",
     "ts": "tsc --pretty"
   },
-  "eslintIgnore": [
-    "/node_modules",
-    "/build"
-  ],
+  "eslintIgnore": ["/node_modules", "/build"],
   "dependencies": {
     "@mantine/core": "^7.10.2",
     "@mantine/dates": "^7.10.2",
@@ -56,6 +53,7 @@
     "zodix": "^0.4.4"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.1",
     "@faker-js/faker": "^8.4.1",
     "@remix-run/dev": "^2.9.2",
     "@types/adm-zip": "^0.5.5",

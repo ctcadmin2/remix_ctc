@@ -1,12 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import type {
-  ActionFunctionArgs,
   ActionFunction,
-  LoaderFunctionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
-import { redirectWithSuccess, jsonWithError } from "remix-toast";
+import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -64,9 +64,8 @@ export const action: ActionFunction = async ({
         "/vehicles",
         "Vehicle was created successfully.",
       );
-    } else {
-      return jsonWithError(null, "Vehicle could not be created.");
     }
+    return jsonWithError(null, "Vehicle could not be created.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

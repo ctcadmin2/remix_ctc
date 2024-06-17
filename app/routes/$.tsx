@@ -1,8 +1,11 @@
 import { Alert, Text } from "@mantine/core";
-import { LoaderFunction, LoaderFunctionArgs } from "@remix-run/server-runtime";
+import type {
+  LoaderFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/server-runtime";
 import { Server } from "react-feather";
 
-import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
+import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 export const loader: LoaderFunction = async ({
   request,

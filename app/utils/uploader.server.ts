@@ -1,5 +1,5 @@
-import { mkdir } from "fs";
-import { writeFile } from "fs/promises";
+import { mkdir } from "node:fs";
+import { writeFile } from "node:fs/promises";
 
 import { createId } from "@paralleldrive/cuid2";
 import type { PDFImage } from "pdf-lib";

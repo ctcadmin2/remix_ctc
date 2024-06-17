@@ -1,13 +1,13 @@
-import { env } from "process";
+import { env } from "node:process";
 
-import { Center, Button, Menu, Tabs, Divider } from "@mantine/core";
+import { Button, Center, Divider, Menu, Tabs } from "@mantine/core";
 import type { Prisma } from "@prisma/client";
 import {
-  useSearchParams,
   Link,
-  useLoaderData,
-  useSubmit,
   json,
+  useLoaderData,
+  useSearchParams,
+  useSubmit,
 } from "@remix-run/react";
 import type {
   ActionFunction,
@@ -78,7 +78,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     filter: z.string().optional(),
   });
 
-  const offset = (page - 1) * parseInt(env.ITEMS_PER_PAGE);
+  const offset = (page - 1) * Number.parseInt(env.ITEMS_PER_PAGE);
 
   const where: object = {
     ...(filter
@@ -109,7 +109,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const data: LoaderData = {
     invoices: await db.invoice.findMany({
       where,
-      take: parseInt(env.ITEMS_PER_PAGE),
+      take: Number.parseInt(env.ITEMS_PER_PAGE),
       skip: offset,
       orderBy: sortOrder({ date: "desc" }, sort),
       select: {
@@ -129,7 +129,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
     }),
     total: await db.invoice.count({ where }),
-    perPage: parseInt(env.ITEMS_PER_PAGE),
+    perPage: Number.parseInt(env.ITEMS_PER_PAGE),
   };
   return json(data);
 };
@@ -156,9 +156,8 @@ export const action: ActionFunction = async ({
     const invoice = await db.invoice.delete({ where: { id } });
     if (invoice) {
       return jsonWithSuccess(null, "Invoice deleted successfully.");
-    } else {
-      return jsonWithError(null, "Invoice could not be deleted.");
     }
+    return jsonWithError(null, "Invoice could not be deleted.");
   } catch (error) {
     return jsonWithError(error, "An error has occured.");
   }

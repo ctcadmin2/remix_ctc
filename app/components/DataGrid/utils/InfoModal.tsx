@@ -1,8 +1,9 @@
-import { Modal, Group, Button } from "@mantine/core";
+import { Button, Group, Modal } from "@mantine/core";
+import type { Dispatch, JSX, SetStateAction } from "react";
 
 interface Props {
   opened: boolean;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpened: Dispatch<SetStateAction<boolean>>;
   form: JSX.Element;
 }
 

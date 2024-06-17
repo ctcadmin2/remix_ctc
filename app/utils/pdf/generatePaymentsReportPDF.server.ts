@@ -1,8 +1,8 @@
 import Decimal from "decimal.js";
 import PdfPrinter from "pdfmake";
-import { TDocumentDefinitions, type TableCell } from "pdfmake/interfaces";
+import type { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
 
-import { reportIndemnizations } from "~/routes/employees.paymentsReport[.]pdf";
+import type { reportIndemnizations } from "~/routes/employees.paymentsReport[.]pdf";
 
 const fonts = {
   Roboto: {

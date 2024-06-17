@@ -2,19 +2,19 @@ import dayjs from "dayjs";
 import Decimal from "decimal.js";
 import { Invoice } from "ubl-builder";
 import {
+  AccountingCustomerParty,
   AccountingSupplierParty,
-  Party,
-  PostalAddress,
+  ClassifiedTaxCategory,
   Country,
+  Item,
+  Party,
   PartyLegalEntity,
   PartyTaxScheme,
-  TaxScheme,
-  AccountingCustomerParty,
-  TaxSubtotal,
-  TaxCategory,
-  Item,
-  ClassifiedTaxCategory,
+  PostalAddress,
   Price,
+  TaxCategory,
+  TaxScheme,
+  TaxSubtotal,
 } from "ubl-builder/lib/ubl21/CommonAggregateComponents";
 import { PayeeFinancialAccount } from "ubl-builder/lib/ubl21/CommonAggregateComponents/PayeeFinancialAccount";
 import {
@@ -22,7 +22,7 @@ import {
   UdtQuantity,
 } from "ubl-builder/lib/ubl21/types/UnqualifiedDataTypes";
 
-import { eInvoice } from "~/routes/efactura";
+import type { eInvoice } from "~/routes/efactura";
 
 import { db } from "../db.server";
 
@@ -37,7 +37,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
     minimumIntegerDigits: 7,
     useGrouping: false,
   })
-    .format(parseInt(invoice.number))
+    .format(Number.parseInt(invoice.number))
     .toString()}`;
 
   const vatAmount = new Decimal(invoice.amount)
