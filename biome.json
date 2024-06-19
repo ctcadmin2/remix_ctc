@@ -17,6 +17,17 @@
     }
   },
   "formatter": { "enabled": true, "indentWidth": 2, "indentStyle": "space" },
+  "javascript": { "globals": ["React", "JSX"], "jsxRuntime": "transparent" },
+  "json": {
+    "parser": {
+      "allowComments": true
+    }
+  },
+  "css": {
+    "parser": { "cssModules": true },
+    "formatter": { "enabled": true },
+    "linter": { "enabled": true }
+  },
   "overrides": [
     { "include": ["**/*.{js,jsx,ts,tsx}"], "linter": { "rules": {} } },
     {
@@ -27,6 +38,5 @@
     },
     { "include": [".eslintrc.cjs", "mocks/**/*.js"] },
     { "include": [".eslintrc.js", "mocks/**/*.js"] }
-  ],
-  "javascript": { "globals": ["React", "JSX"], "jsxRuntime": "transparent" }
+  ]
 }

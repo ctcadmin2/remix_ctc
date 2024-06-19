@@ -3,7 +3,7 @@ import { useSearchParams } from "@remix-run/react";
 import Decimal from "decimal.js";
 import type { DataTableColumn, DataTableSortStatus } from "mantine-datatable";
 import { DataTable } from "mantine-datatable";
-import { useEffect, useRef, useState, type JSX, type ReactNode } from "react";
+import { type JSX, type ReactNode, useEffect, useRef, useState } from "react";
 
 import NewPageButton from "../NewPageButton/NewPageButton";
 

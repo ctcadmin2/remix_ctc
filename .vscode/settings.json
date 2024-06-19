@@ -1,0 +1,24 @@
+{
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "redhat.telemetry.enabled": false,
+  "git.autofetch": true,
+  "editor.fontSize": 16,
+  "terminal.integrated.fontSize": 16,
+  "debug.console.fontSize": 16,
+  "git.confirmSync": false,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.autoClosingQuotes": "always",
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "workbench.editor.empty.hint": "hidden",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "biome.rename": true
+}

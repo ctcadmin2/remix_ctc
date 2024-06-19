@@ -17,7 +17,7 @@ const IndemnizationForm = () => {
 
   useEffect(() => {
     ref.current?.focus();
-  }, [values.indemnizations.length]);
+  });
 
   return (
     <ScrollArea.Autosize mah={"50vh"} offsetScrollbars mt={"3rem"}>
@@ -31,9 +31,9 @@ const IndemnizationForm = () => {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {values.indemnizations.map((_indemnization, i) => {
+          {values.indemnizations.map((indemnization, i) => {
             return (
-              <Table.Tr key={i}>
+              <Table.Tr key={indemnization.id}>
                 <Table.Td>
                   <DatePickerInput
                     type="range"

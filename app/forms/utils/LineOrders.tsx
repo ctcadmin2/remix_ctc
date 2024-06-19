@@ -34,7 +34,7 @@ const LineOrders = ({ disabled }: Props) => {
           <Table.Tbody>
             {form.values.orders.map((order, i) => {
               return (
-                <Table.Tr key={i}>
+                <Table.Tr key={order.id}>
                   <Table.Td>
                     <TextInput
                       name={`orders[${i}].description`}

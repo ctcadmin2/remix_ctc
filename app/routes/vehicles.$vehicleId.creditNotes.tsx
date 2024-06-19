@@ -194,9 +194,10 @@ export const action: ActionFunction = async ({
 
   if (!formData.success) {
     let errors = {};
-    formData.error.issues.map(
-      (i) => (errors = { ...errors, [`${i.path[0]}`]: i.message }),
-    );
+    formData.error.issues.map((i) => {
+      errors = { ...errors, [`${i.path[0]}`]: i.message };
+      return;
+    });
 
     return jsonWithWarning(
       { formPayload, errors },

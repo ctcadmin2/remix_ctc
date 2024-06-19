@@ -98,10 +98,10 @@ const Messages = () => {
           </Drawer.Header>
           <Drawer.Body>
             {messages.length > 0 ? (
-              messages.map((message, index) => (
+              messages.map((message) => (
                 <Alert
                   styles={{ root: { margin: "1rem" } }}
-                  key={index}
+                  key={message.id}
                   variant="light"
                   color={message.status === "ok" ? "green" : "yellow"}
                   withCloseButton={true}

@@ -64,7 +64,7 @@ export const processZip = async (
       const local = await db.nationalExpense.findFirst({
         where: {
           AND: [
-            { number: { contains: invoice.number.slice(-2) } },
+            { number: { contains: invoice.number.slice(-4) } },
             { amount: { equals: invoice.amount } },
             { supplier: { vatNumber: { contains: invoice.vatNumber } } },
           ],

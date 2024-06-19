@@ -70,9 +70,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   //process and return form errors
   if (!formData.success) {
     let errors = {};
-    formData.error.issues.map(
-      (i) => (errors = { ...errors, [`${i.path[0]}`]: i.message }),
-    );
+    formData.error.issues.map((i) => {
+      errors = { ...errors, [`${i.path[0]}`]: i.message };
+      return;
+    });
 
     return jsonWithError(
       { values: formPayload, errors },

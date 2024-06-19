@@ -14,7 +14,6 @@ const Multi = ({ name, value }: { name: string; value: string[] }) => {
       submit({ name, value: JSON.stringify(values) }, { method: "post" });
     }
     didMountRef.current = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
 
   const addSettings = (code: string) => {
@@ -24,6 +23,7 @@ const Multi = ({ name, value }: { name: string; value: string[] }) => {
     }
   };
 
+  console.log(values);
   const data = values.map((v, i) => (
     <Pill
       key={i}
