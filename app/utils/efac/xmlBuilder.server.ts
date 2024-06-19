@@ -36,15 +36,13 @@ const XMLBuilder = async (invoice: eInvoice) => {
   const id = `BCT${Intl.NumberFormat("ro-RO", {
     minimumIntegerDigits: 7,
     useGrouping: false,
-  })
-    .format(Number.parseInt(invoice.number))
-    .toString()}`;
+  }).format(Number.parseInt(invoice.number))}`;
 
   const vatAmount = new Decimal(invoice.amount)
     .times(invoice.vatRate)
     .dividedBy(100)
     .toDP(2)
-    .toString();
+    .toNumber();
 
   const account = await db.setting.findFirst({ where: { name: "accRon" } });
 
@@ -152,13 +150,34 @@ const XMLBuilder = async (invoice: eInvoice) => {
   });
   xml.addPaymentTerm({ note: `${invoice.paymentTerms}` });
   xml.addTaxTotal({
-    taxAmount: new UdtAmount(vatAmount, { currencyID: "RON" }),
+    taxAmount: new UdtAmount(
+      new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+        useGrouping: false,
+      }).format(vatAmount),
+      { currencyID: "RON" },
+    ),
     taxSubtotals: [
       new TaxSubtotal({
-        taxableAmount: new UdtAmount(String(invoice.amount), {
-          currencyID: "RON",
-        }),
-        taxAmount: new UdtAmount(vatAmount, { currencyID: "RON" }),
+        taxableAmount: new UdtAmount(
+          new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+            useGrouping: false,
+          }).format(new Decimal(invoice.amount).toNumber()),
+          {
+            currencyID: "RON",
+          },
+        ),
+        taxAmount: new UdtAmount(
+          new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+            useGrouping: false,
+          }).format(vatAmount),
+          { currencyID: "RON" },
+        ),
         taxCategory: new TaxCategory({
           id: "S",
           percent: "19.00",
@@ -168,20 +187,43 @@ const XMLBuilder = async (invoice: eInvoice) => {
     ],
   });
   xml.setLegalMonetaryTotal({
-    lineExtensionAmount: new UdtAmount(String(invoice.amount), {
-      currencyID: "RON",
-    }),
-    taxExclusiveAmount: new UdtAmount(String(invoice.amount), {
-      currencyID: "RON",
-    }),
+    lineExtensionAmount: new UdtAmount(
+      new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+        useGrouping: false,
+      }).format(new Decimal(invoice.amount).toNumber()),
+      {
+        currencyID: "RON",
+      },
+    ),
+    taxExclusiveAmount: new UdtAmount(
+      new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+        useGrouping: false,
+      }).format(new Decimal(invoice.amount).toNumber()),
+
+      {
+        currencyID: "RON",
+      },
+    ),
     taxInclusiveAmount: new UdtAmount(
-      new Decimal(invoice.amount).plus(vatAmount).toString(),
+      new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+        useGrouping: false,
+      }).format(new Decimal(invoice.amount).plus(vatAmount).toNumber()),
       {
         currencyID: "RON",
       },
     ),
     payableAmount: new UdtAmount(
-      new Decimal(invoice.amount).plus(vatAmount).toString(),
+      new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+        useGrouping: false,
+      }).format(new Decimal(invoice.amount).plus(vatAmount).toNumber()),
       {
         currencyID: "RON",
       },
@@ -191,9 +233,16 @@ const XMLBuilder = async (invoice: eInvoice) => {
     xml.addInvoiceLine({
       id: `${i + 1}`,
       invoicedQuantity: new UdtQuantity(`${o.quantity}`, { unitCode: "H87" }),
-      lineExtensionAmount: new UdtAmount(String(o.amount), {
-        currencyID: "RON",
-      }),
+      lineExtensionAmount: new UdtAmount(
+        new Intl.NumberFormat("en-US", {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+          useGrouping: false,
+        }).format(new Decimal(o.amount).toNumber()),
+        {
+          currencyID: "RON",
+        },
+      ),
       item: new Item({
         name: `${o.description}`,
         classifiedTaxCategory: new ClassifiedTaxCategory({
@@ -203,9 +252,16 @@ const XMLBuilder = async (invoice: eInvoice) => {
         }),
       }),
       price: new Price({
-        priceAmount: new UdtAmount(String(o.total), {
-          currencyID: "RON",
-        }),
+        priceAmount: new UdtAmount(
+          new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+            useGrouping: false,
+          }).format(new Decimal(o.total).toNumber()),
+          {
+            currencyID: "RON",
+          },
+        ),
       }),
     });
   });
@@ -214,9 +270,16 @@ const XMLBuilder = async (invoice: eInvoice) => {
     xml.addInvoiceLine({
       id: `${i + 1}`,
       invoicedQuantity: new UdtQuantity("1", { unitCode: "H87" }),
-      lineExtensionAmount: new UdtAmount(String(cn.amount), {
-        currencyID: "RON",
-      }),
+      lineExtensionAmount: new UdtAmount(
+        new Intl.NumberFormat("en-US", {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+          useGrouping: false,
+        }).format(new Decimal(cn.amount).toNumber()),
+        {
+          currencyID: "RON",
+        },
+      ),
       item: new Item({
         name: `transport conform contract ${cn.number}`,
         classifiedTaxCategory: new ClassifiedTaxCategory({
@@ -226,9 +289,16 @@ const XMLBuilder = async (invoice: eInvoice) => {
         }),
       }),
       price: new Price({
-        priceAmount: new UdtAmount(String(cn.amount), {
-          currencyID: "RON",
-        }),
+        priceAmount: new UdtAmount(
+          new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+            useGrouping: false,
+          }).format(new Decimal(cn.amount).toNumber()),
+          {
+            currencyID: "RON",
+          },
+        ),
       }),
     });
   });
