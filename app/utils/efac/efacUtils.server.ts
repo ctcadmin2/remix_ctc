@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 
 import { createId } from "@paralleldrive/cuid2";
 import type { Company, Prisma } from "@prisma/client";
@@ -277,6 +277,95 @@ export const parseXml = async (xml: Buffer) => {
       },
     });
     return null;
+  }
+};
+
+export const bulkImport = async (path: string) => {
+  for (const file of await readdir(path)) {
+    const data = new AdmZip(`storage/T/${file}`);
+    const entries = data.getEntries();
+    let filename = undefined;
+    const zipName = createId();
+
+    for (const entry of entries) {
+      if (entry.entryName.split("_").length === 1) {
+        filename = entry.entryName.split(".")[0];
+      }
+    }
+
+    const xml = data.getEntry(`${filename}.xml`)?.getData();
+
+    if (xml) {
+      try {
+        const data = await parseStringPromise(xml, {
+          trim: true,
+          explicitArray: false,
+          ignoreAttrs: true,
+          tagNameProcessors: [stripPrefix],
+        });
+        if (data) {
+          try {
+            const invoice = await db.invoice.findFirst({
+              where: {
+                AND: [
+                  { number: data.ID },
+                  { client: { country: { equals: "RO" } } },
+                ],
+              },
+            });
+            if (invoice) {
+              try {
+                const local = await db.invoice.update({
+                  where: { id: invoice.id },
+                  data: {
+                    EFactura: {
+                      create: {
+                        status: "store",
+                        downloadId: filename,
+                        uploadId: file.split(".")[0],
+                        attachment: {
+                          create: {
+                            type: "eFactura",
+                            name: zipName,
+                          },
+                        },
+                      },
+                    },
+                  },
+                });
+                if (local) {
+                  await mkdir("storage/eFactura/", { recursive: true });
+                  await writeFile(
+                    `storage/eFactura/${zipName}.zip`,
+                    await readFile(`storage/T/${file}`),
+                  );
+                  console.log(`invoice ${local.number} was updated`);
+                  continue;
+                }
+                console.log("invoice could not be updated");
+              } catch (error) {
+                console.log(`update: ${error}`);
+              }
+            }
+          } catch (error) {
+            console.log(`update: ${error}`);
+          }
+        }
+        await db.message.create({
+          data: {
+            status: "nok",
+            content: `There was no data in xml for ${filename}.xml`,
+          },
+        });
+      } catch (error) {
+        await db.message.create({
+          data: {
+            status: "nok",
+            content: `There was and error while parsing xml: ${error}`,
+          },
+        });
+      }
+    }
   }
 };
 
