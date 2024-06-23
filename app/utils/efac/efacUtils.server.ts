@@ -10,6 +10,8 @@ import { db } from "../db.server";
 import { emitter } from "../emitter";
 import findCompany from "../findCompany.server";
 
+export const ANAF_ENV = "prod";
+
 export const getToken = async (): Promise<string> => {
   return (await readFile("/storage/cert.key")).toString().trim();
 };
@@ -213,7 +215,7 @@ export const processMessages = async (mesaje: message[]) => {
 
 //TODO dry
 const messageDownloader = async (downloadId: string) => {
-  const url = `https://api.anaf.ro/prod/FCTEL/rest/descarcare?id=${downloadId}`;
+  const url = `https://api.anaf.ro/${ANAF_ENV}/FCTEL/rest/descarcare?id=${downloadId}`;
 
   try {
     const response = await fetch(url, {
