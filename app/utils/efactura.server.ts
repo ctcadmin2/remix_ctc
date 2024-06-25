@@ -278,7 +278,7 @@ export const getExpenses = async () => {
   } catch (error) {
     return {
       stare: "nok e",
-      message: `Error while uploading ${error}`,
+      message: `Error while getting messages: ${error}`,
     };
   }
 };

@@ -177,7 +177,7 @@ export const processZip = async (
       } catch (error) {
         return {
           status: "nok",
-          message: `error while creating invoice ${invoice.number} with error: ${error}`,
+          message: `error while creating invoice ${invoice.number} and dId ${downloadId} with error: ${error}`,
         };
       }
     }
