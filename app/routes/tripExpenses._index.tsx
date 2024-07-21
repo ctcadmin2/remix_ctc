@@ -1,6 +1,6 @@
 import { Button, Center, Divider, Menu } from "@mantine/core";
 import type { Prisma } from "@prisma/client";
-import { Link, json, useLoaderData } from "@remix-run/react";
+import { Link, json, useFetcher, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
   ActionFunctionArgs,
@@ -16,10 +16,15 @@ import {
   MoreHorizontal,
   Trash2,
 } from "react-feather";
-import { redirectWithError, redirectWithSuccess } from "remix-toast";
+import {
+  jsonWithError,
+  jsonWithInfo,
+  jsonWithSuccess,
+  redirectWithError,
+  redirectWithSuccess,
+} from "remix-toast";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
-import { zx } from "zodix";
+import { parseForm, zx } from "zodix";
 
 import DataGrid from "~/components/DataGrid/DataGrid";
 import BooleanIcon from "~/components/DataGrid/utils/BooleanIcon";
@@ -94,10 +99,41 @@ export const action: ActionFunction = async ({
     failureRedirect: DEFAULT_REDIRECT,
   });
 
-  const schema = zfd.formData({
-    id: zx.NumAsString,
+  const { _action, id } = await parseForm(request, {
+    _action: z.string().optional(),
+    id: zx.NumAsString.optional(),
   });
-  const { id } = schema.parse(await request.formData());
+
+  if (_action === "new") {
+    try {
+      const expenses = await db.tripExpense.findMany({
+        where: { tripReportId: null },
+        select: {
+          id: true,
+        },
+      });
+      if (expenses.length < 1) {
+        return jsonWithInfo(null, "There are no new trip expenses.");
+      }
+      const report = await db.tripReport.create({
+        data: { expenses: { connect: expenses } },
+      });
+
+      if (report) {
+        return jsonWithSuccess(
+          null,
+          `Raport with id ${report.id} was created succesfully.`,
+        );
+      }
+
+      return jsonWithError(null, "Raport could not be generated");
+    } catch (error) {
+      return jsonWithError(
+        null,
+        `Raport could not be generated with error: ${error}`,
+      );
+    }
+  }
 
   try {
     await db.tripExpense.delete({ where: { id } });
@@ -117,10 +153,15 @@ const TripExpenses = () => {
   const { expenses, total, perPage } = useLoaderData<typeof loader>();
   const [delOpen, setDelOpen] = useState(false);
   const [expense, setExpense] = useState<TripExpense>();
+  const fetcher = useFetcher();
 
   const handleDelete = (row: TripExpense) => {
     setExpense(row);
     setDelOpen(!delOpen);
+  };
+
+  const handleGenerateRaport = () => {
+    fetcher.submit({ _action: "new" }, { method: "POST" });
   };
 
   const columns: DataTableColumn<TripExpense>[] = [
@@ -268,7 +309,15 @@ const TripExpenses = () => {
         columns={columns as DataTableColumn<unknown>[]}
         total={total}
         perPage={perPage}
-        extraButton={null}
+        extraButton={
+          <Button
+            variant="outline"
+            loading={fetcher.state === "loading"}
+            onClick={handleGenerateRaport}
+          >
+            Generate Raport
+          </Button>
+        }
       />
       <DeleteModal<TripExpense>
         name="tripExpense"

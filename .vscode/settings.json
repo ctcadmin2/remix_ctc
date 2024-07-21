@@ -20,5 +20,8 @@
   "workbench.editor.empty.hint": "hidden",
   "javascript.updateImportsOnFileMove.enabled": "always",
   "diffEditor.ignoreTrimWhitespace": false,
-  "biome.rename": true
+  "biome.rename": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }
