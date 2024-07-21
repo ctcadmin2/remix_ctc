@@ -20,7 +20,14 @@ import FileUploader from "~/utils/uploader.server";
 
 const schema = zfd.formData({
   description: zfd.text(),
-  expire: zfd.text(z.string().optional()),
+  expire: zfd.text(
+    z
+      .string()
+      .optional()
+      .transform((value) => {
+        return value === "" || value === undefined ? null : value;
+      }),
+  ),
   comment: zfd.text(z.string().optional()),
   files: zfd.repeatableOfType(
     zfd.file(z.instanceof(Blob).optional().catch(undefined)),
@@ -79,13 +86,13 @@ export const action: ActionFunction = async ({
     if (document) {
       if (files[0]) {
         await FileUploader(files as Blob[], "document", document.id);
-        return redirectWithSuccess(
-          `/vehicles/${vehicleId}/documents`,
-          "Document was edited successfully.",
-        );
       }
-      return jsonWithError(null, "Document could not be edited.");
+      return redirectWithSuccess(
+        `/vehicles/${vehicleId}/documents`,
+        "Document was edited successfully.",
+      );
     }
+    return jsonWithError(null, "Document could not be edited.");
   } catch (error) {
     return jsonWithError(null, `An error has occured: ${error}`);
   }

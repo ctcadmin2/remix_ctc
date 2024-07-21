@@ -23,7 +23,7 @@ const DocumentForm = ({ document = null }: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       description: document?.description || "",
-      expire: document?.expire ? new Date(document.expire) : new Date(),
+      expire: document?.expire ? new Date(document.expire) : undefined,
       comment: document?.comment || "",
       files: [],
     },
@@ -54,6 +54,7 @@ const DocumentForm = ({ document = null }: Props): JSX.Element => {
           label="Expire"
           name="expire"
           clearable
+          highlightToday
           placeholder="Date input"
           popoverProps={{ withinPortal: true }}
           {...form.getInputProps("expire")}

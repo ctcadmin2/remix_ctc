@@ -19,7 +19,14 @@ import FileUploader from "~/utils/uploader.server";
 
 const schema = zfd.formData({
   description: zfd.text(),
-  expire: zfd.text(z.string().optional()),
+  expire: zfd.text(
+    z
+      .string()
+      .optional()
+      .transform((value) => {
+        return value === "" || value === undefined ? null : value;
+      }),
+  ),
   comment: zfd.text(z.string().optional()),
   files: zfd.repeatableOfType(
     zfd.file(z.instanceof(Blob).optional().catch(undefined)),
