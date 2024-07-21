@@ -1,11 +1,11 @@
 # base node image
-FROM node:22-alpine as base
+FROM node:22-alpine AS base
 
 # Install openssl for Prisma and git
 RUN apk update && apk add openssl git
 
 ENV NODE_ENV=production
-ENV YARN_VERSION=4.3.0
+ENV YARN_VERSION=4.3.1
 
 WORKDIR /ctcadmin
 
@@ -22,21 +22,21 @@ ADD yarn.lock .
 ADD .yarnrc.yml .
 
 # Install all node_modules, including dev dependencies
-FROM base as deps
+FROM base AS deps
 
 WORKDIR /ctcadmin
 
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install
 
 # Setup production node_modules
-FROM base as production-deps
+FROM base AS production-deps
 
 WORKDIR /ctcadmin
 
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn workspaces focus --production
 
 # Build the app
-FROM base as build
+FROM base AS build
 
 WORKDIR /ctcadmin
 
@@ -52,7 +52,7 @@ ADD . .
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn build
 
 # Finally, build the production image with minimal footprint
-FROM base as final
+FROM base AS final
 
 WORKDIR /ctcadmin
 
@@ -74,4 +74,4 @@ RUN corepack prepare yarn@${YARN_VERSION}
 
 EXPOSE 3000
 
-CMD yarn run start
+CMD ["yarn", "run", "start"]
