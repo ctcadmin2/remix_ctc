@@ -69,7 +69,7 @@ export const loader: LoaderFunction = async ({ request }) => {
                 mode: "insensitive",
               },
             },
-            { intNr: { name: { contains: filter, mode: "insensitive" } } },
+            { intNr: { equals: Number.parseInt(filter) } },
           ],
         }
       : {}),
