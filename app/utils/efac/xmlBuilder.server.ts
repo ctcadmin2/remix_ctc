@@ -132,11 +132,11 @@ const XMLBuilder = async (invoice: eInvoice) => {
         partyTaxSchemes: [
           ...(invoice.client.vatValid
             ? [
-                new PartyTaxScheme({
-                  companyID: `RO${invoice.client.vatNumber}`,
-                  taxScheme: new TaxScheme({ id: "VAT" }),
-                }),
-              ]
+              new PartyTaxScheme({
+                companyID: `RO${invoice.client.vatNumber}`,
+                taxScheme: new TaxScheme({ id: "VAT" }),
+              }),
+            ]
             : []),
         ],
       }),
@@ -275,7 +275,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
           useGrouping: false,
-        }).format(new Decimal(cn.amount).toNumber()),
+        }).format(invoice.bnr ? new Decimal(cn.amount).times(invoice.bnr).toNumber() : new Decimal(cn.amount).toNumber()),
         {
           currencyID: "RON",
         },
@@ -294,7 +294,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
             useGrouping: false,
-          }).format(new Decimal(cn.amount).toNumber()),
+          }).format(invoice.bnr ? new Decimal(cn.amount).times(invoice.bnr).toNumber() : new Decimal(cn.amount).toNumber()),
           {
             currencyID: "RON",
           },
