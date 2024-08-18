@@ -52,6 +52,11 @@ import { db } from "./utils/db.server";
 import handleNotification from "./utils/notifications";
 import { authenticator } from "./utils/session.server";
 
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
+
 export const meta: MetaFunction = () => {
   return [
     { title: "CTC Admin 2" },
@@ -255,6 +260,7 @@ export default function App() {
               <DatesProvider
                 settings={{
                   consistentWeeks: true,
+                  timezone: "UTC",
                   locale: user ? user.language : "en",
                 }}
               >

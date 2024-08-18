@@ -23,5 +23,12 @@
   "biome.rename": true,
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+  "cssVariables.lookupFiles": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.less",
+    "node_modules/@mantine/core/styles.css"
+  ]
 }
