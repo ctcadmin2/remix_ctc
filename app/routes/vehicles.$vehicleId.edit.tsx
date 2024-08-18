@@ -12,7 +12,7 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
-import VehicleForm from "~/forms/VehicleForm";
+import VehicleForm from "~/components/forms/VehicleForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";

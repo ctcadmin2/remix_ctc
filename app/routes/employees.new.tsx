@@ -8,7 +8,7 @@ import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zfd } from "zod-form-data";
 
-import EmployeeForm from "~/forms/EmployeeForm";
+import EmployeeForm from "~/components/forms/EmployeeForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";

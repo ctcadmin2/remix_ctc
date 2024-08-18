@@ -14,8 +14,10 @@ import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import CompanyList, { type CompaniesListType } from "~/lists/CompanyList";
-import SettingList from "~/lists/SettingList";
+import CompanyList, {
+  type CompaniesListType,
+} from "~/components/lists/CompanyList";
+import SettingList from "~/components/lists/SettingList";
 import type {
   InvoiceCreditNoteType,
   InvoiceType,

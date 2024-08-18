@@ -15,7 +15,7 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
-import PaymentForm from "~/forms/PaymentForm";
+import PaymentForm from "~/components/forms/PaymentForm";
 import bnrRate from "~/utils/bnrRate.server";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";

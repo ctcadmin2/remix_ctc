@@ -6,7 +6,7 @@ import { CSRFError } from "remix-utils/csrf/server";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 
-import InternationalExpenseForm from "~/forms/InternationalExpenseForm";
+import InternationalExpenseForm from "~/components/forms/InternationalExpenseForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";

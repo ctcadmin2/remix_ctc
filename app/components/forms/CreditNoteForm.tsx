@@ -7,40 +7,41 @@ import {
   NumberInput,
   ScrollArea,
   TextInput,
+  Textarea,
 } from "@mantine/core";
-import { MonthPickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";
-import type { InternationalExpense } from "@prisma/client";
+import type { CreditNote } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
-import dayjs from "dayjs";
-import { Calendar, Upload } from "react-feather";
+import { Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import CompanyList, { type CompaniesListType } from "~/lists/CompanyList";
-import SettingList from "~/lists/SettingList";
+import SettingList from "~/components/lists/SettingList";
+import VehiclesList, {
+  type VehiclesListType,
+} from "~/components/lists/VehicleList";
 
 interface Props {
-  expense?: InternationalExpense | null;
-  descriptions: string[];
-  suppliers: CompaniesListType[];
+  creditNote?: CreditNote | undefined;
   currencies: string[];
+  vehicles: VehiclesListType[] | null;
 }
 
-const InternationalExpenseForm = ({
-  expense = null,
-  descriptions,
-  suppliers,
+const CreditNoteForm = ({
+  creditNote,
   currencies,
+  vehicles,
 }: Props): JSX.Element => {
-  const { getInputProps, values } = useForm({
+  const form = useForm({
     initialValues: {
-      number: expense?.number || "",
-      date: dayjs(expense?.date) || Date.now(),
-      amount: expense?.amount || "",
-      currency: expense?.currency || "",
-      description: expense?.description || "",
-      supplierId: expense?.supplierId || "",
+      number: creditNote?.number || "",
+      amount: creditNote?.amount || "",
+      currency: creditNote?.currency || "",
+      start: creditNote?.start || "",
+      end: creditNote?.end || "",
+      week: creditNote?.week || "",
+      notes: creditNote?.notes || "",
+      vehicleId: creditNote?.vehicleId || "",
       files: [],
     },
   });
@@ -53,7 +54,7 @@ const InternationalExpenseForm = ({
       <Form
         reloadDocument
         method="POST"
-        {...(values.files ? { encType: "multipart/form-data" } : {})}
+        {...(form.values.files ? { encType: "multipart/form-data" } : {})}
       >
         <AuthenticityTokenInput />
         <ScrollArea.Autosize mah={"60vh"} offsetScrollbars>
@@ -63,42 +64,41 @@ const InternationalExpenseForm = ({
               name="number"
               required
               ref={focusTrapRef}
-              {...getInputProps("number")}
+              {...form.getInputProps("number")}
             />
-            <MonthPickerInput
-              name="date"
-              label="Date"
-              {...getInputProps("date", {
-                withFocus: false,
-              })}
-              required
-              leftSection={<Calendar />}
-              pb={0}
+            <VehiclesList
+              vehicles={vehicles}
+              {...form.getInputProps("vehicleId")}
             />
             <NumberInput
               label="Amount"
               name="amount"
               required
               hideControls
-              {...getInputProps("amount")}
-            />{" "}
+              {...form.getInputProps("amount")}
+            />
             <SettingList
               setting={currencies}
               label="Currency"
-              {...getInputProps("currency")}
+              {...form.getInputProps("currency")}
               required
             />
-            <SettingList
-              setting={descriptions}
-              label="Description"
-              {...getInputProps("description")}
-              required
+            <TextInput
+              label="Start"
+              name="start"
+              {...form.getInputProps("start")}
             />
-            <CompanyList
-              type={"supplier"}
-              companies={suppliers}
-              required
-              {...getInputProps("supplierId")}
+            <TextInput label="End" name="end" {...form.getInputProps("end")} />
+            <NumberInput
+              label="Week"
+              name="week"
+              hideControls
+              {...form.getInputProps("week")}
+            />
+            <Textarea
+              label="Notes"
+              name="notes"
+              {...form.getInputProps("notes")}
             />
             <FileInput
               label="Add files"
@@ -106,7 +106,7 @@ const InternationalExpenseForm = ({
               multiple
               clearable
               accept="image/png,image/jpeg,image/jpg,application/pdf"
-              {...getInputProps("files", { type: "input" })}
+              {...form.getInputProps("files", { type: "input" })}
               leftSection={<Upload strokeWidth={"3px"} size={"16px"} />}
             />
           </div>
@@ -123,4 +123,4 @@ const InternationalExpenseForm = ({
   );
 };
 
-export default InternationalExpenseForm;
+export default CreditNoteForm;

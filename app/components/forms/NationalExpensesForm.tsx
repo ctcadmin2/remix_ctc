@@ -17,8 +17,10 @@ import dayjs from "dayjs";
 import { Calendar, Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import CompanyList, { type CompaniesListType } from "~/lists/CompanyList";
-import SettingList from "~/lists/SettingList";
+import CompanyList, {
+  type CompaniesListType,
+} from "~/components/lists/CompanyList";
+import SettingList from "~/components/lists/SettingList";
 
 interface Props {
   expense?: NationalExpense | null;

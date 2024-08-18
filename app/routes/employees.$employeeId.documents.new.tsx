@@ -11,7 +11,7 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
-import DocumentForm from "~/forms/DocumentForm";
+import DocumentForm from "~/components/forms/DocumentForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";

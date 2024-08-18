@@ -10,8 +10,8 @@ import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { CSRFError } from "remix-utils/csrf/server";
 import { zx } from "zodix";
 
-import InvoiceForm from "~/forms/InvoiceForm";
-import type { CompaniesListType } from "~/lists/CompanyList";
+import InvoiceForm from "~/components/forms/InvoiceForm";
+import type { CompaniesListType } from "~/components/lists/CompanyList";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import {

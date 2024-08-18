@@ -6,41 +6,43 @@ import {
   Group,
   NumberInput,
   ScrollArea,
-  Switch,
   TextInput,
 } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { MonthPickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useFocusTrap } from "@mantine/hooks";
-import type { TripExpense } from "@prisma/client";
+import type { InternationalExpense } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { Calendar, Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import SettingList from "~/lists/SettingList";
+import CompanyList, {
+  type CompaniesListType,
+} from "~/components/lists/CompanyList";
+import SettingList from "~/components/lists/SettingList";
 
 interface Props {
-  expense?: TripExpense | null;
+  expense?: InternationalExpense | null;
   descriptions: string[];
+  suppliers: CompaniesListType[];
   currencies: string[];
 }
 
-const TripExpenseForm = ({
+const InternationalExpenseForm = ({
   expense = null,
   descriptions,
+  suppliers,
   currencies,
 }: Props): JSX.Element => {
   const { getInputProps, values } = useForm({
     initialValues: {
-      intNr: expense?.intNr || 0,
       number: expense?.number || "",
       date: dayjs(expense?.date) || Date.now(),
       amount: expense?.amount || "",
-      currency: expense?.currency || true,
-      amountEur: expense?.amountEur || "",
+      currency: expense?.currency || "",
       description: expense?.description || "",
-      card: expense?.card || true,
+      supplierId: expense?.supplierId || "",
       files: [],
     },
   });
@@ -58,20 +60,14 @@ const TripExpenseForm = ({
         <AuthenticityTokenInput />
         <ScrollArea.Autosize mah={"60vh"} offsetScrollbars>
           <div style={{ paddingRight: "24px" }}>
-            <NumberInput
-              label="Internal number"
-              name="intNr"
-              required
-              ref={focusTrapRef}
-              {...getInputProps("intNr")}
-            />
             <TextInput
               label="Number"
               name="number"
               required
+              ref={focusTrapRef}
               {...getInputProps("number")}
             />
-            <DatePickerInput
+            <MonthPickerInput
               name="date"
               label="Date"
               {...getInputProps("date", {
@@ -87,19 +83,12 @@ const TripExpenseForm = ({
               required
               hideControls
               {...getInputProps("amount")}
-            />
+            />{" "}
             <SettingList
               setting={currencies}
               label="Currency"
               {...getInputProps("currency")}
               required
-            />
-            <NumberInput
-              label="Eur amount"
-              name="amountEur"
-              required
-              hideControls
-              {...getInputProps("amountEur")}
             />
             <SettingList
               setting={descriptions}
@@ -107,13 +96,11 @@ const TripExpenseForm = ({
               {...getInputProps("description")}
               required
             />
-            <Switch
-              labelPosition="left"
-              label="Card payment"
-              name="card"
-              size="md"
-              my={16}
-              {...getInputProps("card", { type: "checkbox" })}
+            <CompanyList
+              type={"supplier"}
+              companies={suppliers}
+              required
+              {...getInputProps("supplierId")}
             />
             <FileInput
               label="Add files"
@@ -138,4 +125,4 @@ const TripExpenseForm = ({
   );
 };
 
-export default TripExpenseForm;
+export default InternationalExpenseForm;

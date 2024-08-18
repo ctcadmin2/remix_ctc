@@ -10,7 +10,7 @@ import { CSRFError } from "remix-utils/csrf/server";
 import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
-import RepairForm from "~/forms/RepairForm";
+import RepairForm from "~/components/forms/RepairForm";
 import { csrf } from "~/utils/csrf.server";
 import { db } from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";

@@ -13,7 +13,7 @@ import type { Vehicle } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
-import SettingList from "~/lists/SettingList";
+import SettingList from "~/components/lists/SettingList";
 
 interface Props {
   vehicle?: Vehicle | null;
