@@ -25,3 +25,6 @@ migrate
 
 #ignore local scrap
 /scrap
+
+# storage
+/storage
