@@ -1,5 +1,5 @@
 import { TextInput, ThemeIcon } from "@mantine/core";
-import { useDebouncedValue, useFocusTrap } from "@mantine/hooks";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useSearchParams } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 import { Search, X } from "react-feather";
@@ -11,7 +11,13 @@ const SearchInput = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("filter") || "");
   const [debouncedQuery] = useDebouncedValue(query, 300);
-  const focusTrapRef = useFocusTrap(true);
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   useEffect(() => {
     if (didMountRef.current) {
@@ -29,7 +35,7 @@ const SearchInput = () => {
   return (
     <TextInput
       placeholder="Search..."
-      ref={focusTrapRef}
+      ref={ref}
       leftSection={<Search size={"16px"} strokeWidth="3px" />}
       rightSection={
         query.length === 0 ? null : (

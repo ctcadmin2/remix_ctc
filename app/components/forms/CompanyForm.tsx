@@ -11,10 +11,9 @@ import {
   rem,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useFocusTrap } from "@mantine/hooks";
 import type { Company } from "@prisma/client";
 import { Form, useFetcher, useNavigate } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
@@ -51,9 +50,15 @@ const CompanyForm = ({
   });
 
   const [manual, setManual] = useState(data ?? false);
-  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
   const fetcher = useFetcher({ key: "findCompany" });
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -81,7 +86,7 @@ const CompanyForm = ({
               searchable
               clearable
               name="country"
-              ref={focusTrapRef}
+              ref={ref}
               data={CountrySelect()}
               {...getInputProps("country")}
             />
@@ -132,7 +137,7 @@ const CompanyForm = ({
                 label="Name"
                 name="name"
                 required
-                ref={focusTrapRef}
+                ref={ref}
                 readOnly={readOnly}
                 {...getInputProps("name")}
               />
@@ -148,8 +153,7 @@ const CompanyForm = ({
                 label="Vies valid"
                 name="vatValid"
                 readOnly={readOnly}
-                size="md"
-                my={16}
+                my="0.25rem"
                 {...getInputProps("vatValid", { type: "checkbox" })}
               />
               <TextInput

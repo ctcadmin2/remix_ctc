@@ -11,10 +11,9 @@ import {
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { useFocusTrap } from "@mantine/hooks";
 import type { TripExpense } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
-import dayjs from "dayjs";
+import { useEffect, useRef } from "react";
 import { Calendar, Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
@@ -33,19 +32,27 @@ const TripExpenseForm = ({
 }: Props): JSX.Element => {
   const { getInputProps, values } = useForm({
     initialValues: {
-      intNr: expense?.intNr || 0,
-      number: expense?.number || "",
-      date: dayjs(expense?.date) || Date.now(),
-      amount: expense?.amount || "",
-      currency: expense?.currency || true,
-      amountEur: expense?.amountEur || "",
-      description: expense?.description || "",
-      card: expense?.card || true,
+      intNr: expense?.intNr ?? undefined,
+      number: expense?.number ?? "0000",
+      date: new Date(expense?.date ?? Date.now()),
+      amount: expense?.amount ?? 0,
+      currency: expense?.currency ?? "",
+      amountEur: expense?.amountEur ?? 0,
+      description: expense?.description ?? "",
+      card: expense?.card ?? true,
       files: [],
     },
   });
-  const focusTrapRef = useFocusTrap(true);
+
+  const ref = useRef<HTMLInputElement>(null);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   return (
     <Box p={"sm"}>
@@ -62,7 +69,7 @@ const TripExpenseForm = ({
               label="Internal number"
               name="intNr"
               required
-              ref={focusTrapRef}
+              ref={ref}
               {...getInputProps("intNr")}
             />
             <TextInput
@@ -79,7 +86,7 @@ const TripExpenseForm = ({
               })}
               required
               leftSection={<Calendar />}
-              pb={0}
+              py={"0.25rem"}
             />
             <NumberInput
               label="Amount"
@@ -111,8 +118,7 @@ const TripExpenseForm = ({
               labelPosition="left"
               label="Card payment"
               name="card"
-              size="md"
-              my={16}
+              py="0.25rem"
               {...getInputProps("card", { type: "checkbox" })}
             />
             <FileInput

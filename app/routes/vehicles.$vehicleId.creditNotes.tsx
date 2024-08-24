@@ -283,7 +283,7 @@ const CreditNotes = () => {
   useEffect(() => {
     if (
       fetcher.state === "idle" &&
-      fetcher.data?.formPayload._action === "inline"
+      fetcher.data?.formPayload?._action === "inline"
     ) {
       openModal();
     }
@@ -295,16 +295,18 @@ const CreditNotes = () => {
   };
 
   const handleInline = (id: number, vehicleId: number | null) => {
-    fetcher.submit(
-      {
-        csrf,
-        _action: "inline",
-        id,
-        orderNr: editableCellValue ?? null,
-        vehicleId: vehicleId,
-      },
-      { method: "POST" },
-    );
+    if (editableCellValue) {
+      fetcher.submit(
+        {
+          csrf,
+          _action: "inline",
+          id,
+          orderNr: editableCellValue ?? null,
+          vehicleId: vehicleId,
+        },
+        { method: "POST" },
+      );
+    }
     setEditableCell({});
     setEditableCellValue(undefined);
   };

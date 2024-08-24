@@ -16,7 +16,12 @@
       "recommended": true
     }
   },
-  "formatter": { "enabled": true, "indentWidth": 2, "indentStyle": "space" },
+  "formatter": {
+    "enabled": true,
+    "indentWidth": 2,
+    "indentStyle": "space",
+    "formatWithErrors": true
+  },
   "javascript": { "globals": ["React", "JSX"], "jsxRuntime": "transparent" },
   "json": {
     "parser": {

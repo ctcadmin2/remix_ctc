@@ -9,9 +9,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { useFocusTrap } from "@mantine/hooks";
 import { Form, useNavigate } from "@remix-run/react";
-import dayjs from "dayjs";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 import CompanyList, {
@@ -23,6 +21,7 @@ import type {
   InvoiceType,
 } from "~/routes/invoices.$invoiceId.edit";
 
+import { useEffect, useRef } from "react";
 import {
   InvoiceFormProvider,
   useInvoiceForm,
@@ -47,22 +46,28 @@ const InvoiceForm = ({
   const form = useInvoiceForm({
     initialValues: {
       number: invoice?.number || "",
-      date: dayjs(invoice?.date).toDate() || "",
-      currency: invoice?.currency || "",
-      vatRate: String(invoice?.vatRate) || "0",
+      date: new Date(invoice?.date ?? Date.now()),
+      currency: invoice?.currency ?? "",
+      vatRate: String(invoice?.vatRate) ?? "0",
       creditNotesIds: invoice?.creditNotes?.map((cn) => String(cn.id)) || [],
-      clientId: invoice?.clientId || null,
+      clientId: invoice?.clientId ?? null,
       paymentTerms: invoice?.paymentTerms ?? "",
-      identification: invoice?.identification || {
+      identification: invoice?.identification ?? {
         expName: "",
         expId: "",
         expVeh: "",
       },
-      orders: invoice?.orders || [],
+      orders: invoice?.orders ?? [],
     },
   });
-  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   const cnSelectData = () => {
     if (creditNotes) {
@@ -90,7 +95,7 @@ const InvoiceForm = ({
                 label="Number"
                 name="number"
                 required
-                ref={focusTrapRef}
+                ref={ref}
                 {...form.getInputProps("number")}
               />
               <CompanyList
@@ -105,10 +110,7 @@ const InvoiceForm = ({
                 name="date"
                 withAsterisk
                 {...form.getInputProps("date")}
-                dateParser={(d) => {
-                  console.log("d", d);
-                  return new Date(1939, 8, 1);
-                }}
+                py={"0.25rem"}
               />
 
               <MultiSelect

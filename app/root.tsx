@@ -54,8 +54,12 @@ import { authenticator } from "./utils/session.server";
 
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import timezonePlugin from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc";
 
 dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 export const meta: MetaFunction = () => {
   return [

@@ -52,7 +52,7 @@ const PaymentForm = ({
 }: Props): JSX.Element => {
   const form = usePaymentForm({
     initialValues: {
-      month: dayjs(payment?.month).toDate() ?? new Date(Date.now()),
+      month: new Date(payment?.month ?? Date.now()),
       salaryRon: payment?.salaryRon.toString() ?? salary ?? "0",
       indemnizations: payment?.indemnizations
         ? prepIndemization(payment.indemnizations)
@@ -74,6 +74,7 @@ const PaymentForm = ({
                 name="month"
                 required
                 {...form.getInputProps("month")}
+                py={"0.25rem"}
               />
               <TextInput
                 label="Salariu RON"

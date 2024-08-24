@@ -8,9 +8,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useFocusTrap } from "@mantine/hooks";
 import type { Employee } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
+import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 interface Props {
@@ -18,7 +18,9 @@ interface Props {
 }
 
 const EmployeeForm = ({ employee = null }: Props): JSX.Element => {
-  const { getInputProps } = useForm<Partial<Employee> | null>({
+  const { getInputProps } = useForm<
+    Omit<Employee, "id" | "createdAt" | "updatedAt">
+  >({
     initialValues: {
       firstName: employee?.firstName || "",
       lastName: employee?.lastName || "",
@@ -26,8 +28,14 @@ const EmployeeForm = ({ employee = null }: Props): JSX.Element => {
       ssn: employee?.ssn || "",
     },
   });
-  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   return (
     <Box p={"sm"}>
@@ -39,7 +47,7 @@ const EmployeeForm = ({ employee = null }: Props): JSX.Element => {
               label="First name"
               name="firstName"
               required
-              ref={focusTrapRef}
+              ref={ref}
               {...getInputProps("firstName")}
             />
             <TextInput
@@ -52,8 +60,7 @@ const EmployeeForm = ({ employee = null }: Props): JSX.Element => {
               labelPosition="left"
               label="Active"
               name="active"
-              size="md"
-              my={16}
+              py="0.25rem"
               {...getInputProps("active", { type: "checkbox" })}
             />
             <TextInput label="SSN" name="ssn" {...getInputProps("ssn")} />

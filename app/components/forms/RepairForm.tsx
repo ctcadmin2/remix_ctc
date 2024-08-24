@@ -8,10 +8,9 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { useFocusTrap } from "@mantine/hooks";
 import type { Repair } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
-import dayjs from "dayjs";
+import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
 interface Props {
@@ -21,13 +20,19 @@ interface Props {
 const RepairForm = ({ repair = null }: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
-      date: repair ? dayjs(repair.date) : new Date(),
+      date: new Date(repair?.date ?? Date.now()),
       km: repair?.km || "",
       comment: repair?.comment || "",
     },
   });
-  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   return (
     <Form method="post" reloadDocument>
@@ -36,7 +41,7 @@ const RepairForm = ({ repair = null }: Props): JSX.Element => {
         <TextInput
           label="Km"
           name="km"
-          ref={focusTrapRef}
+          ref={ref}
           required
           {...form.getInputProps("km")}
         />
@@ -48,6 +53,7 @@ const RepairForm = ({ repair = null }: Props): JSX.Element => {
           placeholder="Date input"
           popoverProps={{ withinPortal: true }}
           {...form.getInputProps("date")}
+          py={"0.25rem"}
         />
         <Textarea
           label="Comment"

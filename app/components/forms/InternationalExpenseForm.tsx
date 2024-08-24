@@ -10,10 +10,9 @@ import {
 } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { useFocusTrap } from "@mantine/hooks";
 import type { InternationalExpense } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
-import dayjs from "dayjs";
+import { useEffect, useRef } from "react";
 import { Calendar, Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
@@ -37,17 +36,23 @@ const InternationalExpenseForm = ({
 }: Props): JSX.Element => {
   const { getInputProps, values } = useForm({
     initialValues: {
-      number: expense?.number || "",
-      date: dayjs(expense?.date) || Date.now(),
-      amount: expense?.amount || "",
-      currency: expense?.currency || "",
-      description: expense?.description || "",
-      supplierId: expense?.supplierId || "",
+      number: expense?.number ?? "",
+      date: new Date(expense?.date ?? Date.now()),
+      amount: expense?.amount ?? "",
+      currency: expense?.currency ?? "",
+      description: expense?.description ?? "",
+      supplierId: expense?.supplierId ?? "",
       files: [],
     },
   });
-  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   return (
     <Box p={"sm"}>
@@ -64,7 +69,7 @@ const InternationalExpenseForm = ({
               label="Number"
               name="number"
               required
-              ref={focusTrapRef}
+              ref={ref}
               {...getInputProps("number")}
             />
             <MonthPickerInput
@@ -75,7 +80,7 @@ const InternationalExpenseForm = ({
               })}
               required
               leftSection={<Calendar />}
-              pb={0}
+              py={"0.25rem"}
             />
             <NumberInput
               label="Amount"

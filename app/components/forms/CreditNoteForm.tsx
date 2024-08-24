@@ -10,9 +10,9 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useFocusTrap } from "@mantine/hooks";
 import type { CreditNote } from "@prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
+import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
 
@@ -45,8 +45,14 @@ const CreditNoteForm = ({
       files: [],
     },
   });
-  const focusTrapRef = useFocusTrap(true);
   const navigate = useNavigate();
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref) {
+      ref.current?.select();
+    }
+  }, []);
 
   return (
     <Box p={"sm"}>
@@ -63,7 +69,7 @@ const CreditNoteForm = ({
               label="Number"
               name="number"
               required
-              ref={focusTrapRef}
+              ref={ref}
               {...form.getInputProps("number")}
             />
             <VehiclesList
