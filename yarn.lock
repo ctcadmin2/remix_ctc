@@ -7082,13 +7082,13 @@ __metadata:
   linkType: hard
 
 "remix-toast@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "remix-toast@npm:1.2.0"
+  version: 1.2.2
+  resolution: "remix-toast@npm:1.2.2"
   dependencies:
     zod: "npm:^3.22.3"
   peerDependencies:
     "@remix-run/server-runtime": ">=1.15"
-  checksum: 10/ecaec1115ac2e56b334b1db4247566e35f0abaa3738ce505b6ff12af437133a46e6e7815eba0b2cb96ed778db98ef8f5f851120bf222119b4d5c1ceb6fed9b49
+  checksum: 10/ae78c475d7e22e1c40ba3621d77792e33f4edb17b901c26f5f460f74b1b5b74a0f32f9c4ba9dba68459b52b4c4463dcdb0ac9d9698bb9c381af308733f508b88
   languageName: node
   linkType: hard
 
