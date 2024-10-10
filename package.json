@@ -41,7 +41,7 @@
     "isbot": "^5.1.13",
     "mantine-datatable": "^7.11.2",
     "pdf-lib": "^1.17.1",
-    "pdfmake": "0.2.10",
+    "pdfmake": "0.2.14",
     "pluralize": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

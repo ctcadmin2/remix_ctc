@@ -6335,15 +6335,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pdfmake@npm:0.2.10":
-  version: 0.2.10
-  resolution: "pdfmake@npm:0.2.10"
+"pdfmake@npm:0.2.14":
+  version: 0.2.14
+  resolution: "pdfmake@npm:0.2.14"
   dependencies:
     "@foliojs-fork/linebreak": "npm:^1.1.1"
     "@foliojs-fork/pdfkit": "npm:^0.14.0"
     iconv-lite: "npm:^0.6.3"
     xmldoc: "npm:^1.1.2"
-  checksum: 10/691525cf68ff7899c5140c007520ee80463ad04e74f46179d19be40b6b0dc2d48a91ec56975cf33af0a03f9de28808d56bc8948221e480fc1c99540a74eb4a2a
+  checksum: 10/28cff311198fc464e25ff7110bc07ef5e990288fa2b3f2d1442a91d198eb2ea36d595c2a5d5c9a368c43106020c55899cb71d6bd418a5461206fab0a5768ed23
   languageName: node
   linkType: hard
 
@@ -7174,7 +7174,7 @@ __metadata:
     isbot: "npm:^5.1.13"
     mantine-datatable: "npm:^7.11.2"
     pdf-lib: "npm:^1.17.1"
-    pdfmake: "npm:0.2.10"
+    pdfmake: "npm:0.2.14"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.4.39"
     postcss-preset-mantine: "npm:^1.17.0"
