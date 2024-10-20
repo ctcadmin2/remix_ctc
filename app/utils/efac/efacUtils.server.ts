@@ -82,10 +82,10 @@ export const processZip = async (
               number: invoice.number,
               ...(invoice.pdf
                 ? {
-                  attachment: {
-                    create: { type: "nationalExpense", name: pdfName },
-                  },
-                }
+                    attachment: {
+                      create: { type: "nationalExpense", name: pdfName },
+                    },
+                  }
                 : {}),
               EFactura: {
                 create: {
@@ -144,10 +144,10 @@ export const processZip = async (
             },
             ...(invoice.pdf
               ? {
-                attachment: {
-                  create: { type: "nationalExpense", name: pdfName },
-                },
-              }
+                  attachment: {
+                    create: { type: "nationalExpense", name: pdfName },
+                  },
+                }
               : {}),
             EFactura: {
               create: {

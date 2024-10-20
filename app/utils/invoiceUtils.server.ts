@@ -41,17 +41,17 @@ interface amount {
 export const calculateAmount = async (
   orders:
     | {
-      description: string;
-      quantity: string;
-      amount: string;
-      total: string;
-    }[]
+        description: string;
+        quantity: string;
+        amount: string;
+        total: string;
+      }[]
     | undefined,
   creditNotes:
     | {
-      amount: Decimal;
-      currency: string;
-    }[]
+        amount: Decimal;
+        currency: string;
+      }[]
     | undefined,
   currency: string,
   date: string,
@@ -91,10 +91,10 @@ export const calculateAmount = async (
 export const createIdentification = (
   identification:
     | {
-      expName: string;
-      expId: string;
-      expVeh: string;
-    }
+        expName: string;
+        expId: string;
+        expVeh: string;
+      }
     | undefined,
 ) => {
   if (
@@ -112,10 +112,10 @@ export const createIdentification = (
 export const updateIdentification = (
   identification:
     | {
-      expName: string;
-      expId: string;
-      expVeh: string;
-    }
+        expName: string;
+        expId: string;
+        expVeh: string;
+      }
     | undefined,
 ) => {
   if (
@@ -133,12 +133,12 @@ export const updateIdentification = (
 export const createOrders = (
   orders:
     | {
-      id?: string;
-      amount: string;
-      description: string;
-      quantity: string;
-      total: string;
-    }[]
+        id?: string;
+        amount: string;
+        description: string;
+        quantity: string;
+        total: string;
+      }[]
     | undefined,
 ) => {
   if (orders && orders.length > 0) {
@@ -156,12 +156,12 @@ export const createOrders = (
 export const updateOrders = (
   orders:
     | {
-      id?: string;
-      amount: string;
-      description: string;
-      quantity: string;
-      total: string;
-    }[]
+        id?: string;
+        amount: string;
+        description: string;
+        quantity: string;
+        total: string;
+      }[]
     | undefined,
 ) => {
   if (orders && orders.length > 0) {

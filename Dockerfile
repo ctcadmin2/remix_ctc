@@ -5,7 +5,7 @@ FROM node:22-alpine AS base
 RUN apk update && apk add openssl git
 
 ENV NODE_ENV=production
-ENV YARN_VERSION=4.4.1
+ENV YARN_VERSION=4.5.1
 
 WORKDIR /ctcadmin
 
