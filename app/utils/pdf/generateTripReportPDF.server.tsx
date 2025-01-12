@@ -48,7 +48,7 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
         text: `${new Intl.NumberFormat("ro-RO", {
           style: "currency",
           currency: "EUR",
-        }).format(new Decimal(e.amount).toNumber())}`,
+        }).format(new Decimal(e.amountEur).toNumber())}`,
         alignment: "right",
       },
     ];
