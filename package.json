@@ -15,7 +15,10 @@
     "lint": "biome check --fix .",
     "ts": "tsc --pretty"
   },
-  "eslintIgnore": ["/node_modules", "/build"],
+  "eslintIgnore": [
+    "/node_modules",
+    "/build"
+  ],
   "dependencies": {
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",

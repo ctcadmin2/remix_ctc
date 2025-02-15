@@ -22,6 +22,8 @@ import {
 } from "~/utils/invoiceUtils.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
+import { parseWithZod } from "@conform-to/zod";
+
 export type InvoiceType = Prisma.InvoiceGetPayload<{
   include: {
     creditNotes: { select: { id: true } };
@@ -107,56 +109,62 @@ export const action: ActionFunction = async ({
     invoiceId: zx.NumAsString,
   });
 
-  const formPayload = Object.fromEntries(await request.formData());
-  const data = schema.parse(formPayload);
+  const formData = await request.formData();
+  const data = parseWithZod(formData, { schema });
 
-  const { clientId, creditNotesIds, identification, orders, ...rest } = data;
+  if (data.status === "success") {
+    console.log(data);
+    const { clientId, creditNotesIds, identification, orders, ...rest } =
+      data.value;
 
-  const creditNotes = await db.creditNote.findMany({
-    where: {
-      id: { in: creditNotesIds?.split(",").map(Number) || [] },
-    },
-    select: {
-      amount: true,
-      currency: true,
-    },
-  });
-
-  const amountValue = await calculateAmount(
-    orders,
-    creditNotes,
-    rest.currency,
-    rest.date,
-  );
-
-  try {
-    const invoice = await db.invoice.update({
-      where: { id: invoiceId },
-      data: {
-        ...rest,
-        amount: amountValue.amount,
-        bnr: amountValue.bnr,
-        bnrAt: amountValue.bnrAt,
-        client: {
-          connect: { id: clientId },
-        },
-        creditNotes: {
-          set: creditNotesIds
-            ?.split(",")
-            .map((cn) => ({ id: Number.parseInt(cn) })),
-        },
-        ...updateIdentification(identification),
-        ...updateOrders(orders),
+    const creditNotes = await db.creditNote.findMany({
+      where: {
+        id: { in: creditNotesIds?.split(",").map(Number) || [] },
+      },
+      select: {
+        amount: true,
+        currency: true,
       },
     });
 
-    if (invoice) {
-      return redirectWithSuccess("/invoices", "Invoice edited successfully.");
+    const amountValue = await calculateAmount(
+      orders,
+      creditNotes,
+      rest.currency,
+      rest.date
+    );
+
+    try {
+      const invoice = await db.invoice.update({
+        where: { id: invoiceId },
+        data: {
+          ...rest,
+          amount: amountValue.amount,
+          bnr: amountValue.bnr,
+          bnrAt: amountValue.bnrAt,
+          client: {
+            connect: { id: clientId },
+          },
+          creditNotes: {
+            set: creditNotesIds
+              ?.split(",")
+              .map((cn) => ({ id: Number.parseInt(cn) })),
+          },
+          ...updateIdentification(identification),
+          ...updateOrders(orders),
+        },
+      });
+
+      if (invoice) {
+        return redirectWithSuccess("/invoices", "Invoice edited successfully.");
+      }
+      return jsonWithError(null, "Invoice could not be edited.");
+    } catch (error) {
+      return jsonWithError(null, `An error has occured: ${error}`);
     }
-    return jsonWithError(null, "Invoice could not be edited.");
-  } catch (error) {
-    return jsonWithError(null, `An error has occured: ${error}`);
   }
+  console.log(data.error);
+  return jsonWithError(null, `error:`);
 };
 
 export default function EditCreditNote() {

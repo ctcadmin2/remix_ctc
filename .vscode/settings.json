@@ -22,7 +22,7 @@
   "diffEditor.ignoreTrimWhitespace": false,
   "biome.rename": true,
   "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "cssVariables.lookupFiles": [
     "**/*.css",
