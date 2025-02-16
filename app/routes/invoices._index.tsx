@@ -203,7 +203,7 @@ const Invoices = () => {
         }).format(
           new Decimal(amount)
             .times(new Decimal(vatRate).dividedBy(100).add(1))
-            .toNumber(),
+            .toNumber()
         ),
     },
 
@@ -224,7 +224,7 @@ const Invoices = () => {
                 variant="filled"
                 color={"teal"}
                 component={Link}
-                to={`${row.id}.pdf`}
+                to={`${row.id}.pdf?q=${Date.now()}`}
                 reloadDocument
                 leftSection={<FileText />}
               >

@@ -43,6 +43,7 @@ const schema = z.discriminatedUnion("_action", [
     registration: z.string().optional(),
     vatNumber: z.string(),
     vatValid: checkbox(),
+    natural: checkbox(),
     accRon: z.string().optional(),
     accEur: z.string().optional(),
     address: z.string().optional(),
@@ -91,7 +92,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (_action === "search") {
     const data: SearchCompanyProps = await findCompany(
       rest.country,
-      rest.vatNumber,
+      rest.vatNumber
     );
     switch (data.status) {
       case 200:
@@ -114,7 +115,7 @@ export const action: ActionFunction = async ({ request }) => {
       if (company) {
         return redirectWithSuccess(
           "/companies",
-          "Company was created successfully.",
+          "Company was created successfully."
         );
       }
       return jsonWithError(null, "Company could not be created.");

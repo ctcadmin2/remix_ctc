@@ -102,6 +102,7 @@ model Company {
   registration         String?
   vatNumber            String                 @unique
   vatValid             Boolean?               @default(false)
+  natural              Boolean                @default(false)
   accRon               String?
   accEur               String?
   address              String?

@@ -113,7 +113,6 @@ export const action: ActionFunction = async ({
   const data = parseWithZod(formData, { schema });
 
   if (data.status === "success") {
-    console.log(data);
     const { clientId, creditNotesIds, identification, orders, ...rest } =
       data.value;
 

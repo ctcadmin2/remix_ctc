@@ -37,6 +37,7 @@ const CompanyForm = ({
       registration: data?.registration || "",
       vatNumber: data?.vatNumber || "",
       vatValid: data?.vatValid || false,
+      natural: data?.natural || false,
       accRon: data?.accRon || "",
       accEur: data?.accEur || "",
       address: data?.address || "",
@@ -155,6 +156,14 @@ const CompanyForm = ({
                 readOnly={readOnly}
                 my="0.25rem"
                 {...getInputProps("vatValid", { type: "checkbox" })}
+              />
+              <Switch
+                labelPosition="left"
+                label="PF"
+                name="natural"
+                readOnly={readOnly}
+                my="0.25rem"
+                {...getInputProps("natural", { type: "checkbox" })}
               />
               <TextInput
                 label="Registration"

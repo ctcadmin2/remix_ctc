@@ -123,20 +123,20 @@ const XMLBuilder = async (invoice: eInvoice) => {
         partyLegalEntities: [
           new PartyLegalEntity({
             registrationName: invoice.client.name,
-            ...(!invoice.client.vatValid
-              ? { companyID: invoice.client.vatNumber }
-              : {}),
+            ...(invoice.client.natural
+              ? { companyID: "0000000000000" }
+              : !invoice.client.vatValid ? { companyID: invoice.client.vatNumber } : {}),
           }),
         ],
 
         partyTaxSchemes: [
-          ...(invoice.client.vatValid
+          ...(invoice.client.vatValid && !invoice.client.natural
             ? [
-                new PartyTaxScheme({
-                  companyID: `RO${invoice.client.vatNumber}`,
-                  taxScheme: new TaxScheme({ id: "VAT" }),
-                }),
-              ]
+              new PartyTaxScheme({
+                companyID: `RO${invoice.client.vatNumber}`,
+                taxScheme: new TaxScheme({ id: "VAT" }),
+              }),
+            ]
             : []),
         ],
       }),

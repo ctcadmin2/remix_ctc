@@ -32,6 +32,7 @@ const schema = z.object({
   registration: z.string().optional(),
   vatNumber: z.string(),
   vatValid: checkbox(),
+  natural: checkbox(),
   accRon: z.string().optional(),
   accEur: z.string().optional(),
   address: z.string().optional(),

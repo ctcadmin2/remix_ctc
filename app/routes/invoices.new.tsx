@@ -18,6 +18,7 @@ import {
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 import type { InvoiceCreditNoteType } from "./invoices.$invoiceId.edit";
+import { parseWithZod } from "@conform-to/zod";
 
 interface LoaderData {
   creditNotes: InvoiceCreditNoteType[];
@@ -59,59 +60,67 @@ export const action: ActionFunction = async ({ request }) => {
     console.log("other error");
   }
 
-  const formPayload = Object.fromEntries(await request.formData());
-  const data = schema.parse(formPayload);
+  const formData = await request.formData();
+  const data = parseWithZod(formData, { schema });
 
-  const { clientId, creditNotesIds, identification, orders, ...rest } = data;
+  if (data.status === "success") {
+    const { clientId, creditNotesIds, identification, orders, ...rest } =
+      data.value;
 
-  const creditNotes = await db.creditNote.findMany({
-    where: {
-      id: { in: creditNotesIds?.split(",").map(Number) || [] },
-    },
-    select: {
-      amount: true,
-      currency: true,
-    },
-  });
-
-  const amountValue = await calculateAmount(
-    orders,
-    creditNotes,
-    rest.currency,
-    rest.date,
-  );
-
-  try {
-    const invoice = await db.invoice.create({
-      data: {
-        ...rest,
-        amount: amountValue.amount,
-        bnr: amountValue.bnr,
-        bnrAt: amountValue.bnrAt,
-        client: {
-          connect: { id: clientId },
-        },
-        creditNotes: {
-          connect: creditNotesIds
-            ?.split(",")
-            .map((cn) => ({ id: Number.parseInt(cn) })),
-        },
-        ...((await db.company.findUnique({ where: { id: clientId } }))
-          ?.country === "RO"
-          ? { EFactura: { create: { status: "nproc" } } }
-          : {}),
-        ...createIdentification(identification),
-        ...createOrders(orders),
+    const creditNotes = await db.creditNote.findMany({
+      where: {
+        id: { in: creditNotesIds?.split(",").map(Number) || [] },
+      },
+      select: {
+        amount: true,
+        currency: true,
       },
     });
 
-    if (invoice) {
-      return redirectWithSuccess("/invoices", "Invoice created successfully.");
+    const amountValue = await calculateAmount(
+      orders,
+      creditNotes,
+      rest.currency,
+      rest.date
+    );
+
+    try {
+      const invoice = await db.invoice.create({
+        data: {
+          ...rest,
+          amount: amountValue.amount,
+          bnr: amountValue.bnr,
+          bnrAt: amountValue.bnrAt,
+          client: {
+            connect: { id: clientId },
+          },
+          creditNotes: {
+            connect: creditNotesIds
+              ?.split(",")
+              .map((cn) => ({ id: Number.parseInt(cn) })),
+          },
+          ...((
+            await db.company.findUnique({ where: { id: clientId } })
+          )?.country === "RO"
+            ? { EFactura: { create: { status: "nproc" } } }
+            : {}),
+          ...createIdentification(identification),
+          ...createOrders(orders),
+        },
+      });
+
+      if (invoice) {
+        return redirectWithSuccess(
+          "/invoices",
+          "Invoice created successfully."
+        );
+      }
+      return jsonWithError(null, "Invoice could not be created.");
+    } catch (error) {
+      return jsonWithError(null, `An error has occured: ${error}`);
     }
-    return jsonWithError(null, "Invoice could not be created.");
-  } catch (error) {
-    return jsonWithError(null, `An error has occured: ${error}`);
   }
+  return jsonWithError(null, "error");
 };
 
 const NewInvoice = () => {

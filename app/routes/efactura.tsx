@@ -28,6 +28,7 @@ export type eInvoice = Prisma.InvoiceGetPayload<{
         name: true;
         vatNumber: true;
         vatValid: true;
+        natural: true;
       };
     };
     EFactura: true;
@@ -61,7 +62,7 @@ export const loader: LoaderFunction = async ({
       }
       return jsonWithError(
         null,
-        `There have been ${data?.Errors?.length} errors.`,
+        `There have been ${data?.Errors?.length} errors.`
       );
     }
 
@@ -112,6 +113,7 @@ export const action: ActionFunction = async ({
             name: true,
             vatNumber: true,
             vatValid: true,
+            natural: true,
           },
         },
         EFactura: true,
@@ -130,7 +132,7 @@ export const action: ActionFunction = async ({
         }
         return jsonWithError(
           data.Messages,
-          `There have been ${data.Messages.length} errors.`,
+          `There have been ${data.Messages.length} errors.`
         );
       }
       case "validated": {

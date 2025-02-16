@@ -92,15 +92,15 @@ export const calculateAmount = async (
 export const createIdentification = (
   identification:
     | {
-      expName: string;
-      expId: string;
-      expVeh: string;
+      expName?: string;
+      expId?: string;
+      expVeh?: string;
     }
     | undefined,
 ) => {
   if (
     identification &&
-    Object.values(identification).filter((word) => word.length > 0).length > 0
+    Object.values(identification).filter((word) => word && word.length > 0).length > 0
   ) {
     return {
       identification: { create: identification },
@@ -120,7 +120,7 @@ export const updateIdentification = (
 ) => {
   if (
     identification &&
-    Object.values(identification).filter((word) => word.length > 0).length > 0
+    Object.values(identification).filter((word) => word && word.length > 0).length > 0
   ) {
     return {
       identification: { update: identification },
