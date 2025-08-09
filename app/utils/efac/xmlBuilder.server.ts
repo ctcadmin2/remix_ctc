@@ -180,7 +180,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
         ),
         taxCategory: new TaxCategory({
           id: "S",
-          percent: "19.00",
+          percent: "21.00",
           taxScheme: new TaxScheme({ id: "VAT" }),
         }),
       }),
