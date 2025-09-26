@@ -7,6 +7,7 @@ declare global {
       ITEMS_PER_PAGE: string;
       SESSION_SECRET: string;
       OPENAPI_KEY: string;
+      ANAF_OAUTH: string;
       CSRF_SECRET: string;
       COOKIE_SECRETS: string[];
       ANAF_AUTH_URL: string;
@@ -19,4 +20,4 @@ declare global {
 
 // If this file has no import/export statements (i.e. is a script)
 // convert it into a module by adding an empty export statement.
-export type {};
+export type { };

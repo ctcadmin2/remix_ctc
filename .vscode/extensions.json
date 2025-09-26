@@ -1,17 +1,14 @@
 {
   // See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
   // Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
-
   // List of extensions which should be recommended for users of this workspace.
   "recommendations": [
     "coenraads.bracket-pair-colorizer-2",
     "ms-azuretools.vscode-docker",
-    "mikestead.dotenv",
     "christian-kohler.npm-intellisense",
     "zhuangtongfa.material-theme",
     "prisma.prisma",
     "gruntfuggly.todo-tree",
     "redhat.vscode-yaml",
-    "biomejs.biome"
   ]
 }

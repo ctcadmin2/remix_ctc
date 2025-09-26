@@ -1,7 +1,7 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, opendir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
 
 import { createId } from "@paralleldrive/cuid2";
-import type { Company, Prisma } from "@prisma/client";
+import { Company, Prisma } from "@prisma/client";
 import AdmZip from "adm-zip";
 import { parseStringPromise } from "xml2js";
 import { stripPrefix } from "xml2js/lib/processors";
@@ -11,10 +11,6 @@ import { emitter } from "../emitter";
 import findCompany from "../findCompany.server";
 
 export const ANAF_ENV = "prod";
-
-export const getToken = async (): Promise<string> => {
-  return (await readFile("/storage/cert.key")).toString().trim();
-};
 
 export interface message {
   data_creare: string;
@@ -33,6 +29,42 @@ interface receivedInvoiceType {
   supplier: Company | Prisma.CompanyCreateInput | null;
   pdf: Buffer | null;
 }
+
+// export const processFiles = async () => {
+//   // try {
+//   //   const dir = await readdir('storage/creditNote/');
+//   //   for await (const dirent of dir)
+//   //     await processFile(dirent)
+//   // } catch (err) {
+//   //   console.error(err);
+//   // }
+
+//   try {
+//     await db.invoice.findFirst(
+//       {
+//         select: { creditNotes: { where: { number: "155717" } } }
+//       }
+
+//     )
+//   } catch (err) {
+//     console.log(err)
+//   }
+
+// }
+
+
+// export const processFile = async (filename: string) => {
+//   let cn = await db.attachment.findFirst({
+//     where: {
+//       type: { equals: 'creditNote' },
+//       name: { equals: filename }
+//     }
+//   })
+
+//   if (cn) {
+//     return await unlink(`storage/creditNote/${filename}`)
+//   }
+// }
 
 export const processZip = async (
   zip: Buffer,
@@ -220,7 +252,7 @@ const messageDownloader = async (downloadId: string) => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${await getToken()}` },
+      headers: { Authorization: `Bearer ${process.env.ANAF_OAUTH}` },
     });
 
     if (response.status === 200) {
@@ -254,15 +286,18 @@ export const parseXml = async (xml: Buffer) => {
       ignoreAttrs: true,
       tagNameProcessors: [stripPrefix],
     });
+
     const pdf =
       data.Invoice.AdditionalDocumentReference?.Attachment
         ?.EmbeddedDocumentBinaryObject;
+
+    const taxScheme = checkTaxScheme(data)
     const vatNumber =
-      data.Invoice.AccountingSupplierParty.Party.PartyTaxScheme.CompanyID.split(
+      taxScheme.CompanyID.split(
         /(\d+)/,
       )
         .filter(Boolean)
-        .filter(Number)[0];
+        .filter(Number)[0]
 
     invoice.number = data.Invoice.ID;
     invoice.date = data.Invoice.IssueDate;
@@ -282,94 +317,94 @@ export const parseXml = async (xml: Buffer) => {
   }
 };
 
-export const bulkImport = async (path: string) => {
-  for (const file of await readdir(path)) {
-    const data = new AdmZip(`storage/T/${file}`);
-    const entries = data.getEntries();
-    let filename = undefined;
-    const zipName = createId();
+// export const bulkImport = async (path: string) => {
+//   for (const file of await readdir(path)) {
+//     const data = new AdmZip(`/storage/T/${file}`);
+//     const entries = data.getEntries();
+//     let filename = undefined;
+//     const zipName = createId();
 
-    for (const entry of entries) {
-      if (entry.entryName.split("_").length === 1) {
-        filename = entry.entryName.split(".")[0];
-      }
-    }
+//     for (const entry of entries) {
+//       if (entry.entryName.split("_").length === 1) {
+//         filename = entry.entryName.split(".")[0];
+//       }
+//     }
 
-    const xml = data.getEntry(`${filename}.xml`)?.getData();
+//     const xml = data.getEntry(`${filename}.xml`)?.getData();
 
-    if (xml) {
-      try {
-        const data = await parseStringPromise(xml, {
-          trim: true,
-          explicitArray: false,
-          ignoreAttrs: true,
-          tagNameProcessors: [stripPrefix],
-        });
-        if (data) {
-          try {
-            const invoice = await db.invoice.findFirst({
-              where: {
-                AND: [
-                  { number: data.ID },
-                  { client: { country: { equals: "RO" } } },
-                ],
-              },
-            });
-            if (invoice) {
-              try {
-                const local = await db.invoice.update({
-                  where: { id: invoice.id },
-                  data: {
-                    EFactura: {
-                      create: {
-                        status: "store",
-                        downloadId: filename,
-                        uploadId: file.split(".")[0],
-                        attachment: {
-                          create: {
-                            type: "eFactura",
-                            name: zipName,
-                          },
-                        },
-                      },
-                    },
-                  },
-                });
-                if (local) {
-                  await mkdir("storage/eFactura/", { recursive: true });
-                  await writeFile(
-                    `storage/eFactura/${zipName}.zip`,
-                    await readFile(`storage/T/${file}`),
-                  );
-                  console.log(`invoice ${local.number} was updated`);
-                  continue;
-                }
-                console.log("invoice could not be updated");
-              } catch (error) {
-                console.log(`update: ${error}`);
-              }
-            }
-          } catch (error) {
-            console.log(`update: ${error}`);
-          }
-        }
-        await db.message.create({
-          data: {
-            status: "nok",
-            content: `There was no data in xml for ${filename}.xml`,
-          },
-        });
-      } catch (error) {
-        await db.message.create({
-          data: {
-            status: "nok",
-            content: `There was and error while parsing xml: ${error}`,
-          },
-        });
-      }
-    }
-  }
-};
+//     if (xml) {
+//       try {
+//         const data = await parseStringPromise(xml, {
+//           trim: true,
+//           explicitArray: false,
+//           ignoreAttrs: true,
+//           tagNameProcessors: [stripPrefix],
+//         });
+//         if (data) {
+//           try {
+//             const invoice = await db.invoice.findFirst({
+//               where: {
+//                 AND: [
+//                   { number: data.ID },
+//                   { client: { country: { equals: "RO" } } },
+//                 ],
+//               },
+//             });
+//             if (invoice) {
+//               try {
+//                 const local = await db.invoice.update({
+//                   where: { id: invoice.id },
+//                   data: {
+//                     EFactura: {
+//                       create: {
+//                         status: "store",
+//                         downloadId: filename,
+//                         uploadId: file.split(".")[0],
+//                         attachment: {
+//                           create: {
+//                             type: "eFactura",
+//                             name: zipName,
+//                           },
+//                         },
+//                       },
+//                     },
+//                   },
+//                 });
+//                 if (local) {
+//                   await mkdir("/storage/eFactura/", { recursive: true });
+//                   await writeFile(
+//                     `/storage/eFactura/${zipName}.zip`,
+//                     await readFile(`/storage/T/${file}`),
+//                   );
+//                   console.log(`invoice ${local.number} was updated`);
+//                   continue;
+//                 }
+//                 console.log("invoice could not be updated");
+//               } catch (error) {
+//                 console.log(`update: ${error}`);
+//               }
+//             }
+//           } catch (error) {
+//             console.log(`update: ${error}`);
+//           }
+//         }
+//         await db.message.create({
+//           data: {
+//             status: "nok",
+//             content: `There was no data in xml for ${filename}.xml`,
+//           },
+//         });
+//       } catch (error) {
+//         await db.message.create({
+//           data: {
+//             status: "nok",
+//             content: `There was and error while parsing xml: ${error}`,
+//           },
+//         });
+//       }
+//     }
+//   }
+// };
 
 const companyCheck = async (supplier: Company | Prisma.CompanyCreateInput) => {
   if (!Object.hasOwn(supplier, "id")) {
@@ -399,3 +434,14 @@ const companyCheck = async (supplier: Company | Prisma.CompanyCreateInput) => {
   }
   return { status: "ok", message: "company exists" };
 };
+
+// taxScheme might be array or object
+const checkTaxScheme = (data: { Invoice: { AccountingSupplierParty: { Party: { PartyTaxScheme: any; }; }; }; }) => {
+  const scheme = data.Invoice.AccountingSupplierParty.Party.PartyTaxScheme
+
+  if (Array.isArray(scheme)) {
+    return scheme[0]
+  }
+
+  return scheme
+}

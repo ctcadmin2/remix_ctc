@@ -5,7 +5,6 @@ import type { eInvoice } from "~/routes/efactura";
 import { db } from "./db.server";
 import {
   ANAF_ENV,
-  getToken,
   type message,
   processMessages,
 } from "./efac/efacUtils.server";
@@ -23,7 +22,7 @@ export const upload = async (invoice: eInvoice) => {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${await getToken()}`,
+        Authorization: `Bearer ${process.env.ANAF_OAUTH}`,
       },
       body: invoice.EFactura?.xml,
     });
@@ -90,7 +89,7 @@ export const checkStatus = async (id: number, uploadId: string | null) => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${await getToken()}` },
+      headers: { Authorization: `Bearer ${process.env.ANAF_OAUTH}` },
     });
 
     if (response.status === 200) {
@@ -160,7 +159,7 @@ export const download = async (downloadId: string | null) => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${await getToken()}` },
+      headers: { Authorization: `Bearer ${process.env.ANAF_OAUTH}` },
     });
 
     if (response.status === 200) {
@@ -213,7 +212,7 @@ export const validate = async (invoice: eInvoice) => {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${await getToken()}`,
+        Authorization: `Bearer ${process.env.ANAF_OAUTH}`,
         "Content-Type": "text/plain",
       },
       body: xml,
@@ -255,7 +254,7 @@ export const getExpenses = async () => {
   try {
     const response = await fetch(url, {
       method: "GET",
-      headers: { Authorization: `Bearer ${await getToken()}` },
+      headers: { Authorization: `Bearer ${process.env.ANAF_OAUTH}` },
     });
 
     if (response.status === 200) {

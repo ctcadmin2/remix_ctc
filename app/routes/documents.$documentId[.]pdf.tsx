@@ -15,6 +15,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const attachment = document?.attachment;
 
   return pdf(
-    await readFile(`/storage/${attachment?.type}/${attachment?.name}`),
+    await readFile(`/storage/${attachment?.type}/${attachment?.name}`)
   );
 }

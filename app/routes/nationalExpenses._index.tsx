@@ -98,12 +98,12 @@ export const action: ActionFunction = async ({
     await db.nationalExpense.delete({ where: { id } });
     return redirectWithSuccess(
       "/nationalExpenses",
-      "Expense deleted successfully.",
+      "Expense deleted successfully."
     );
   } catch (error) {
     return redirectWithError(
       "/nationalExpenses",
-      `Expense could not be deleted: ${error}`,
+      `Expense could not be deleted: ${error}`
     );
   }
 };
@@ -122,6 +122,10 @@ const NationalExpenses = () => {
   const handleGetNew = () => {
     fetcher.submit({ getNew: true }, { action: "/efactura", method: "POST" });
   };
+
+  // const handleProcess = () => {
+  //   fetcher.submit({ process: true }, { action: "/efactura", method: "POST" });
+  // };
 
   const columns: DataTableColumn<NationalExpense>[] = [
     {
@@ -235,13 +239,22 @@ const NationalExpenses = () => {
         total={total}
         perPage={perPage}
         extraButton={
-          <Button
-            variant="outline"
-            loading={fetcher.state === "loading"}
-            onClick={handleGetNew}
-          >
-            Load E-Factura
-          </Button>
+          <>
+            <Button
+              variant="outline"
+              loading={fetcher.state === "loading"}
+              onClick={handleGetNew}
+            >
+              Load E-Factura
+            </Button>
+            {/* <Button
+              variant="outline"
+              loading={fetcher.state === "loading"}
+              onClick={handleProcess}
+            >
+              Process
+            </Button> */}
+          </>
         }
       />
       <DeleteModal<NationalExpense>

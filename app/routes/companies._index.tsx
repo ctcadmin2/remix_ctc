@@ -46,7 +46,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     filter: z.string().optional(),
   });
 
-  const offset = ((page || 1) - 1) * 7;
+  const offset = ((page ?? 1) - 1) * 7;
 
   const where: object = {
     ...(filter
@@ -100,7 +100,7 @@ export const action: ActionFunction = async ({
     } catch (error) {
       return redirectWithError(
         "/companies",
-        `Company could not be deleted: ${error}`,
+        `Error deleting company: ${error}`
       );
     }
   }
@@ -123,7 +123,7 @@ export const action: ActionFunction = async ({
         } catch (error) {
           return jsonWithError(
             null,
-            `Company could not be refreshed: ${error}`,
+            `Company could not be refreshed: ${error}`
           );
         }
       }
