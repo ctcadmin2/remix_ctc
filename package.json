@@ -29,7 +29,7 @@
     "@mantine/modals": "^7.13.3",
     "@mantine/notifications": "^7.13.3",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^5.21.1",
+    "@prisma/client": "^6.19.0",
     "@remix-run/node": "^2.13.1",
     "@remix-run/react": "^2.13.1",
     "@remix-run/serve": "^2.13.1",
@@ -58,10 +58,10 @@
     "zodix": "^0.4.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.3.5",
     "@faker-js/faker": "^9.0.3",
     "@remix-run/dev": "^2.13.1",
-    "@types/adm-zip": "^0.5.5",
+    "@types/adm-zip": "^0.5.7",
     "@types/bcryptjs": "^2.4.6",
     "@types/feather-icons": "^4.29.4",
     "@types/node": "^22.7.7",
@@ -74,17 +74,17 @@
     "clsx": "^2.1.1",
     "esbuild": "^0.24.0",
     "esbuild-register": "^3.6.0",
-    "postcss": "^8.4.47",
+    "postcss": "^8.5.6",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "prisma": "^5.21.1",
+    "prisma": "^6.19.0",
     "prisma-repl": "^1.4.0",
-    "typescript": "^5.6.3",
+    "typescript": "^5.9.3",
     "vite": "5.4.9",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.11.0"
 }

@@ -27,10 +27,10 @@ export type CreditNoteWithAttachement = Prisma.CreditNoteGetPayload<{
   select: {
     id: true;
     orderNr: true;
+    shippingNr: true;
     number: true;
     start: true;
     end: true;
-    week: true;
     amount: true;
     currency: true;
     notes: true;
@@ -112,10 +112,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       select: {
         id: true,
         orderNr: true,
+        shippingNr: true,
         number: true,
         start: true,
         end: true,
-        week: true,
         amount: true,
         currency: true,
         notes: true,
@@ -191,7 +191,7 @@ const CreditNotes = () => {
       textAlign: "center",
     },
     {
-      accessor: "week",
+      accessor: "shippingNr",
       textAlign: "center",
     },
     {

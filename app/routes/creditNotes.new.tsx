@@ -14,6 +14,7 @@ import FileUploader from "~/utils/uploader.server";
 
 const schema = zfd.formData({
   orderNr: zfd.numeric(z.number().optional()),
+  shippingNr: zfd.numeric(z.number().optional()),
   number: zfd.text(), //required
   amount: zfd.numeric(), //required
   currency: zfd.text(), //required
@@ -23,7 +24,7 @@ const schema = zfd.formData({
   notes: zfd.text(z.string().optional()),
   vehicleId: zfd.numeric(z.number().optional()),
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
+    zfd.file(z.instanceof(Blob).optional().catch(undefined))
   ),
 });
 
@@ -83,7 +84,7 @@ export const action: ActionFunction = async ({ request }) => {
       }
       return redirectWithSuccess(
         "/creditNotes",
-        "Credit note created successfully.",
+        "Credit note created successfully."
       );
     }
     return jsonWithError(null, "Credit note could not be created.");

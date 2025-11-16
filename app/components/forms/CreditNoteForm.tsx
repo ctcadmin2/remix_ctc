@@ -35,6 +35,7 @@ const CreditNoteForm = ({
   const form = useForm({
     initialValues: {
       number: creditNote?.number || "",
+      shippingNr: creditNote?.shippingNr || "",
       amount: creditNote?.amount || "",
       currency: creditNote?.currency || "",
       start: creditNote?.start || "",
@@ -71,6 +72,12 @@ const CreditNoteForm = ({
               required
               ref={ref}
               {...form.getInputProps("number")}
+            />
+            <TextInput
+              label="Shipping nr."
+              name="shippingNr"
+              ref={ref}
+              {...form.getInputProps("shippingNr")}
             />
             <VehiclesList
               vehicles={vehicles}
