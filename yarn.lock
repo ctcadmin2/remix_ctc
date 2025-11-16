@@ -2396,12 +2396,12 @@ __metadata:
   linkType: hard
 
 "@types/pdfmake@npm:^0.2.9":
-  version: 0.2.9
-  resolution: "@types/pdfmake@npm:0.2.9"
+  version: 0.2.12
+  resolution: "@types/pdfmake@npm:0.2.12"
   dependencies:
     "@types/node": "npm:*"
     "@types/pdfkit": "npm:*"
-  checksum: 10/61c46fc6e4dcdbf14b9c670cebbe30ee31552b330352520472207b9e59cf1cca298794252ca9deff694b79403e09c29d0207610d1c45fea9a0ea1017992b4269
+  checksum: 10/a1dff188ec30ac4f3aa995cb74a2d213e7ae229a2aa269390383e91b62e984da1061ce43ced52f358596e51e3b5b7d77a4d3db1234e74e632c6e765a397824d0
   languageName: node
   linkType: hard
 
