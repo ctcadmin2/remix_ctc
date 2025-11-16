@@ -2231,6 +2231,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rvf/set-get@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "@rvf/set-get@npm:7.0.1"
+  checksum: 10/6e7dc5f997b8595073508945bb6763716791f580cb08b3bf27124e6b3c8bc0c1ad4c92e2f2873a01f315184df196a4102f2fb8c5c7733ab913cde631555051af
+  languageName: node
+  linkType: hard
+
 "@standard-schema/spec@npm:^1.0.0":
   version: 1.0.0
   resolution: "@standard-schema/spec@npm:1.0.0"
@@ -8896,11 +8903,13 @@ __metadata:
   linkType: hard
 
 "zod-form-data@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "zod-form-data@npm:2.0.2"
+  version: 2.0.8
+  resolution: "zod-form-data@npm:2.0.8"
+  dependencies:
+    "@rvf/set-get": "npm:^7.0.0"
   peerDependencies:
     zod: ">= 3.11.0"
-  checksum: 10/35acc6fac24f58ca67bc59fb0b372ec2b9efbf463b28752785694c914501c86ea13315f589e0abb5503f1be1b45e1780bdf8da9af317aa898f1c048d04314064
+  checksum: 10/709cdd1ef375d4f6ec2ef94709680c9b5ded50155d9c41843f3ad1f4615618960caaf684f1182ac5466b03ba7905af76c4979aec85a03eb634d61e9dde37654c
   languageName: node
   linkType: hard
 
