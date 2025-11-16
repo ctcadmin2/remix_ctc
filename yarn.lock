@@ -7441,7 +7441,7 @@ __metadata:
     typescript: "npm:^5.9.3"
     ubl-builder: "https://github.com/lssjbrolli/ubl-builder.git"
     vies-validate: "npm:^1.0.5"
-    vite: "npm:5.4.9"
+    vite: "npm:5.4.21"
     vite-tsconfig-paths: "npm:^5.1.4"
     xml2js: "npm:^0.6.2"
     zod: "npm:^3.23.8"
@@ -8627,9 +8627,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:5.4.9":
-  version: 5.4.9
-  resolution: "vite@npm:5.4.9"
+"vite@npm:5.4.21":
+  version: 5.4.21
+  resolution: "vite@npm:5.4.21"
   dependencies:
     esbuild: "npm:^0.21.3"
     fsevents: "npm:~2.3.3"
@@ -8666,7 +8666,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/60dfb3912ba6367d2d128e798d899caae3f4ec58990657b9f679c4d9de21ddec7eba5f6ad3d4fa0e8ea31771d477521b8e757a622ecc54829d73cb7f7c146bc4
+  checksum: 10/479a63e271d2d9e80a8e553e165444179681f33ddec1e7c84a43c4572f67c3d3abd33136389beb42703e32d3e96e1e8a930a222ee1bb64263ba057c187ccf793
   languageName: node
   linkType: hard
 
