@@ -6,18 +6,12 @@ import {
   Table,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { useEffect, useRef } from "react";
 import { Calendar, X } from "react-feather";
 
 import { usePaymentFormContext } from "./utils/FormContext/PaymentFormContext";
 
 const IndemnizationForm = () => {
   const { values, getInputProps, removeListItem } = usePaymentFormContext();
-  const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    ref.current?.focus();
-  });
 
   return (
     <ScrollArea.Autosize mah={"50vh"} offsetScrollbars mt={"3rem"}>
@@ -50,19 +44,14 @@ const IndemnizationForm = () => {
                 <Table.Td>
                   <NumberInput
                     name={`indemnizations[${i}].perDay`}
-                    ref={ref}
-                    {...getInputProps(`indemnizations.${i}.perDay`, {
-                      withFocus: false,
-                    })}
+                    {...getInputProps(`indemnizations.${i}.perDay`)}
                     pb={0}
                   />
                 </Table.Td>
                 <Table.Td>
                   <NumberInput
                     name={`indemnizations[${i}].avans`}
-                    {...getInputProps(`indemnizations.${i}.avans`, {
-                      withFocus: false,
-                    })}
+                    {...getInputProps(`indemnizations.${i}.avans`)}
                     pb={0}
                   />
                 </Table.Td>

@@ -76,7 +76,6 @@ const CreditNoteForm = ({
             <TextInput
               label="Shipping nr."
               name="shippingNr"
-              ref={ref}
               {...form.getInputProps("shippingNr")}
             />
             <VehiclesList
