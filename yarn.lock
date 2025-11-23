@@ -709,6 +709,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@conform-to/dom@npm:1.13.3":
+  version: 1.13.3
+  resolution: "@conform-to/dom@npm:1.13.3"
+  checksum: 10/225fa8dd89d37d535ae7112a8f75b920a8ec5a4f0966dfb50be5fb8582bec87f2ff2b6418bea3935abd74b0b915313b3f96197c7fa01aba67fb9ef08c76af92b
+  languageName: node
+  linkType: hard
+
 "@conform-to/dom@npm:1.2.2":
   version: 1.2.2
   resolution: "@conform-to/dom@npm:1.2.2"
@@ -728,13 +735,13 @@ __metadata:
   linkType: hard
 
 "@conform-to/zod@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "@conform-to/zod@npm:1.2.2"
+  version: 1.13.3
+  resolution: "@conform-to/zod@npm:1.13.3"
   dependencies:
-    "@conform-to/dom": "npm:1.2.2"
+    "@conform-to/dom": "npm:1.13.3"
   peerDependencies:
-    zod: ^3.21.0
-  checksum: 10/1fbc452aeebe0d3a4b347637f83d871f13cd4b64fe1e8baed2b82f8f51eceee532b78eb369e278be0792671c1d9245a0c7c449056ea74150613bf8907b69c758
+    zod: ^3.21.0 || ^4.0.0
+  checksum: 10/a3eaa3ee1d86487034dd20ca98663b7175c6c0ede673b5c1b9b4759b623ca2f7865515bc8dd1d441fcc37a4de0a2d9f8d8a9321f682bc324e4e046d50620a166
   languageName: node
   linkType: hard
 
