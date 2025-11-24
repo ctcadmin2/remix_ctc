@@ -28,7 +28,7 @@
     "@mantine/hooks": "^7.13.3",
     "@mantine/modals": "^7.13.3",
     "@mantine/notifications": "^7.13.3",
-    "@paralleldrive/cuid2": "^2.2.2",
+    "@paralleldrive/cuid2": "^3.0.0",
     "@prisma/client": "^6.19.0",
     "@remix-run/node": "^2.17.2",
     "@remix-run/react": "^2.17.2",
