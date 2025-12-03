@@ -5546,14 +5546,14 @@ __metadata:
   linkType: hard
 
 "mantine-datatable@npm:^7.12.4":
-  version: 7.12.4
-  resolution: "mantine-datatable@npm:7.12.4"
+  version: 7.17.1
+  resolution: "mantine-datatable@npm:7.17.1"
   peerDependencies:
-    "@mantine/core": ">=7.11"
-    "@mantine/hooks": ">=7.11"
+    "@mantine/core": ">=7.14"
+    "@mantine/hooks": ">=7.14"
     clsx: ">=2"
     react: ">=18.2"
-  checksum: 10/01ea1fb8425ee36eee35db73ec41a8b1f2ecb57e5ff039e1fdc0f03d8cd2d7ccd047b9a37ec3821d5b8c4b3787f6b8599788a61cba06109cccdf1126b1213950
+  checksum: 10/e183d862364b7aa0774cd6f86f393f290b994213f48b4e1549c83c054cb1fce96c6afb375febfe17ceb96493a0309b9b852976d0cacea283b5efc33a9404fab4
   languageName: node
   linkType: hard
 
