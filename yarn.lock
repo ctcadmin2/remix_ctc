@@ -1729,10 +1729,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.1.5":
-  version: 1.3.3
-  resolution: "@noble/hashes@npm:1.3.3"
-  checksum: 10/1025ddde4d24630e95c0818e63d2d54ee131b980fe113312d17ed7468bc18f54486ac86c907685759f8a7e13c2f9b9e83ec7b67d1cc20836f36b5e4a65bb102d
+"@noble/hashes@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@noble/hashes@npm:2.0.1"
+  checksum: 10/f4d00e7564eb4ff4e6d16be151dd0e404aede35f91e4372b0a8a6ec888379c1dd1e02c721b480af8e7853bea9637185b5cb9533970c5b77d60c254ead0cfd8f7
   languageName: node
   linkType: hard
 
@@ -1798,12 +1798,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@paralleldrive/cuid2@npm:^2.2.2":
-  version: 2.3.1
-  resolution: "@paralleldrive/cuid2@npm:2.3.1"
+"@paralleldrive/cuid2@npm:^3.0.0":
+  version: 3.3.0
+  resolution: "@paralleldrive/cuid2@npm:3.3.0"
   dependencies:
-    "@noble/hashes": "npm:^1.1.5"
-  checksum: 10/08687b891dfdad44f13a2c69232e95ca27efffc8b376587c2b89114b100a505808e7af5fbb51c3103053c637a6604f5987afa3ee8b4e1ba4c38742ebd47b4a84
+    "@noble/hashes": "npm:^2.0.1"
+    bignumber.js: "npm:^9.3.1"
+    error-causes: "npm:^3.0.2"
+  bin:
+    cuid2: bin/cuid2.js
+  checksum: 10/e30db76e23a2bc49d332f0e8ce0e5e0e347f8b104dff9351d326f0cad03db52a27536569fb2acabe47be4d77387c2def76c8bb0e7a53566ab38dd201a55becf0
   languageName: node
   linkType: hard
 
@@ -2987,6 +2991,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bignumber.js@npm:^9.3.1":
+  version: 9.3.1
+  resolution: "bignumber.js@npm:9.3.1"
+  checksum: 10/1be0372bf0d6d29d0a49b9e6a9cefbd54dad9918232ad21fcd4ec39030260773abf0c76af960c6b3b98d3115a3a71e61c6a111812d1395040a039cfa178e0245
+  languageName: node
+  linkType: hard
+
 "binary-extensions@npm:^2.0.0":
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
@@ -3885,6 +3896,13 @@ __metadata:
   version: 2.0.3
   resolution: "err-code@npm:2.0.3"
   checksum: 10/1d20d825cdcce8d811bfbe86340f4755c02655a7feb2f13f8c880566d9d72a3f6c92c192a6867632e490d6da67b678271f46e01044996a6443e870331100dfdd
+  languageName: node
+  linkType: hard
+
+"error-causes@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "error-causes@npm:3.0.2"
+  checksum: 10/0f70b8f0a9c0ed3b891964c11bdd87487cd8d8641d2ec84e5fe01c83dd5fd97d53944b97ff91018a4a2de805714220d213eaee75a0dff3b6b7cf2510413d0d28
   languageName: node
   linkType: hard
 
@@ -7618,7 +7636,7 @@ __metadata:
     "@mantine/hooks": "npm:^7.13.3"
     "@mantine/modals": "npm:^7.13.3"
     "@mantine/notifications": "npm:^7.13.3"
-    "@paralleldrive/cuid2": "npm:^2.2.2"
+    "@paralleldrive/cuid2": "npm:^3.0.0"
     "@prisma/client": "npm:^6.19.0"
     "@remix-run/dev": "npm:^2.17.2"
     "@remix-run/fs-routes": "npm:^2.17.2"
