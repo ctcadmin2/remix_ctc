@@ -1,5 +1,5 @@
 # base node image
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 # Install openssl for Prisma and git
 RUN apk update && apk add openssl git
