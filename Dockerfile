@@ -2,7 +2,7 @@
 FROM node:22-alpine AS base
 
 # Install openssl for Prisma and git
-RUN apk update && apk add openssl git
+RUN apk update && apk add openssl git nano
 
 ENV NODE_ENV=production
 ENV YARN_VERSION=4.13.0
