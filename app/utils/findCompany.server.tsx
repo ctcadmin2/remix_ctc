@@ -40,7 +40,7 @@ interface OpenApiProps {
 const findCompany = async (
   country: string | null,
   vatNr: string | null,
-  refresh = false,
+  refresh = false
 ) => {
   //parameter guard
   if (country == null || vatNr == null) {
@@ -94,11 +94,16 @@ const processRO = async (vatNr: string) => {
         address: data.adresa,
         county: Object.entries(RoCountyCodes).filter(
           (o) =>
-            o[1] ===
-            data.judet
-              .split(" ")
-              .filter((word) => word !== "Municipiul")
-              .join(" "),
+            new Intl.Collator("ro", {
+              usage: "search",
+              sensitivity: "base",
+            }).compare(
+              o[1],
+              data.judet
+                .split(" ")
+                .filter((word) => word !== "Municipiul")
+                .join(" ")
+            ) === 0
         )[0][0],
         country: "RO",
         phone: data.telefon,
