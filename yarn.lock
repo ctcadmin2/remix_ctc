@@ -1409,10 +1409,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:^9.0.3":
-  version: 9.9.0
-  resolution: "@faker-js/faker@npm:9.9.0"
-  checksum: 10/b24b1be0fb3090d54abaaa3a814f37d1a7551f1207dcd330a1af2c70f6312a8b95ebb82653577757dd62f4cbbb56caa3c83513053253654dc3e286a05040ecbe
+"@faker-js/faker@npm:^10.0.0":
+  version: 10.3.0
+  resolution: "@faker-js/faker@npm:10.3.0"
+  checksum: 10/ae06502156d918beed43bc939ad4a2b2b4696c5335ac6cfa52290cee23ffbcc4967c69a149118b3ec5c44d8cd7da690851fea4a93467e02d91b5281e3a6a8b60
   languageName: node
   linkType: hard
 
@@ -7611,7 +7611,7 @@ __metadata:
     "@biomejs/biome": "npm:2.3.7"
     "@conform-to/react": "npm:^1.2.2"
     "@conform-to/zod": "npm:^1.2.2"
-    "@faker-js/faker": "npm:^9.0.3"
+    "@faker-js/faker": "npm:^10.0.0"
     "@mantine/core": "npm:^7.13.3"
     "@mantine/dates": "npm:^7.13.3"
     "@mantine/form": "npm:^7.13.3"
