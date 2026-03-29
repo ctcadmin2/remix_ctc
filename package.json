@@ -81,7 +81,7 @@
     "postcss-simple-vars": "^7.0.1",
     "prisma": "^6.19.0",
     "prisma-repl": "^1.4.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vite": "6.3.5",
     "vite-tsconfig-paths": "^5.1.4"
   },
