@@ -3,7 +3,7 @@ import { jsonWithError } from "remix-toast";
 import { zx } from "zodix";
 
 import { getFile } from "~/utils/attachment.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { tripExpenseId } = zx.parseParams(params, {

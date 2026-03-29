@@ -14,7 +14,7 @@ import { zx } from "zodix";
 
 import InternationalExpenseForm from "~/components/forms/InternationalExpenseForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 import FileUploader from "~/utils/uploader.server";
 
@@ -26,7 +26,7 @@ const schema = zfd.formData({
   currency: zfd.text(), //required
   supplierId: zfd.numeric(), //required
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
+    zfd.file(z.instanceof(Blob).optional().catch(undefined))
   ),
 });
 
@@ -102,12 +102,12 @@ export const action: ActionFunction = async ({
         await FileUploader(
           files as Blob[],
           "internationalExpense",
-          internationalExpenseId,
+          internationalExpenseId
         );
       }
       return redirectWithSuccess(
         "/internationalExpenses",
-        "Expense updated successfully.",
+        "Expense updated successfully."
       );
     }
     return jsonWithError(null, "Expense could not be updated.");

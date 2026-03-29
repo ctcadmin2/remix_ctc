@@ -24,7 +24,7 @@ import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import DetailsModal from "~/components/DataGrid/utils/InfoModal";
 import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import CompanyForm from "~/components/forms/CompanyForm";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import findCompany from "~/utils/findCompany.server";
 import { sortOrder } from "~/utils/helpers.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";

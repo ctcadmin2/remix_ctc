@@ -14,7 +14,7 @@ import AdmZip from "adm-zip";
 import { parseStringPromise } from "xml2js";
 import { stripPrefix } from "xml2js/lib/processors";
 
-import { db } from "../db.server";
+import db from "../db.server";
 import { emitter } from "../emitter";
 import findCompany from "../findCompany.server";
 

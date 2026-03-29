@@ -13,7 +13,7 @@ import { zx } from "zodix";
 
 import EmployeeForm from "~/components/forms/EmployeeForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 const schema = zfd.formData({
@@ -75,7 +75,7 @@ export const action: ActionFunction = async ({
     if (employee) {
       return redirectWithSuccess(
         "/employees",
-        "Employee updated successfully.",
+        "Employee updated successfully."
       );
     }
     return jsonWithError(null, "Employee could not be updated.");

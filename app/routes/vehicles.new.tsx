@@ -13,7 +13,7 @@ import { zfd } from "zod-form-data";
 
 import VehicleForm from "~/components/forms/VehicleForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 const schema = zfd.formData({
@@ -62,7 +62,7 @@ export const action: ActionFunction = async ({
     if (vehicle) {
       return redirectWithSuccess(
         "/vehicles",
-        "Vehicle was created successfully.",
+        "Vehicle was created successfully."
       );
     }
     return jsonWithError(null, "Vehicle could not be created.");

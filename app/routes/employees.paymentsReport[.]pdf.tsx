@@ -5,7 +5,7 @@ import "dayjs/locale/ro";
 import { redirectWithError } from "remix-toast";
 import { pdf } from "remix-utils/responses";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import paymentsReportPDF from "~/utils/pdf/generatePaymentsReportPDF.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 

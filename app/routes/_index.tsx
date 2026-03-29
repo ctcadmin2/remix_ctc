@@ -5,7 +5,7 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 import dayjs from "dayjs";
 import { DataTable, type DataTableColumn } from "mantine-datatable";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 type documents = Prisma.DocumentGetPayload<{

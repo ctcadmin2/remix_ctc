@@ -9,7 +9,7 @@ import type {
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { BoolAsString, NumAsString, parseForm, parseQuery, zx } from "zodix";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import {
   checkStatus,
   download,

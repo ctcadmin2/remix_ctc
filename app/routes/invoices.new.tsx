@@ -8,7 +8,7 @@ import { CSRFError } from "remix-utils/csrf/server";
 import InvoiceForm from "~/components/forms/InvoiceForm";
 import type { CompaniesListType } from "~/components/lists/CompanyList";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import {
   calculateAmount,
   createIdentification,

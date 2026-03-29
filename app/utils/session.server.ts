@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 
-import { db } from "./db.server";
+import db from "./db.server";
 
 const { compare, hash } = bcrypt;
 const sessionSecret = process.env.SESSION_SECRET;

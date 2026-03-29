@@ -24,7 +24,7 @@ import {
 
 import type { eInvoice } from "~/routes/efactura";
 
-import { db } from "../db.server";
+import db from "../db.server";
 
 Decimal.set({ precision: 8, rounding: 4 });
 
@@ -60,29 +60,29 @@ const XMLBuilder = async (invoice: eInvoice) => {
   });
   xml.addProperty(
     "xmlns",
-    "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
+    "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
   );
   xml.addProperty(
     "xmlns:cbc",
-    "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+    "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
   );
   xml.addProperty(
     "xmlns:cac",
-    "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
+    "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
   );
   xml.addProperty(
     "xmlns:ns4",
-    "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2",
+    "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
   );
   xml.addProperty("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
   xml.addProperty(
     "xsi:schemaLocation",
-    "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2 http://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/maindoc/UBL-Invoice-2.1.xsd",
+    "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2 http://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/maindoc/UBL-Invoice-2.1.xsd"
   );
 
   xml.setCustomizationID(
-    "urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1",
+    "urn:cen.eu:en16931:2017#compliant#urn:efactura.mfinante.ro:CIUS-RO:1.0.1"
   );
   xml.setID(id);
   xml.setIssueDate(dayjs(invoice.date).format("YYYY-MM-DD"));
@@ -109,14 +109,22 @@ const XMLBuilder = async (invoice: eInvoice) => {
           }),
         ],
       }),
-    }),
+    })
   );
   xml.setAccountingCustomerParty(
     new AccountingCustomerParty({
       party: new Party({
         postalAddress: new PostalAddress({
-          streetName: `${invoice.client.address?.split(", ").slice(0, -1).join(", ")}`,
-          cityName: `${invoice.client.address?.split(", ").pop()?.split(" ").join("").toUpperCase()}`,
+          streetName: `${invoice.client.address
+            ?.split(", ")
+            .slice(0, -1)
+            .join(", ")}`,
+          cityName: `${invoice.client.address
+            ?.split(", ")
+            .pop()
+            ?.split(" ")
+            .join("")
+            .toUpperCase()}`,
           countrySubentity: `${invoice.client.county}`,
           country: new Country({ identificationCode: "RO" }),
         }),
@@ -125,22 +133,24 @@ const XMLBuilder = async (invoice: eInvoice) => {
             registrationName: invoice.client.name,
             ...(invoice.client.natural
               ? { companyID: "0000000000000" }
-              : !invoice.client.vatValid ? { companyID: invoice.client.vatNumber } : {}),
+              : !invoice.client.vatValid
+              ? { companyID: invoice.client.vatNumber }
+              : {}),
           }),
         ],
 
         partyTaxSchemes: [
           ...(invoice.client.vatValid && !invoice.client.natural
             ? [
-              new PartyTaxScheme({
-                companyID: `RO${invoice.client.vatNumber}`,
-                taxScheme: new TaxScheme({ id: "VAT" }),
-              }),
-            ]
+                new PartyTaxScheme({
+                  companyID: `RO${invoice.client.vatNumber}`,
+                  taxScheme: new TaxScheme({ id: "VAT" }),
+                }),
+              ]
             : []),
         ],
       }),
-    }),
+    })
   );
   xml.addPaymentMeans({
     paymentMeansCode: "42",
@@ -156,7 +166,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
         minimumFractionDigits: 2,
         useGrouping: false,
       }).format(vatAmount),
-      { currencyID: "RON" },
+      { currencyID: "RON" }
     ),
     taxSubtotals: [
       new TaxSubtotal({
@@ -168,7 +178,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
           }).format(new Decimal(invoice.amount).toNumber()),
           {
             currencyID: "RON",
-          },
+          }
         ),
         taxAmount: new UdtAmount(
           new Intl.NumberFormat("en-US", {
@@ -176,7 +186,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
             minimumFractionDigits: 2,
             useGrouping: false,
           }).format(vatAmount),
-          { currencyID: "RON" },
+          { currencyID: "RON" }
         ),
         taxCategory: new TaxCategory({
           id: "S",
@@ -195,7 +205,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
       }).format(new Decimal(invoice.amount).toNumber()),
       {
         currencyID: "RON",
-      },
+      }
     ),
     taxExclusiveAmount: new UdtAmount(
       new Intl.NumberFormat("en-US", {
@@ -206,7 +216,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
 
       {
         currencyID: "RON",
-      },
+      }
     ),
     taxInclusiveAmount: new UdtAmount(
       new Intl.NumberFormat("en-US", {
@@ -216,7 +226,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
       }).format(new Decimal(invoice.amount).plus(vatAmount).toNumber()),
       {
         currencyID: "RON",
-      },
+      }
     ),
     payableAmount: new UdtAmount(
       new Intl.NumberFormat("en-US", {
@@ -226,7 +236,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
       }).format(new Decimal(invoice.amount).plus(vatAmount).toNumber()),
       {
         currencyID: "RON",
-      },
+      }
     ),
   });
   invoice.orders.map((o, i: number) => {
@@ -241,7 +251,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
         }).format(new Decimal(o.amount).toNumber()),
         {
           currencyID: "RON",
-        },
+        }
       ),
       item: new Item({
         name: `${o.description}`,
@@ -260,7 +270,7 @@ const XMLBuilder = async (invoice: eInvoice) => {
           }).format(new Decimal(o.total).toNumber()),
           {
             currencyID: "RON",
-          },
+          }
         ),
       }),
     });
@@ -278,11 +288,11 @@ const XMLBuilder = async (invoice: eInvoice) => {
         }).format(
           invoice.bnr
             ? new Decimal(cn.amount).times(invoice.bnr).toNumber()
-            : new Decimal(cn.amount).toNumber(),
+            : new Decimal(cn.amount).toNumber()
         ),
         {
           currencyID: "RON",
-        },
+        }
       ),
       item: new Item({
         name: `transport conform contract ${cn.number}`,
@@ -301,11 +311,11 @@ const XMLBuilder = async (invoice: eInvoice) => {
           }).format(
             invoice.bnr
               ? new Decimal(cn.amount).times(invoice.bnr).toNumber()
-              : new Decimal(cn.amount).toNumber(),
+              : new Decimal(cn.amount).toNumber()
           ),
           {
             currencyID: "RON",
-          },
+          }
         ),
       }),
     });

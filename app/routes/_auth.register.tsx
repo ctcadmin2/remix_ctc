@@ -16,7 +16,7 @@ import { useEffect } from "react";
 import { jsonWithError, redirectWithInfo } from "remix-toast";
 import { z } from "zod";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { authenticator, register } from "~/utils/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -77,7 +77,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     return jsonWithError(
       { values: formPayload, errors },
-      "There are errors on the form.",
+      "There are errors on the form."
     );
   }
 
@@ -89,18 +89,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (!user) {
       return jsonWithError(
         { values: formPayload, errors: {} },
-        "User could not be created.",
+        "User could not be created."
       );
     }
 
     return redirectWithInfo(
       "/login",
-      "Account created, please wait for admin to activate it.",
+      "Account created, please wait for admin to activate it."
     );
   } catch (_error) {
     return jsonWithError(
       { values: formPayload, errors: {} },
-      "An error has occured",
+      "An error has occured"
     );
   }
 };

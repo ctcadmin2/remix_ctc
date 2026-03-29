@@ -4,7 +4,7 @@ import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
 import { zx } from "zodix";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { documentId } = zx.parseParams(params, { documentId: zx.NumAsString });

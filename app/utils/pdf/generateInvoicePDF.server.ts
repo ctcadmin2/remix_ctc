@@ -4,7 +4,7 @@ import type { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
 
 import type { CompanyInfo, InvoiceData } from "~/routes/invoices.$id[.]pdf";
 
-import { db } from "../db.server";
+import db from "../db.server";
 
 interface CompanyData {
   name: string;
@@ -35,7 +35,7 @@ const notFoundDef: TDocumentDefinitions = {
 
 const generateInvoicePDF = async (
   invoice: InvoiceData["invoice"] | null,
-  company: CompanyInfo[],
+  company: CompanyInfo[]
 ) => {
   const doc = new PdfPrinter(fonts);
 
@@ -57,13 +57,13 @@ const generateInvoicePDF = async (
     {},
     ...company.map((obj) => {
       return { [obj.name]: obj.value[0] };
-    }),
+    })
   );
 
   const user = invoice.createdById
     ? await db.user.findUnique({
-      where: { id: invoice?.createdById },
-    })
+        where: { id: invoice?.createdById },
+      })
     : null;
 
   const cnLines = () => {
@@ -111,7 +111,7 @@ const generateInvoicePDF = async (
             style: "currency",
             currency: currency,
           }).format(
-            new Decimal(value).times(invoice.vatRate).dividedBy(100).toNumber(),
+            new Decimal(value).times(invoice.vatRate).dividedBy(100).toNumber()
           )}`,
           border: [false, false, true, false],
           alignment: "right",
@@ -177,7 +177,7 @@ const generateInvoicePDF = async (
             new Decimal(order.total)
               .times(invoice.vatRate)
               .dividedBy(100)
-              .toNumber(),
+              .toNumber()
           )}`,
           border: [false, false, true, false],
           alignment: "right",
@@ -226,11 +226,12 @@ const generateInvoicePDF = async (
               },
               { text: "", border: [false, false, false, false] },
               {
-                text: `Seria NT ${invoice?.client.country === "RO" ? "BCT" : "ACT"
-                  } Nr. ${new Intl.NumberFormat("ro-RO", {
-                    minimumIntegerDigits: 7,
-                    useGrouping: false,
-                  }).format(new Decimal(invoice?.number).toNumber())}`,
+                text: `Seria NT ${
+                  invoice?.client.country === "RO" ? "BCT" : "ACT"
+                } Nr. ${new Intl.NumberFormat("ro-RO", {
+                  minimumIntegerDigits: 7,
+                  useGrouping: false,
+                }).format(new Decimal(invoice?.number).toNumber())}`,
                 border: [false, false, true, false],
                 alignment: "center",
                 bold: true,
@@ -336,10 +337,11 @@ const generateInvoicePDF = async (
               },
               { text: "", border: [false, false, false, false] },
               {
-                text: `Cont: ${invoice.client.country === "RO"
-                  ? invoice.client.accRon || ""
-                  : invoice.client.accEur || ""
-                  }`,
+                text: `Cont: ${
+                  invoice.client.country === "RO"
+                    ? invoice.client.accRon || ""
+                    : invoice.client.accEur || ""
+                }`,
                 alignment: "justify",
                 border: [false, false, true, false],
               },
@@ -389,8 +391,8 @@ const generateInvoicePDF = async (
                       {
                         text: invoice.bnrAt
                           ? `${invoice.bnr}/${new Intl.DateTimeFormat(
-                            "ro-RO",
-                          ).format(invoice.bnrAt)}`
+                              "ro-RO"
+                            ).format(invoice.bnrAt)}`
                           : " ",
                         alignment: "right",
                       },
@@ -422,13 +424,13 @@ const generateInvoicePDF = async (
                       {
                         text: invoice.bnr
                           ? `${new Intl.NumberFormat("ro-RO", {
-                            style: "currency",
-                            currency: "EUR",
-                          }).format(
-                            new Decimal(invoice.amount)
-                              .dividedBy(new Decimal(invoice.bnr))
-                              .toNumber(),
-                          )}`
+                              style: "currency",
+                              currency: "EUR",
+                            }).format(
+                              new Decimal(invoice.amount)
+                                .dividedBy(new Decimal(invoice.bnr))
+                                .toNumber()
+                            )}`
                           : " ",
                         alignment: "right",
                       },
@@ -454,7 +456,7 @@ const generateInvoicePDF = async (
                           new Decimal(invoice.amount)
                             .times(invoice.vatRate)
                             .dividedBy(100)
-                            .toNumber(),
+                            .toNumber()
                         )}`,
                         bold: true,
                         alignment: "right",
@@ -465,15 +467,15 @@ const generateInvoicePDF = async (
                       {
                         text: invoice.bnr
                           ? `${new Intl.NumberFormat("ro-RO", {
-                            style: "currency",
-                            currency: "EUR",
-                          }).format(
-                            new Decimal(invoice.amount)
-                              .times(invoice.vatRate)
-                              .dividedBy(100)
-                              .dividedBy(new Decimal(invoice.bnr))
-                              .toNumber(),
-                          )}`
+                              style: "currency",
+                              currency: "EUR",
+                            }).format(
+                              new Decimal(invoice.amount)
+                                .times(invoice.vatRate)
+                                .dividedBy(100)
+                                .dividedBy(new Decimal(invoice.bnr))
+                                .toNumber()
+                            )}`
                           : " ",
                         alignment: "right",
                       },
@@ -563,9 +565,9 @@ const generateInvoicePDF = async (
                     }).format(
                       new Decimal(invoice.amount)
                         .times(
-                          new Decimal(invoice.vatRate).dividedBy(100).add(1),
+                          new Decimal(invoice.vatRate).dividedBy(100).add(1)
                         )
-                        .toNumber(),
+                        .toNumber()
                     )}`,
                     bold: true,
                     alignment: "right",
@@ -594,18 +596,16 @@ const generateInvoicePDF = async (
                   {
                     text: invoice.bnr
                       ? `${new Intl.NumberFormat("ro-RO", {
-                        style: "currency",
-                        currency: "EUR",
-                      }).format(
-                        new Decimal(invoice.amount)
-                          .times(
-                            new Decimal(invoice.vatRate)
-                              .dividedBy(100)
-                              .add(1),
-                          )
-                          .dividedBy(new Decimal(invoice.bnr))
-                          .toNumber(),
-                      )}`
+                          style: "currency",
+                          currency: "EUR",
+                        }).format(
+                          new Decimal(invoice.amount)
+                            .times(
+                              new Decimal(invoice.vatRate).dividedBy(100).add(1)
+                            )
+                            .dividedBy(new Decimal(invoice.bnr))
+                            .toNumber()
+                        )}`
                       : "",
                     alignment: "right",
                   },
@@ -645,21 +645,21 @@ const vatRate = (invoice: InvoiceData["invoice"]) => {
   return `${String(invoice.vatRate)}%`;
 };
 
-
 const genCUI = (invoice: InvoiceData["invoice"]) => {
   if (invoice.client.natural) {
-    return "CIF: 0000000000000"
+    return "CIF: 0000000000000";
   }
 
-  return `C.U.I: ${invoice.client.vatValid ? invoice.client.country : ""}${invoice.client.vatNumber}`
-}
+  return `C.U.I: ${invoice.client.vatValid ? invoice.client.country : ""}${
+    invoice.client.vatNumber
+  }`;
+};
 
 const genID = (invoice: InvoiceData["invoice"]) => {
-  console.log('called')
+  console.log("called");
 
   if (invoice.client.natural) {
-    return `CI: ${invoice.client.registration}`
+    return `CI: ${invoice.client.registration}`;
   }
-  return `Nr.ord.Reg.Com/an: ${invoice.client.registration ?? ''}`
-}
-
+  return `Nr.ord.Reg.Com/an: ${invoice.client.registration ?? ""}`;
+};

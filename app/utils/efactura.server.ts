@@ -2,7 +2,7 @@ import { parseStringPromise } from "xml2js";
 
 import type { eInvoice } from "~/routes/efactura";
 
-import { db } from "./db.server";
+import db from "./db.server";
 import {
   ANAF_ENV,
   type message,
@@ -190,7 +190,9 @@ export const download = async (downloadId: string | null) => {
 
     return {
       stare: "nok",
-      message: `Server responded with: ${response.status} - ${await response.json()}`,
+      message: `Server responded with: ${
+        response.status
+      } - ${await response.json()}`,
     };
   } catch (error) {
     return {

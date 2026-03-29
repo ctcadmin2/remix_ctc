@@ -2563,6 +2563,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/crypto-js@npm:^4":
+  version: 4.2.2
+  resolution: "@types/crypto-js@npm:4.2.2"
+  checksum: 10/a40fc5a9219fd33f54ba3e094c5e5ab2904d3106681a76f1029bb038976591e9c8959099963bf4474fde21c2d8d00c1f896445206a3a58f85588f9cb1bd96a9a
+  languageName: node
+  linkType: hard
+
 "@types/debug@npm:^4.0.0":
   version: 4.1.12
   resolution: "@types/debug@npm:4.1.12"
@@ -3594,6 +3601,13 @@ __metadata:
     shebang-command: "npm:^2.0.0"
     which: "npm:^2.0.1"
   checksum: 10/0d52657d7ae36eb130999dffff1168ec348687b48dd38e2ff59992ed916c88d328cf1d07ff4a4a10bc78de5e1c23f04b306d569e42f7a2293915c081e4dfee86
+  languageName: node
+  linkType: hard
+
+"crypto-js@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: 10/c7bcc56a6e01c3c397e95aa4a74e4241321f04677f9a618a8f48a63b5781617248afb9adb0629824792e7ec20ca0d4241a49b6b2938ae6f973ec4efc5c53c924
   languageName: node
   linkType: hard
 
@@ -8033,6 +8047,7 @@ __metadata:
     "@remix-run/server-runtime": "npm:^2.17.3"
     "@types/adm-zip": "npm:^0.5.7"
     "@types/bcryptjs": "npm:^3.0.0"
+    "@types/crypto-js": "npm:^4"
     "@types/feather-icons": "npm:^4.29.4"
     "@types/node": "npm:^24.0.0"
     "@types/pdfmake": "npm:^0.3.0"
@@ -8045,6 +8060,7 @@ __metadata:
     adm-zip: "npm:^0.5.16"
     bcryptjs: "npm:^3.0.0"
     clsx: "npm:^2.1.1"
+    crypto-js: "npm:^4.2.0"
     dayjs: "npm:^1.11.13"
     decimal.js: "npm:^10.4.3"
     dotenv: "npm:^17.3.1"
@@ -8077,8 +8093,6 @@ __metadata:
     zod: "npm:^3.23.8"
     zod-form-data: "npm:^2.0.2"
     zodix: "npm:^0.4.4"
-  peerDependencies:
-    crypto-js: ^4.1.1
   languageName: unknown
   linkType: soft
 

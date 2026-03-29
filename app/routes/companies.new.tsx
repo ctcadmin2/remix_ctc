@@ -17,7 +17,7 @@ import { z } from "zod";
 
 import CompanyForm from "~/components/forms/CompanyForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import findCompany from "~/utils/findCompany.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 

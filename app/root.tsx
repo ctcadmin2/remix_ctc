@@ -48,7 +48,7 @@ import LinksGroup from "./components/LinksGroup/LinksGroup";
 import Messages from "./components/Messages/Messages";
 import { theme } from "./theme";
 import { csrf } from "./utils/csrf.server";
-import { db } from "./utils/db.server";
+import db from "./utils/db.server";
 import handleNotification from "./utils/notifications";
 import { authenticator } from "./utils/session.server";
 

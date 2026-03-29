@@ -11,7 +11,7 @@ import { zx } from "zodix";
 import Multi from "~/components/Settings/Multi";
 import Single from "~/components/Settings/Single";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 import sortSettings from "~/utils/sortSettings";
 

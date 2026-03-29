@@ -3,7 +3,7 @@ import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
 import { zx } from "zodix";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import generateInvoicePDF from "~/utils/pdf/generateInvoicePDF.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 

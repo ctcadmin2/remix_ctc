@@ -14,7 +14,7 @@ import { zx } from "zodix";
 
 import DocumentForm from "~/components/forms/DocumentForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 import FileUploader from "~/utils/uploader.server";
 
@@ -26,11 +26,11 @@ const schema = zfd.formData({
       .optional()
       .transform((value) => {
         return value === "" || value === undefined ? null : value;
-      }),
+      })
   ),
   comment: zfd.text(z.string().optional()),
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
+    zfd.file(z.instanceof(Blob).optional().catch(undefined))
   ),
 });
 
@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({
         await FileUploader(files as Blob[], "document", document.id);
         return redirectWithSuccess(
           `/employees/${employeeId}/documents`,
-          "Document was edited successfully.",
+          "Document was edited successfully."
         );
       }
       return jsonWithError(null, "Document could not be edited.");

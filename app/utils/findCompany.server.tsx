@@ -1,7 +1,7 @@
 import type { Prisma } from "prisma/generated/prisma/client";
 import { validate } from "vies-validate";
 
-import { db } from "./db.server";
+import db from "./db.server";
 import { RoCountyCodes } from "./roCountyCodes";
 
 interface OpenApiProps {

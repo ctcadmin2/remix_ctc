@@ -2,7 +2,7 @@ import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { jsonWithError } from "remix-toast";
 import { zx } from "zodix";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import generateTripReportPDF from "~/utils/pdf/generateTripReportPDF.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {

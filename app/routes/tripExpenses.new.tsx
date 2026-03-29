@@ -8,7 +8,7 @@ import { zfd } from "zod-form-data";
 
 import TripExpenseForm from "~/components/forms/TripExpenseForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 import FileUploader from "~/utils/uploader.server";
 
@@ -22,7 +22,7 @@ const schema = zfd.formData({
   amountEur: zfd.numeric(), //required
   card: zfd.checkbox(), //required
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
+    zfd.file(z.instanceof(Blob).optional().catch(undefined))
   ),
 });
 
@@ -73,7 +73,7 @@ export const action: ActionFunction = async ({ request }) => {
 
       return redirectWithSuccess(
         "/tripExpenses",
-        "Expense added successfully.",
+        "Expense added successfully."
       );
     }
     return jsonWithError(null, "Expense could not be created.");

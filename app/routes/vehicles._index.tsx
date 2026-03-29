@@ -23,7 +23,7 @@ import BooleanIcon from "~/components/DataGrid/utils/BooleanIcon";
 import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { sortOrder } from "~/utils/helpers.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 

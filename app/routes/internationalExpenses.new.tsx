@@ -8,7 +8,7 @@ import { zfd } from "zod-form-data";
 
 import InternationalExpenseForm from "~/components/forms/InternationalExpenseForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 import FileUploader from "~/utils/uploader.server";
 
@@ -20,7 +20,7 @@ const schema = zfd.formData({
   description: zfd.text(), //required
   supplierId: zfd.numeric(), //required
   files: zfd.repeatableOfType(
-    zfd.file(z.instanceof(Blob).optional().catch(undefined)),
+    zfd.file(z.instanceof(Blob).optional().catch(undefined))
   ),
 });
 
@@ -76,7 +76,7 @@ export const action: ActionFunction = async ({ request }) => {
       }
       return redirectWithSuccess(
         "/internationalExpenses",
-        "Expense added successfully.",
+        "Expense added successfully."
       );
     }
     return jsonWithError(null, "Expense could not be created.");

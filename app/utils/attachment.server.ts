@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 
 import type { Attachment } from "prisma/generated/prisma/client";
 
-import { db } from "./db.server";
+import db from "./db.server";
 
 export const processAttachment = async (
   type:

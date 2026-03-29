@@ -9,7 +9,7 @@ import { eventStream } from "remix-utils/sse/server";
 import { z } from "zod";
 import { parseForm } from "zodix";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { emitter } from "~/utils/emitter";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 

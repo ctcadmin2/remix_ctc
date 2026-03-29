@@ -13,7 +13,7 @@ import { zx } from "zodix";
 
 import RepairForm from "~/components/forms/RepairForm";
 import { csrf } from "~/utils/csrf.server";
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
 const schema = zfd.formData({
@@ -74,7 +74,7 @@ export const action: ActionFunction = async ({
     if (repair) {
       return redirectWithSuccess(
         `/vehicle/${vehicleId}/repairs`,
-        "Repair data was edited successfully.",
+        "Repair data was edited successfully."
       );
     }
     return jsonWithError(null, "Repair data could not be edited.");

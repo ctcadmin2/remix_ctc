@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
 
-import { db } from "~/utils/db.server";
+import db from "~/utils/db.server";
 import generateDelegationPDF from "~/utils/pdf/generateDelegationPDF.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
 
