@@ -47,6 +47,7 @@ type TruckCreditNote = Prisma.CreditNoteGetPayload<{
     id: true;
     orderNr: true;
     number: true;
+    shippingNr: true;
     start: true;
     end: true;
     week: true;
@@ -104,7 +105,7 @@ const schema = z
     {
       message: "There is another credit note with this order nr.",
       path: ["duplicate"],
-    },
+    }
   );
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -133,6 +134,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
                 mode: "insensitive",
               },
             },
+            {
+              shippingNr: {
+                contains: filter,
+                mode: "insensitive",
+              },
+            },
             { start: { contains: filter, mode: "insensitive" } },
             { end: { contains: filter, mode: "insensitive" } },
           ],
@@ -151,6 +158,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         id: true,
         orderNr: true,
         number: true,
+        shippingNr: true,
         start: true,
         end: true,
         week: true,
@@ -201,7 +209,7 @@ export const action: ActionFunction = async ({
 
     return jsonWithWarning(
       { formPayload, errors },
-      "Order number already assign.",
+      "Order number already assign."
     );
   }
 
@@ -304,7 +312,7 @@ const CreditNotes = () => {
           orderNr: editableCellValue ?? null,
           vehicleId: vehicleId,
         },
-        { method: "POST" },
+        { method: "POST" }
       );
     }
     setEditableCell({});
@@ -327,7 +335,7 @@ const CreditNotes = () => {
       onConfirm: () =>
         fetcher.submit(
           { ...fetcher.data.formPayload, _action: "confirm" },
-          { method: "POST" },
+          { method: "POST" }
         ),
     });
 
@@ -368,6 +376,11 @@ const CreditNotes = () => {
     },
     {
       accessor: "number",
+      textAlign: "center",
+      sortable: true,
+    },
+    {
+      accessor: "shippingNr",
       textAlign: "center",
       sortable: true,
     },
