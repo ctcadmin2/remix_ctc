@@ -60,13 +60,11 @@ ENV REMIX_DEV_ORIGIN="http://0.0.0.0:3000"
 
 COPY --from=production-deps /ctcadmin/.yarn /ctcadmin/.yarn
 COPY --from=production-deps /ctcadmin/node_modules /ctcadmin/node_modules
-COPY --from=build /ctcadmin/node_modules/.prisma /ctcadmin/node_modules/.prisma
+COPY --from=production-deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
 
 COPY --from=build /ctcadmin/build /ctcadmin/build
 COPY --from=build /ctcadmin/public /ctcadmin/public
 COPY --from=build /ctcadmin/prisma /ctcadmin/prisma
-
-COPY --from=deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
 
 USER apps
 
