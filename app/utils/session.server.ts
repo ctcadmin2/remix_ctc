@@ -1,12 +1,12 @@
 import type { User } from "@prisma/client";
 import { createCookieSessionStorage } from "@remix-run/node";
-import bcryptjs from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 
 import { db } from "./db.server";
 
-const { compare, hash } = bcryptjs;
+const { compare, hash } = bcrypt;
 const sessionSecret = process.env.SESSION_SECRET;
 export const DEFAULT_REDIRECT = "/login";
 
@@ -28,7 +28,7 @@ const login = async ({ email, password }: LoginForm) => {
     where: { email },
   });
   if (!user) throw new AuthorizationError("Bad Credentials");
-  const isCorrectPassword = compare(password, user.hash as string);
+  const isCorrectPassword = await compare(password, user.hash as string);
   if (!isCorrectPassword) throw new AuthorizationError("Bad Credentials");
 
   const { hash, ...rest } = user;
