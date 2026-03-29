@@ -1,5 +1,5 @@
 import { Button, Center, Divider, Menu } from "@mantine/core";
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "prisma/generated/prisma/client";
 import { Link, json, useFetcher, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
@@ -122,7 +122,7 @@ export const action: ActionFunction = async ({
       if (report) {
         return jsonWithSuccess(
           null,
-          `Raport with id ${report.id} was created succesfully.`,
+          `Raport with id ${report.id} was created succesfully.`
         );
       }
 
@@ -130,7 +130,7 @@ export const action: ActionFunction = async ({
     } catch (error) {
       return jsonWithError(
         null,
-        `Raport could not be generated with error: ${error}`,
+        `Raport could not be generated with error: ${error}`
       );
     }
   }
@@ -139,12 +139,12 @@ export const action: ActionFunction = async ({
     await db.tripExpense.delete({ where: { id } });
     return redirectWithSuccess(
       "/tripExpenses",
-      "Expense deleted successfully.",
+      "Expense deleted successfully."
     );
   } catch (error) {
     return redirectWithError(
       "/tripExpenses",
-      `Expense could not be deleted: ${error}`,
+      `Expense could not be deleted: ${error}`
     );
   }
 };

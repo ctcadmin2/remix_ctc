@@ -8,7 +8,7 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import type { Repair } from "@prisma/client";
+import type { Repair } from "prisma/generated/prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";

@@ -1,4 +1,4 @@
-import type { Prisma, Setting } from "@prisma/client";
+import type { Prisma, Setting } from "prisma/generated/prisma/client";
 import { json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,

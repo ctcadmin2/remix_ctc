@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useClickOutside, useFocusTrap, useMergedRef } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "prisma/generated/prisma/client";
 import {
   Link,
   json,

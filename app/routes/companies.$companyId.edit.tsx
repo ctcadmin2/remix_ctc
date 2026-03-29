@@ -1,4 +1,4 @@
-import type { Company } from "@prisma/client";
+import type { Company } from "prisma/generated/prisma/client";
 import { useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,

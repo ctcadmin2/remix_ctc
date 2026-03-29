@@ -1,7 +1,15 @@
-import { mkdir, opendir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  opendir,
+  readFile,
+  readdir,
+  rename,
+  unlink,
+  writeFile,
+} from "node:fs/promises";
 
 import { createId } from "@paralleldrive/cuid2";
-import { Company, Prisma } from "@prisma/client";
+import { Company, Prisma } from "prisma/generated/prisma/client";
 import AdmZip from "adm-zip";
 import { parseStringPromise } from "xml2js";
 import { stripPrefix } from "xml2js/lib/processors";
@@ -52,7 +60,6 @@ interface receivedInvoiceType {
 
 // }
 
-
 // export const processFile = async (filename: string) => {
 //   let cn = await db.attachment.findFirst({
 //     where: {
@@ -69,7 +76,7 @@ interface receivedInvoiceType {
 export const processZip = async (
   zip: Buffer,
   downloadId: string,
-  uploadId: string,
+  uploadId: string
 ) => {
   const zipName = `${createId()}.zip`;
   const pdfName = `${createId()}.pdf`;
@@ -114,10 +121,10 @@ export const processZip = async (
               number: invoice.number,
               ...(invoice.pdf
                 ? {
-                  attachment: {
-                    create: { type: "nationalExpense", name: pdfName },
-                  },
-                }
+                    attachment: {
+                      create: { type: "nationalExpense", name: pdfName },
+                    },
+                  }
                 : {}),
               EFactura: {
                 create: {
@@ -140,7 +147,7 @@ export const processZip = async (
               await mkdir("/storage/nationalExpense/", { recursive: true });
               await writeFile(
                 `/storage/nationalExpense/${pdfName}`,
-                invoice.pdf,
+                invoice.pdf
               );
             }
             return {
@@ -176,10 +183,10 @@ export const processZip = async (
             },
             ...(invoice.pdf
               ? {
-                attachment: {
-                  create: { type: "nationalExpense", name: pdfName },
-                },
-              }
+                  attachment: {
+                    create: { type: "nationalExpense", name: pdfName },
+                  },
+                }
               : {}),
             EFactura: {
               create: {
@@ -229,7 +236,7 @@ export const processMessages = async (mesaje: message[]) => {
       const response = await processZip(
         Buffer.from(await data.arrayBuffer()),
         m.id,
-        m.id_solicitare,
+        m.id_solicitare
       );
       try {
         const message = await db.message.create({
@@ -291,13 +298,10 @@ export const parseXml = async (xml: Buffer) => {
       data.Invoice.AdditionalDocumentReference?.Attachment
         ?.EmbeddedDocumentBinaryObject;
 
-    const taxScheme = checkTaxScheme(data)
-    const vatNumber =
-      taxScheme.CompanyID.split(
-        /(\d+)/,
-      )
-        .filter(Boolean)
-        .filter(Number)[0]
+    const taxScheme = checkTaxScheme(data);
+    const vatNumber = taxScheme.CompanyID.split(/(\d+)/)
+      .filter(Boolean)
+      .filter(Number)[0];
 
     invoice.number = data.Invoice.ID;
     invoice.date = data.Invoice.IssueDate;
@@ -436,12 +440,14 @@ const companyCheck = async (supplier: Company | Prisma.CompanyCreateInput) => {
 };
 
 // taxScheme might be array or object
-const checkTaxScheme = (data: { Invoice: { AccountingSupplierParty: { Party: { PartyTaxScheme: any; }; }; }; }) => {
-  const scheme = data.Invoice.AccountingSupplierParty.Party.PartyTaxScheme
+const checkTaxScheme = (data: {
+  Invoice: { AccountingSupplierParty: { Party: { PartyTaxScheme: any } } };
+}) => {
+  const scheme = data.Invoice.AccountingSupplierParty.Party.PartyTaxScheme;
 
   if (Array.isArray(scheme)) {
-    return scheme[0]
+    return scheme[0];
   }
 
-  return scheme
-}
+  return scheme;
+};

@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "prisma/generated/prisma/client";
 import { createCookieSessionStorage } from "@remix-run/node";
 import bcrypt from "bcryptjs";
 import { Authenticator, AuthorizationError } from "remix-auth";
@@ -68,12 +68,12 @@ authenticator.use(
       throw new AuthorizationError("Bad Credentials: Password is required");
     if (typeof password !== "string")
       throw new AuthorizationError(
-        "Bad Credentials: Password must be a string",
+        "Bad Credentials: Password must be a string"
       );
 
     return await login({ email, password });
   }),
-  "user-pass",
+  "user-pass"
 );
 
 export const register = async (data: RegisterForm) => {

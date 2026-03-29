@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import type { InternationalExpense } from "@prisma/client";
+import type { InternationalExpense } from "prisma/generated/prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Calendar, Upload } from "react-feather";

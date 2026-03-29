@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "prisma/generated/prisma/client";
 import { useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
@@ -32,7 +32,7 @@ const schema = zfd.formData({
         perDay: zfd.numeric(),
         avans: zfd.numeric(),
         delegation: zfd.checkbox(),
-      }),
+      })
     )
     .optional(),
 });
@@ -100,10 +100,10 @@ export const action: ActionFunction = async ({
         total: new Decimal(0),
       };
       indemnization.total = new Decimal(indemnization.perDay).times(
-        indemnization.days,
+        indemnization.days
       );
       indemnization.rest = new Decimal(indemnization.total).minus(
-        indemnization.avans,
+        indemnization.avans
       );
 
       return indemnization;
@@ -114,7 +114,9 @@ export const action: ActionFunction = async ({
       data: {
         ...data,
         salaryEur: new Decimal(data.salaryRon).dividedBy(
-          (await bnrRate(data.month, "EUR")).rate,
+          (
+            await bnrRate(data.month, "EUR")
+          ).rate
         ),
         employee: { connect: { id: employeeId } },
         ...(indemnizationsData.length > 0
@@ -126,7 +128,7 @@ export const action: ActionFunction = async ({
     if (payment) {
       return redirectWithSuccess(
         `/employees/${employeeId}/payments`,
-        "Payment created successfully.",
+        "Payment created successfully."
       );
     }
     return jsonWithError(null, "Payment could not be created.");

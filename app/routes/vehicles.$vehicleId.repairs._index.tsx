@@ -1,7 +1,7 @@
 import { env } from "node:process";
 
 import { Button, Center, Menu } from "@mantine/core";
-import type { Repair } from "@prisma/client";
+import type { Repair } from "prisma/generated/prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,

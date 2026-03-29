@@ -11,7 +11,7 @@ import {
   rem,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { Company } from "@prisma/client";
+import type { Company } from "prisma/generated/prisma/client";
 import { Form, useFetcher, useNavigate } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 import { Search } from "react-feather";

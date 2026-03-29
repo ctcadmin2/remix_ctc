@@ -1,7 +1,7 @@
 import { Button, Center, Divider, Flex, Menu, Modal } from "@mantine/core";
 import { MonthPicker } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
-import type { Employee } from "@prisma/client";
+import type { Employee } from "prisma/generated/prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,

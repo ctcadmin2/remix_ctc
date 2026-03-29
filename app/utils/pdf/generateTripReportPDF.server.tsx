@@ -1,4 +1,4 @@
-import type { TripExpense } from "@prisma/client";
+import type { TripExpense } from "prisma/generated/prisma/client";
 import dayjs from "dayjs";
 import "dayjs/locale/ro";
 import Decimal from "decimal.js";
@@ -21,10 +21,10 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 
   const start = expenses.reduce((prev, current) =>
-    prev && prev.date < current.date ? prev : current,
+    prev && prev.date < current.date ? prev : current
   );
   const end = expenses.reduce((prev, current) =>
-    prev && prev.date > current.date ? prev : current,
+    prev && prev.date > current.date ? prev : current
   );
 
   const expenseRows: TableCell[][] = expenses.map((e) => {
@@ -82,7 +82,11 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
           body: [
             [
               {
-                text: `Cheltuieli deplasare internationala ${dayjs(start.date).locale("ro").format("MMM YYYY")} - ${dayjs(end.date).locale("ro").format("MMM YYYY")}`,
+                text: `Cheltuieli deplasare internationala ${dayjs(start.date)
+                  .locale("ro")
+                  .format("MMM YYYY")} - ${dayjs(end.date)
+                  .locale("ro")
+                  .format("MMM YYYY")}`,
                 alignment: "center",
                 colSpan: 7,
                 bold: true,
@@ -162,11 +166,11 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
                     .reduce(
                       (accumulator, currentValue) =>
                         new Decimal(accumulator).add(
-                          new Decimal(currentValue.amountEur),
+                          new Decimal(currentValue.amountEur)
                         ),
-                      new Decimal(0),
+                      new Decimal(0)
                     )
-                    .toNumber(),
+                    .toNumber()
                 ),
                 bold: true,
                 fontSize: 12,

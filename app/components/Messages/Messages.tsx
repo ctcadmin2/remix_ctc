@@ -8,7 +8,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import type { Message } from "@prisma/client";
+import type { Message } from "prisma/generated/prisma/client";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { CheckCircle, Mail, Trash2 } from "react-feather";
@@ -69,7 +69,7 @@ const Messages = () => {
                   onClick={() =>
                     readAll.submit(
                       { _action: "readAll" },
-                      { action: "/messages", method: "POST" },
+                      { action: "/messages", method: "POST" }
                     )
                   }
                 >
@@ -83,7 +83,7 @@ const Messages = () => {
                     onClick={() =>
                       deleteAll.submit(
                         { _action: "deleteAll" },
-                        { action: "/messages", method: "POST" },
+                        { action: "/messages", method: "POST" }
                       )
                     }
                   >
@@ -108,7 +108,7 @@ const Messages = () => {
                   onClose={() =>
                     deleteMessage.submit(
                       { _action: "deleteMessage", id: message.id },
-                      { action: "/messages", method: "POST" },
+                      { action: "/messages", method: "POST" }
                     )
                   }
                 >

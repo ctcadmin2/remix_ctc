@@ -1,7 +1,7 @@
 import { unlink } from "node:fs";
 import { readFile } from "node:fs/promises";
 
-import type { Attachment } from "@prisma/client";
+import type { Attachment } from "prisma/generated/prisma/client";
 
 import { db } from "./db.server";
 
@@ -14,7 +14,7 @@ export const processAttachment = async (
     | "document"
     | "eFactura",
   id: number | string,
-  name: string,
+  name: string
 ) => {
   try {
     console.log("proc attach: ", type, id, name);

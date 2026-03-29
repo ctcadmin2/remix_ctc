@@ -2,7 +2,11 @@ import { env } from "node:process";
 
 import { ActionIcon, Button, Center, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import type { Indemnization, Payment, Prisma } from "@prisma/client";
+import type {
+  Indemnization,
+  Payment,
+  Prisma,
+} from "prisma/generated/prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
@@ -152,7 +156,7 @@ const Payments = () => {
           .reduce(
             (accumulator: Decimal, currentValue: { total: Decimal }) =>
               new Decimal(accumulator).plus(currentValue.total),
-            0,
+            0
           )
           .toNumber();
       },
@@ -198,7 +202,7 @@ const Payments = () => {
                         {
                           month: "short",
                           year: "numeric",
-                        },
+                        }
                       ).format(Date.parse(row.month))}`,
                       children: (
                         <DataTable

@@ -22,7 +22,7 @@ import { DatesProvider } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
-import type { Message } from "@prisma/client";
+import type { Message } from "prisma/generated/prisma/client";
 import type { MetaFunction } from "@remix-run/node";
 import {
   Link,

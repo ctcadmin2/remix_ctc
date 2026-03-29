@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "prisma/generated/prisma/client";
 import { validate } from "vies-validate";
 
 import { db } from "./db.server";

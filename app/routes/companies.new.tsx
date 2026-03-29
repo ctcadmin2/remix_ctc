@@ -1,4 +1,4 @@
-import type { Company } from "@prisma/client";
+import type { Company } from "prisma/generated/prisma/client";
 import {
   type ActionFunction,
   type LoaderFunction,

@@ -7,7 +7,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
-import type { Indemnization } from "@prisma/client";
+import type { Indemnization } from "prisma/generated/prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
@@ -37,7 +37,7 @@ const prepIndemization = (indemnizations: Indemnization[]) => {
         new Date(
           dayjs(startDate)
             .add(days - 1, "day")
-            .toDate(),
+            .toDate()
         ),
       ],
     };

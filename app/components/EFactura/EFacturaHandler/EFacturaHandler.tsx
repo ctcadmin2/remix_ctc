@@ -1,5 +1,5 @@
 import { Menu } from "@mantine/core";
-import type { $Enums } from "@prisma/client";
+import type { $Enums } from "prisma/generated/prisma/client";
 import { useFetcher, useRevalidator } from "@remix-run/react";
 
 import type { Invoice } from "~/routes/invoices._index";
@@ -12,7 +12,7 @@ const EFacturaHandler = ({ invoice }: { invoice: Invoice }): JSX.Element => {
 
   const handleEFactura = async (
     id: number,
-    status: $Enums.EStatus | undefined,
+    status: $Enums.EStatus | undefined
   ) => {
     //if efactura is already stored do nothing
     if (status === "store") {

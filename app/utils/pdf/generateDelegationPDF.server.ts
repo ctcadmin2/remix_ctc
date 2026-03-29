@@ -1,4 +1,4 @@
-import type { Indemnization } from "@prisma/client";
+import type { Indemnization } from "prisma/generated/prisma/client";
 import PdfPrinter from "pdfmake";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
 
@@ -65,7 +65,7 @@ const generateDelegationPDF = async (indemnization: Indemnization | null) => {
                   {
                     text: "Domnul(a). . . . . @payment.employee.name".padEnd(
                       100,
-                      ". ",
+                      ". "
                     ),
                     colSpan: 3,
                   },

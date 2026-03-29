@@ -29,6 +29,7 @@
     "@mantine/modals": "^7.13.3",
     "@mantine/notifications": "^7.13.3",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@prisma/adapter-pg": "^7.6.0",
     "@prisma/client": "^7.0.0",
     "@remix-run/node": "^2.17.2",
     "@remix-run/react": "^2.17.2",
@@ -38,6 +39,7 @@
     "bcryptjs": "^3.0.0",
     "dayjs": "^1.11.13",
     "decimal.js": "^10.4.3",
+    "dotenv": "^17.3.1",
     "isbot": "^5.1.17",
     "mantine-datatable": "^7.12.4",
     "pdf-lib": "^1.17.1",
@@ -85,7 +87,7 @@
     "vite": "8.0.3"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "packageManager": "yarn@4.13.0"
 }

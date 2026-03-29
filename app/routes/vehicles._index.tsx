@@ -1,7 +1,7 @@
 import { env } from "node:process";
 
 import { Button, Center, Divider, Menu } from "@mantine/core";
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "prisma/generated/prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
