@@ -80,7 +80,7 @@ model Vehicle {
 model CreditNote {
   id         Int         @id @default(autoincrement())
   orderNr    Int?
-  shippingNr Int?
+  shippingNr String?
   number     String
   amount     Decimal     @db.Decimal(8, 2)
   currency   String      @default("EUR")
