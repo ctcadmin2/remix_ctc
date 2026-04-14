@@ -14,7 +14,7 @@ import FileUploader from "~/utils/uploader.server";
 
 const schema = zfd.formData({
   orderNr: zfd.numeric(z.number().optional()),
-  shippingNr: zfd.numeric(z.number().optional()),
+  shippingNr: zfd.text().optional(),
   number: zfd.text(), //required
   amount: zfd.numeric(), //required
   currency: zfd.text(), //required
