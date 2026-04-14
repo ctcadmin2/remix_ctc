@@ -13,9 +13,10 @@ const fonts = {
 
 const generatePaymentsReportPDF = async (
   data: reportIndemnizations[] | null,
-  date: string,
+  date: string
 ) => {
-  const doc = new PdfPrinter(fonts);
+  PdfPrinter.addFonts(fonts);
+
   const indemnizations: reportIndemnizations[] = [];
   const delegations: reportIndemnizations[] = [];
 
@@ -188,8 +189,8 @@ const generatePaymentsReportPDF = async (
               {},
               {},
             ],
-            ...(indemnizationsDef()),
-            ...(delegationsDef()),
+            ...indemnizationsDef(),
+            ...delegationsDef(),
           ],
         },
       },
@@ -199,17 +200,8 @@ const generatePaymentsReportPDF = async (
     },
   };
 
-  const pdfDoc = doc.createPdfKitDocument(docDefinition);
-
-  pdfDoc.end();
-
-  const buff: Buffer[] = [];
-
-  for await (const chunk of pdfDoc) {
-    buff.push(chunk as Buffer);
-  }
-
-  return Buffer.concat(buff);
+  const pdfDoc = PdfPrinter.createPdf(docDefinition);
+  return pdfDoc.getBuffer();
 };
 
 export default generatePaymentsReportPDF;

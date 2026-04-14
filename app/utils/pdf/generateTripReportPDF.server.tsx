@@ -13,7 +13,7 @@ const fonts = {
 };
 
 const generateTripReportPDF = async (expenses: TripExpense[]) => {
-  const doc = new PdfPrinter(fonts);
+  PdfPrinter.addFonts(fonts);
 
   const X =
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
@@ -30,7 +30,7 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
   const expenseRows: TableCell[][] = expenses.map((e) => {
     const row: TableCell[] = [
       { text: e.intNr, alignment: "center" },
-      { text: e.number, alignment: "center" },
+      { text: e.number ?? "", alignment: "center" },
       {
         text: dayjs(e.date).locale("ro").format("DD.MM.YY"),
         alignment: "center",
@@ -188,17 +188,8 @@ const generateTripReportPDF = async (expenses: TripExpense[]) => {
     },
   };
 
-  const pdfDoc = doc.createPdfKitDocument(docDefinition);
-
-  pdfDoc.end();
-
-  const buff: Buffer[] = [];
-
-  for await (const chunk of pdfDoc) {
-    buff.push(chunk as Buffer);
-  }
-
-  return Buffer.concat(buff);
+  const pdfDoc = PdfPrinter.createPdf(docDefinition);
+  return pdfDoc.getBuffer();
 };
 
 export default generateTripReportPDF;

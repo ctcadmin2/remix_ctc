@@ -10,7 +10,7 @@ const fonts = {
 };
 
 const generateDelegationPDF = async (indemnization: Indemnization | null) => {
-  const doc = new PdfPrinter(fonts);
+  PdfPrinter.addFonts(fonts);
 
   console.log(indemnization);
 
@@ -134,17 +134,8 @@ const generateDelegationPDF = async (indemnization: Indemnization | null) => {
     },
   };
 
-  const pdfDoc = doc.createPdfKitDocument(docDefinition);
-
-  pdfDoc.end();
-
-  const buff: Buffer[] = [];
-
-  for await (const chunk of pdfDoc) {
-    buff.push(chunk as Buffer);
-  }
-
-  return Buffer.concat(buff);
+  const pdfDoc = PdfPrinter.createPdf(docDefinition);
+  return pdfDoc.getBuffer();
 };
 
 export default generateDelegationPDF;

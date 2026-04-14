@@ -11,14 +11,14 @@ import {
   createTheme,
 } from "@mantine/core";
 
-import InputCSS from "~/css/Input.module.css";
-import InputWrapperCSS from "~/css/InputWrapper.module.css";
-import MultiSelectCSS from "~/css/MultiSelect.module.css";
-import PillsInputCSS from "~/css/PillsInput.module.css";
-import PillsInputFieldCSS from "~/css/PillsInputField.module.css";
-import SelectCSS from "~/css/Select.module.css";
-import SwitchCSS from "~/css/Switch.module.css";
-import TabsCSS from "~/css/Tabs.module.css";
+import InputCSS from "./css/Input.module.css";
+import InputWrapperCSS from "./css/InputWrapper.module.css";
+import MultiSelectCSS from "./css/MultiSelect.module.css";
+import PillsInputCSS from "./css/PillsInput.module.css";
+import PillsInputFieldCSS from "./css/PillsInputField.module.css";
+import SelectCSS from "./css/Select.module.css";
+import SwitchCSS from "./css/Switch.module.css";
+import TabsCSS from "./css/Tabs.module.css";
 export const theme: MantineThemeOverride = createTheme({
   autoContrast: true,
   luminanceThreshold: 0.4,

@@ -37,20 +37,11 @@ const generateInvoicePDF = async (
   invoice: InvoiceData["invoice"] | null,
   company: CompanyInfo[]
 ) => {
-  const doc = new PdfPrinter(fonts);
+  PdfPrinter.addFonts(fonts);
 
   if (invoice === null) {
-    const pdfDoc = doc.createPdfKitDocument(notFoundDef);
-
-    pdfDoc.end();
-
-    const buff: Buffer[] = [];
-
-    for await (const chunk of pdfDoc) {
-      buff.push(chunk as Buffer);
-    }
-
-    return Buffer.concat(buff);
+    const pdfDoc = PdfPrinter.createPdf(notFoundDef);
+    return pdfDoc.getBuffer();
   }
 
   const companyData: CompanyData = Object.assign(
@@ -622,17 +613,8 @@ const generateInvoicePDF = async (
     },
   };
 
-  const pdfDoc = doc.createPdfKitDocument(docDefinition);
-
-  pdfDoc.end();
-
-  const buff: Buffer[] = [];
-
-  for await (const chunk of pdfDoc) {
-    buff.push(chunk as Buffer);
-  }
-
-  return Buffer.concat(buff);
+  const pdfDoc = PdfPrinter.createPdf(docDefinition);
+  return pdfDoc.getBuffer();
 };
 
 export default generateInvoicePDF;
