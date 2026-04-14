@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import type { Prisma } from "prisma/generated/prisma/client";
+import type { Prisma } from "~/prisma/client";
 
 export type VehiclesListType = Prisma.VehicleGetPayload<{
   select: {

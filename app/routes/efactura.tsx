@@ -1,4 +1,4 @@
-import type { Prisma } from "prisma/generated/prisma/client";
+import type { Prisma } from "~/prisma/client";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import type {
   ActionFunction,

@@ -1,5 +1,5 @@
 import { Menu } from "@mantine/core";
-import type { $Enums } from "prisma/generated/prisma/client";
+import type { $Enums } from "~/prisma/client";
 import { useFetcher, useRevalidator } from "@remix-run/react";
 
 import type { Invoice } from "~/routes/invoices._index";

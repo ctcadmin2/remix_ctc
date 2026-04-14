@@ -5,7 +5,7 @@ generator client {
   provider        = "prisma-client"
   binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
   previewFeatures = ["fullTextSearchPostgres"]
-  output          = "./generated/prisma"
+  output          = "../app/utils/prisma"
 }
 
 datasource db {

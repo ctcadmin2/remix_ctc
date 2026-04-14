@@ -2,11 +2,7 @@ import { env } from "node:process";
 
 import { ActionIcon, Button, Center, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import type {
-  Indemnization,
-  Payment,
-  Prisma,
-} from "prisma/generated/prisma/client";
+import type { Indemnization, Payment, Prisma } from "~/prisma/client";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,

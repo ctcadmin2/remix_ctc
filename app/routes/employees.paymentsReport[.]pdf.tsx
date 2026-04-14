@@ -1,4 +1,4 @@
-import type { Prisma } from "prisma/generated/prisma/client";
+import type { Prisma } from "~/prisma/client";
 import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import dayjs from "dayjs";
 import "dayjs/locale/ro";

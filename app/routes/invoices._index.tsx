@@ -1,7 +1,7 @@
 import { env } from "node:process";
 
 import { Button, Center, Divider, Menu, Tabs } from "@mantine/core";
-import type { Prisma } from "prisma/generated/prisma/client";
+import type { Prisma } from "~/prisma/client";
 import {
   Link,
   json,

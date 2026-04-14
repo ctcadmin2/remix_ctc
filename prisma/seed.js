@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { PrismaClient } from "prisma/generated/prisma/client";
+import { PrismaClient } from "~/prisma/client";
 
 const db = new PrismaClient();
 

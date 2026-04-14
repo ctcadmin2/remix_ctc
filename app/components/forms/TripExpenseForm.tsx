@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import type { TripExpense } from "prisma/generated/prisma/client";
+import type { TripExpense } from "~/prisma/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Calendar, Upload } from "react-feather";

@@ -1,7 +1,7 @@
 import { unlink } from "node:fs";
 import { readFile } from "node:fs/promises";
 
-import type { Attachment } from "prisma/generated/prisma/client";
+import type { Attachment } from "~/prisma/client";
 
 import db from "./db.server";
 

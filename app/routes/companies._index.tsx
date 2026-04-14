@@ -1,5 +1,5 @@
 import { Button, Center, Divider, Menu } from "@mantine/core";
-import type { Company } from "prisma/generated/prisma/client";
+import type { Company } from "~/prisma/client";
 import { Link, json, useFetcher, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,

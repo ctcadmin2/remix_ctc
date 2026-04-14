@@ -1,4 +1,4 @@
-import type { TripExpense } from "prisma/generated/prisma/client";
+import type { TripExpense } from "~/prisma/client";
 import dayjs from "dayjs";
 import "dayjs/locale/ro";
 import Decimal from "decimal.js";

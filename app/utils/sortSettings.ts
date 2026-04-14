@@ -1,4 +1,4 @@
-import type { Setting } from "prisma/generated/prisma/client";
+import type { Setting } from "~/prisma/client";
 //TODO improve sorting
 const sortSettings = (a: Setting, b: Setting) => {
   return a.id - b.id;
