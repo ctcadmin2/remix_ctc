@@ -8225,13 +8225,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remix-auth-form@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "remix-auth-form@npm:1.5.0"
+"remix-auth-form@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "remix-auth-form@npm:3.0.0"
   peerDependencies:
-    "@remix-run/server-runtime": ^1.0.0 || ^2.0.0
-    remix-auth: ^3.6.0
-  checksum: 10/f1ea25e8c7fde380d226ea1ac3e33029782b0e4f601cd61bb00809e83ec2d63573ad67b0b486ecbf239238894d7e1957b9bfbac8f9a64f2e76b8739f5001f6fa
+    remix-auth: ^4.0.0
+  checksum: 10/2ae5b01c6b945a0fd4310232713bc59a1e933d676b9dc928a16f84286f7e700e0f781f80f8b55e6d2c9a56e126bdbb575a8ee16e593c41caa281bb0de461ef87
   languageName: node
   linkType: hard
 
@@ -8356,7 +8355,7 @@ __metadata:
     react-dom: "npm:^18.3.1"
     react-feather: "npm:^2.0.10"
     remix-auth: "npm:^3.7.0"
-    remix-auth-form: "npm:^1.5.0"
+    remix-auth-form: "npm:^3.0.0"
     remix-toast: "npm:^1.2.2"
     remix-utils: "npm:^7.7.0"
     tsx: "npm:^4.21.0"
