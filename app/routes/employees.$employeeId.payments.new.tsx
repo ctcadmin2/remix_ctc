@@ -1,4 +1,4 @@
-import type { Prisma } from "~/prisma/client";
+import type { Prisma } from "@db/client";
 import { useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,

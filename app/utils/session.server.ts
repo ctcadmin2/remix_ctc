@@ -1,4 +1,4 @@
-import type { User } from "~/prisma/client";
+import type { User } from "@db/client";
 import { createCookieSessionStorage } from "@remix-run/node";
 import bcrypt from "bcryptjs";
 import { Authenticator, AuthorizationError } from "remix-auth";

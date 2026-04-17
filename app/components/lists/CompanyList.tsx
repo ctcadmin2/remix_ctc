@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import type { Prisma } from "~/prisma/client";
+import type { Prisma } from "@db/client";
 
 import { capitalize } from "~/utils/stringUtils";
 

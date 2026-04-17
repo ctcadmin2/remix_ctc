@@ -5,7 +5,8 @@ generator client {
   provider        = "prisma-client"
   binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
   previewFeatures = ["fullTextSearchPostgres"]
-  output          = "../app/utils/prisma"
+  output          = "generated"
+  moduleFormat    = "esm"
 }
 
 datasource db {
@@ -80,7 +81,7 @@ model Vehicle {
 model CreditNote {
   id         Int         @id @default(autoincrement())
   orderNr    Int?
-  shippingNr String?
+  shippingNr String?     @unique
   number     String
   amount     Decimal     @db.Decimal(8, 2)
   currency   String      @default("EUR")

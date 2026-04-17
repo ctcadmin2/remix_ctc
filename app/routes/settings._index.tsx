@@ -1,5 +1,5 @@
 import { Tabs } from "@mantine/core";
-import type { Setting } from "~/prisma/client";
+import type { Setting } from "@db/client";
 import { json, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";

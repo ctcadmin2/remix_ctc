@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import type { Document } from "~/prisma/client";
+import type { Document } from "@db/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";

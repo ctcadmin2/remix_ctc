@@ -1,4 +1,5 @@
 import { vitePlugin as remix } from "@remix-run/dev";
+import path from "path";
 import { defineConfig } from "vite";
 
 declare module "@remix-run/node" {
@@ -11,6 +12,9 @@ declare module "@remix-run/node" {
 export default defineConfig({
   build: {
     target: "es2024",
+    // deprecated
+    minify: "esbuild",
+    cssMinify: "esbuild",
   },
   server: {
     port: 3000,
@@ -29,5 +33,11 @@ export default defineConfig({
       },
     }),
   ],
-  resolve: { tsconfigPaths: true },
+  resolve: {
+    tsconfigPaths: true,
+    alias: {
+      "~": path.resolve(__dirname, "app"),
+      "@db": path.resolve(__dirname, "prisma/generated"),
+    },
+  },
 });

@@ -1,4 +1,4 @@
-import type { Prisma } from "~/prisma/client.js";
+import type { Prisma } from "@db/client.js";
 import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { pdf } from "remix-utils/responses";
 import { zx } from "zodix";

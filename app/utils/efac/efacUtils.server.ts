@@ -9,7 +9,7 @@ import {
 } from "node:fs/promises";
 
 import { createId } from "@paralleldrive/cuid2";
-import { Company, Prisma } from "~/prisma/client";
+import { Company, Prisma } from "@db/client";
 import AdmZip from "adm-zip";
 import { parseStringPromise } from "xml2js";
 import { stripPrefix } from "xml2js/lib/processors";

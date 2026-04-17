@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { Vehicle } from "~/prisma/client";
+import type { Vehicle } from "@db/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";

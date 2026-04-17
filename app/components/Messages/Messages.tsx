@@ -8,7 +8,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import type { Message } from "~/prisma/client";
+import type { Message } from "@db/client";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { CheckCircle, Mail, Trash2 } from "react-feather";

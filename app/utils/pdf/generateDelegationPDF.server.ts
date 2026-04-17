@@ -1,4 +1,4 @@
-import type { Indemnization } from "~/prisma/client";
+import type { Indemnization } from "@db/client";
 import PdfPrinter from "pdfmake";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
 

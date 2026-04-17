@@ -1,5 +1,5 @@
 import { ScrollArea, Title } from "@mantine/core";
-import type { Prisma } from "~/prisma/client";
+import type { Prisma } from "@db/client";
 import { json, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import dayjs from "dayjs";

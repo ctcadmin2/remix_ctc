@@ -15,7 +15,8 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./app/*", "./prisma/generated/*"]
+      "~/*": ["./app/*"],
+      "@db/*": ["./prisma/generated/*"]
     },
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,

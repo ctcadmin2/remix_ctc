@@ -1,5 +1,5 @@
 import { Button, Center, Divider, Menu } from "@mantine/core";
-import type { Company } from "~/prisma/client";
+import type { Company } from "@db/client";
 import { Link, json, useFetcher, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
@@ -20,7 +20,6 @@ import { zfd } from "zod-form-data";
 import { zx } from "zodix";
 
 import DataGrid from "~/components/DataGrid/DataGrid";
-import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 import DetailsModal from "~/components/DataGrid/utils/InfoModal";
 import SearchInput from "~/components/DataGrid/utils/SearchInput";
 import CompanyForm from "~/components/forms/CompanyForm";
@@ -28,6 +27,7 @@ import db from "~/utils/db.server";
 import findCompany from "~/utils/findCompany.server";
 import { sortOrder } from "~/utils/helpers.server";
 import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
+import DeleteModal from "~/components/DataGrid/utils/DeleteModal";
 
 interface LoaderData {
   companies: Company[];

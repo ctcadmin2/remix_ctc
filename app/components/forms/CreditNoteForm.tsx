@@ -10,7 +10,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { CreditNote } from "~/prisma/client";
+import type { CreditNote } from "@db/client";
 import { Form, useNavigate } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { Upload } from "react-feather";
