@@ -518,14 +518,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@conform-to/dom@npm:1.19.1":
+  version: 1.19.1
+  resolution: "@conform-to/dom@npm:1.19.1"
+  checksum: 10/25c902087f180393457ec89ab452edda74134908a5852de70a2b271cb04aa1ad201859a38a110fb3dc116646d1b54ead6a1052bf7fa1b1e630a1f9f5fd0333b5
+  languageName: node
+  linkType: hard
+
 "@conform-to/react@npm:^1.2.2":
-  version: 1.17.1
-  resolution: "@conform-to/react@npm:1.17.1"
+  version: 1.19.1
+  resolution: "@conform-to/react@npm:1.19.1"
   dependencies:
-    "@conform-to/dom": "npm:1.17.1"
+    "@conform-to/dom": "npm:1.19.1"
   peerDependencies:
     react: ">=18"
-  checksum: 10/3c5267eb2488cabb7de95e2d7f857c66c24abae1ddf7bd0e1a3fbc4e218f33e25704bfc8bf39bd5b85e25fa05e4ea273d09d072f477bdd5b0fa99db7e177dd56
+    react-dom: ">=18"
+  checksum: 10/2744c4a544c06774e892fa66bb6606fcb3f3c3e48681ae52362d1f196ebd4df493a8e1f7e104fc4bdb80bfc7ffe4d24eaae811594a960cb4e95815cf62a4c225
   languageName: node
   linkType: hard
 
