@@ -8366,7 +8366,7 @@ __metadata:
     vite: "npm:8.0.5"
     xml2js: "npm:^0.6.2"
     zod: "npm:^3.23.8"
-    zod-form-data: "npm:^2.0.2"
+    zod-form-data: "npm:^3.0.0"
     zodix: "npm:^0.4.4"
   languageName: unknown
   linkType: soft
@@ -10047,14 +10047,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-form-data@npm:^2.0.2":
-  version: 2.0.8
-  resolution: "zod-form-data@npm:2.0.8"
+"zod-form-data@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "zod-form-data@npm:3.0.1"
   dependencies:
     "@rvf/set-get": "npm:^7.0.0"
   peerDependencies:
-    zod: ">= 3.11.0"
-  checksum: 10/709cdd1ef375d4f6ec2ef94709680c9b5ded50155d9c41843f3ad1f4615618960caaf684f1182ac5466b03ba7905af76c4979aec85a03eb634d61e9dde37654c
+    zod: ">= 3.25.0"
+  checksum: 10/ea838cf32cec7c51e59258848269748b0fd3db2d4672f5eb15022f22685ed020d7024f51ad63286e75706c7f87898fe86a54cf9d7e8aafcf0593678b7b856ed2
   languageName: node
   linkType: hard
 
