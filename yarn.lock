@@ -6096,15 +6096,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mantine-datatable@npm:^7.12.4":
-  version: 7.17.1
-  resolution: "mantine-datatable@npm:7.17.1"
+"mantine-datatable@npm:^8.0.0":
+  version: 8.3.13
+  resolution: "mantine-datatable@npm:8.3.13"
   peerDependencies:
-    "@mantine/core": ">=7.14"
-    "@mantine/hooks": ">=7.14"
+    "@mantine/core": ">=8.3"
+    "@mantine/hooks": ">=8.3"
     clsx: ">=2"
-    react: ">=18.2"
-  checksum: 10/e183d862364b7aa0774cd6f86f393f290b994213f48b4e1549c83c054cb1fce96c6afb375febfe17ceb96493a0309b9b852976d0cacea283b5efc33a9404fab4
+    react: ">=19"
+    react-dom: ">=19"
+  checksum: 10/de56251e9bf8f0d117daa7e66bf9bed8fb25e1ab835293896cb82bafdf590207262efa1156154cb3f024388274ee07f50cb53d00adbd9adb8acbca3b5e64dc0e
   languageName: node
   linkType: hard
 
@@ -8342,7 +8343,7 @@ __metadata:
     esbuild: "npm:^0.28.0"
     esbuild-register: "npm:^3.6.0"
     isbot: "npm:^5.1.17"
-    mantine-datatable: "npm:^7.12.4"
+    mantine-datatable: "npm:^8.0.0"
     pdf-lib: "npm:^1.17.1"
     pdfmake: "npm:0.3.7"
     pg: "npm:^8.20.0"
