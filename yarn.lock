@@ -8377,7 +8377,7 @@ __metadata:
     pdfmake: "npm:0.3.7"
     pg: "npm:^8.20.0"
     pluralize: "npm:^8.0.0"
-    postcss: "npm:^8.5.6"
+    postcss: "npm:^8.5.10"
     postcss-preset-mantine: "npm:^1.17.0"
     postcss-simple-vars: "npm:^7.0.1"
     prisma: "npm:^7.6.0"
