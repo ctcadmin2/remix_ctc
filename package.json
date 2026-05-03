@@ -89,7 +89,7 @@
     "prisma-repl": "^1.4.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.0",
-    "vite": "8.0.5"
+    "vite": "8.0.10"
   },
   "engines": {
     "node": ">=24"
