@@ -2710,9 +2710,9 @@ __metadata:
   linkType: hard
 
 "@rvf/set-get@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "@rvf/set-get@npm:7.0.1"
-  checksum: 10/6e7dc5f997b8595073508945bb6763716791f580cb08b3bf27124e6b3c8bc0c1ad4c92e2f2873a01f315184df196a4102f2fb8c5c7733ab913cde631555051af
+  version: 7.0.2
+  resolution: "@rvf/set-get@npm:7.0.2"
+  checksum: 10/da0707d21313b38a7a17ede8000fb362b1c2eb69d286b40b41727111f823f875fa1cc5ffb83a57229c109e4fcc9ef522bd944bae2be4f78ce875cbd8a39d6fb5
   languageName: node
   linkType: hard
 
