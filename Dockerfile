@@ -62,4 +62,4 @@ USER apps
 
 EXPOSE 3000
 
-CMD ["node", "build/server/index.js"]
+CMD ["yarn", "start"]
