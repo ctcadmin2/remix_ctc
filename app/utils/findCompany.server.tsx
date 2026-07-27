@@ -40,7 +40,7 @@ interface OpenApiProps {
 const findCompany = async (
   country: string | null,
   vatNr: string | null,
-  refresh = false
+  refresh = false,
 ) => {
   //parameter guard
   if (country == null || vatNr == null) {
@@ -91,7 +91,8 @@ const processRO = async (vatNr: string) => {
         registration: data.numar_reg_com,
         vatNumber: data.cif,
         vatValid: data.tva?.length > 0,
-        address: data.adresa,
+        address: AddressParser(data.adresa),
+        city: CityParser(data.adresa),
         county: Object.entries(RoCountyCodes).filter(
           (o) =>
             new Intl.Collator("ro", {
@@ -100,17 +101,18 @@ const processRO = async (vatNr: string) => {
             }).compare(
               o[1],
               data.judet
+                .toLocaleLowerCase()
                 .split(" ")
-                .filter((word) => word !== "Municipiul")
-                .join(" ")
-            ) === 0
+                .filter((word) => word !== "municipiul")
+                .join(" "),
+            ) === 0,
         )[0][0],
+        postCode: data.cod_postal,
         country: "RO",
         phone: data.telefon,
       };
       return { data: company, status: 200 };
     }
-
     return { data: null, status: 404 };
   } catch (_error) {
     return { data: null, status: 500 };
@@ -139,6 +141,31 @@ const processEU = async (country: string, vatNr: string) => {
   } catch (_error) {
     return { data: null, status: 500 };
   }
+};
+
+const AddressParser = (address: string) => {
+  if (address) {
+    const addrAr = address.split(", ");
+    const isSector = addrAr.at(-1)?.split(" ")[0].toUpperCase() === "SECT";
+    if (isSector) {
+      return addrAr.toSpliced(-2).join(", ");
+    }
+    return addrAr.toSpliced(-1).join(", ");
+  }
+  return "";
+};
+
+const CityParser = (address: string) => {
+  if (address) {
+    const addrAr = address.split(", ");
+    const isSector = addrAr.at(-1)?.split(" ")[0].toUpperCase() === "SECT";
+    if (isSector) {
+      return `SECTOR ${addrAr.pop()?.split(" ")[1]}`;
+    }
+
+    return addrAr.pop();
+  }
+  return "";
 };
 
 export default findCompany;

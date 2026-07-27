@@ -101,8 +101,6 @@ export const checkStatus = async (id: number, uploadId: string | null) => {
         mergeAttrs: true,
       });
 
-      console.log(data);
-
       if (data.header.id_descarcare) {
         try {
           const valid = await db.invoice.update({
@@ -204,8 +202,9 @@ export const download = async (downloadId: string | null) => {
 
 export const validate = async (invoice: eInvoice) => {
   const url = `https://api.anaf.ro/${ANAF_ENV}/FCTEL/rest/validare/FACT1`;
+  console.log("VALIDATE: ", invoice?.client);
   const xml = await XMLBuilder(invoice);
-
+  // console.log(xml);
   if (!invoice) {
     return null;
   }
@@ -242,10 +241,8 @@ export const validate = async (invoice: eInvoice) => {
         Messages: [{ message: "Status could not be updated." }],
       };
     }
-
     return data;
   } catch (error) {
-    console.error("error: ", error);
     return { stare: "nok", Messages: [{ message: `${error}` }] };
   }
 };
@@ -266,8 +263,6 @@ export const getExpenses = async () => {
       } = await response.json();
 
       if (data.mesaje) {
-        console.log(`there are ${data.mesaje.length} messages`);
-
         await processMessages(data.mesaje);
         return { stare: "ok", message: "OK" };
       }

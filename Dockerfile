@@ -1,54 +1,41 @@
 # base node image
 FROM node:24-alpine AS base
 
+WORKDIR /ctcadmin
+
 # Install openssl for Prisma and git
 RUN apk update && apk add openssl git nano
 
 ENV NODE_ENV=production
-ENV YARN_VERSION=4.13.0
-
-WORKDIR /ctcadmin
 
 # enable corepack for yarn
-RUN corepack enable && corepack prepare yarn@${YARN_VERSION}
+RUN corepack enable
 
 # add the user and group we'll need in our final image
 RUN addgroup --system --gid 568 apps
 RUN adduser --system --uid 568 apps
 
-# Add base files
-ADD package.json .
-ADD yarn.lock .
-ADD .yarnrc.yml .
+COPY package.json yarn.lock .yarnrc.yml ./
 
 # Install all node_modules, including dev dependencies
 FROM base AS deps
 
-WORKDIR /ctcadmin
-
-RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install
+RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --immutable
 
 # Setup production node_modules
-FROM base AS production-deps
-
-WORKDIR /ctcadmin
+FROM base AS prod-deps
 
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn workspaces focus --production
 
 # Build the app
 FROM base AS build
 
-WORKDIR /ctcadmin
-
-COPY --from=deps /ctcadmin/node_modules /ctcadmin/node_modules
-COPY --from=deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
-
-ADD prisma prisma
-
+COPY --from=deps /ctcadmin /ctcadmin
+COPY prisma ./prisma
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn prisma generate
 
-ADD . .
-
+# App source
+COPY . .
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn build
 
 # Finally, build the production image with minimal footprint
@@ -56,20 +43,23 @@ FROM base AS final
 
 WORKDIR /ctcadmin
 
-ENV REMIX_DEV_ORIGIN="http://0.0.0.0:3000"
+RUN apk add --no-cache openssl
 
-COPY --from=production-deps /ctcadmin/.yarn /ctcadmin/.yarn
-COPY --from=production-deps /ctcadmin/node_modules /ctcadmin/node_modules
-COPY --from=production-deps /ctcadmin/yarn.lock /ctcadmin/yarn.lock
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
+ENV NODE_OPTIONS="--enable-source-maps --max-old-space-size=512"
 
-COPY --from=build /ctcadmin/build /ctcadmin/build
-COPY --from=build /ctcadmin/public /ctcadmin/public
-COPY --from=build /ctcadmin/prisma /ctcadmin/prisma
+# Copy runtime deps
+COPY --from=prod-deps /ctcadmin /ctcadmin
+
+# Copy build output
+COPY --from=build /ctcadmin/build ./build
+COPY --from=build /ctcadmin/public ./public
+COPY --from=build /ctcadmin/prisma ./prisma
 
 USER apps
 
-RUN corepack prepare yarn@${YARN_VERSION}
-
 EXPOSE 3000
 
-CMD ["yarn", "run", "start"]
+CMD ["node", "build/server/index.js"]

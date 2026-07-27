@@ -24,6 +24,7 @@ export type eInvoice = Prisma.InvoiceGetPayload<{
     client: {
       select: {
         address: true;
+        city: true;
         county: true;
         name: true;
         vatNumber: true;
@@ -62,7 +63,7 @@ export const loader: LoaderFunction = async ({
       }
       return jsonWithError(
         null,
-        `There have been ${data?.Errors?.length} errors.`
+        `There have been ${data?.Errors?.length} errors.`,
       );
     }
 
@@ -109,6 +110,7 @@ export const action: ActionFunction = async ({
         client: {
           select: {
             address: true,
+            city: true,
             county: true,
             name: true,
             vatNumber: true,
@@ -123,16 +125,15 @@ export const action: ActionFunction = async ({
     });
 
     switch (invoice?.EFactura?.status) {
-      case undefined:
       case "nproc": {
         const data = await validate(invoice);
-
         if (data.stare === "ok") {
           return jsonWithSuccess(null, "XML validated");
         }
+
         return jsonWithError(
           data.Messages,
-          `There have been ${data.Messages.length} errors.`
+          `There have been ${data.Messages.length} errors.`,
         );
       }
       case "validated": {

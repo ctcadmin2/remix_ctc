@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Company" ADD COLUMN     "postCode" TEXT,
+ALTER COLUMN "county" DROP NOT NULL,
+ALTER COLUMN "city" DROP NOT NULL;

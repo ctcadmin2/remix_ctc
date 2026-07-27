@@ -130,7 +130,7 @@ export const action: ActionFunction = async ({
       orders,
       creditNotes,
       rest.currency,
-      rest.date
+      rest.date,
     );
 
     try {
@@ -162,7 +162,6 @@ export const action: ActionFunction = async ({
       return jsonWithError(null, `An error has occured: ${error}`);
     }
   }
-  console.log(data.error);
   return jsonWithError(null, `error:`);
 };
 

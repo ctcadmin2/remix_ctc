@@ -41,6 +41,7 @@ const CompanyForm = ({
       accRon: data?.accRon || "",
       accEur: data?.accEur || "",
       address: data?.address || "",
+      city: data?.city || "",
       county: data?.county || "",
       country: data?.country || "",
       bank: data?.bank || "",
@@ -186,6 +187,12 @@ const CompanyForm = ({
                 name="address"
                 readOnly={readOnly}
                 {...getInputProps("address")}
+              />
+              <TextInput
+                label="City"
+                name="city"
+                readOnly={readOnly}
+                {...getInputProps("city")}
               />
               {values.country === "RO" ? (
                 <Select

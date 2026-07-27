@@ -107,9 +107,11 @@ model Company {
   natural              Boolean                @default(false)
   accRon               String?
   accEur               String?
-  address              String?
-  county               String?
-  country              String
+  address              String                 @default("")
+  city                 String?                @default("")
+  county               String?                @default("")
+  country              String                 @default("")
+  postCode             String?
   bank                 String?
   capital              String?
   email                String?

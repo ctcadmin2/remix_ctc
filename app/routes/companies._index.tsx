@@ -91,8 +91,6 @@ export const action: ActionFunction = async ({
   });
   const { id, vatNumber } = schema.parse(await request.formData());
 
-  console.log(id, vatNumber);
-
   if (id) {
     try {
       await db.company.delete({ where: { id } });
@@ -100,7 +98,7 @@ export const action: ActionFunction = async ({
     } catch (error) {
       return redirectWithError(
         "/companies",
-        `Error deleting company: ${error}`
+        `Error deleting company: ${error}`,
       );
     }
   }
@@ -115,7 +113,6 @@ export const action: ActionFunction = async ({
             data: data.data,
           });
 
-          console.log(company);
           if (company) {
             return jsonWithSuccess(null, "Company refreshed successfully.");
           }
@@ -123,7 +120,7 @@ export const action: ActionFunction = async ({
         } catch (error) {
           return jsonWithError(
             null,
-            `Company could not be refreshed: ${error}`
+            `Company could not be refreshed: ${error}`,
           );
         }
       }
