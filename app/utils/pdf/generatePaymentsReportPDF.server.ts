@@ -1,6 +1,7 @@
+import dayjs from "dayjs";
 import Decimal from "decimal.js";
 import PdfPrinter from "pdfmake";
-import type { TDocumentDefinitions, TableCell } from "pdfmake/interfaces";
+import type { TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
 import type { reportIndemnizations } from "~/routes/employees.paymentsReport[.]pdf";
 
@@ -13,7 +14,7 @@ const fonts = {
 
 const generatePaymentsReportPDF = async (
   data: reportIndemnizations[] | null,
-  date: string
+  date: string,
 ) => {
   PdfPrinter.addFonts(fonts);
 
@@ -33,10 +34,11 @@ const generatePaymentsReportPDF = async (
       [
         {
           text: "Detasare transnationala",
-          colSpan: 6,
+          colSpan: 7,
           bold: true,
           fontSize: 14,
         },
+        {},
         {},
         {},
         {},
@@ -69,6 +71,12 @@ const generatePaymentsReportPDF = async (
         },
         {
           text: "Zile",
+          alignment: "center",
+          bold: true,
+          fontSize: 12,
+        },
+        {
+          text: "Interval",
           alignment: "center",
           bold: true,
           fontSize: 12,
@@ -90,6 +98,12 @@ const generatePaymentsReportPDF = async (
         { text: new Decimal(i.rest).toString(), alignment: "center" },
         { text: new Decimal(i.total).toString(), alignment: "center" },
         { text: i.days, alignment: "center" },
+        {
+          text: `${dayjs(i.startDate).format("DD.MM.YY")} - ${dayjs(i.startDate)
+            .add(i.days - 1, "day")
+            .format("DD.MM.YY")}`,
+          alignment: "center",
+        },
         { text: i.perDay, alignment: "center" },
       ]);
     });
@@ -102,10 +116,11 @@ const generatePaymentsReportPDF = async (
       [
         {
           text: "Delegare",
-          colSpan: 6,
+          colSpan: 7,
           bold: true,
           fontSize: 14,
         },
+        {},
         {},
         {},
         {},
@@ -138,6 +153,12 @@ const generatePaymentsReportPDF = async (
         },
         {
           text: "Zile",
+          alignment: "center",
+          bold: true,
+          fontSize: 12,
+        },
+        {
+          text: "Interval",
           alignment: "center",
           bold: true,
           fontSize: 12,
@@ -160,6 +181,12 @@ const generatePaymentsReportPDF = async (
         { text: new Decimal(i.rest).toString(), alignment: "center" },
         { text: new Decimal(i.total).toString(), alignment: "center" },
         { text: i.days, alignment: "center" },
+        {
+          text: `${dayjs(i.startDate).format("DD.MM.YY")} - ${dayjs(i.startDate)
+            .add(i.days - 1, "day")
+            .format("DD.MM.YY")}`,
+          alignment: "center",
+        },
         { text: i.perDay, alignment: "center" },
       ]);
     });
@@ -169,20 +196,22 @@ const generatePaymentsReportPDF = async (
 
   const docDefinition: TDocumentDefinitions = {
     pageSize: "A4",
+    pageOrientation: "landscape",
     pageMargins: 35,
     content: [
       {
         table: {
-          widths: ["*", "*", "*", "*", "*", "*"],
+          widths: ["auto", "*", "*", "*", "*", "auto", "*"],
           body: [
             [
               {
                 text: `Cheltuieli deplasare internationala ${date}`,
                 alignment: "center",
-                colSpan: 6,
+                colSpan: 7,
                 bold: true,
                 fontSize: 16,
               },
+              {},
               {},
               {},
               {},

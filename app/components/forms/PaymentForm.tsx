@@ -1,3 +1,4 @@
+import type { Indemnization } from "@db/client";
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   TextInput,
 } from "@mantine/core";
 import { MonthPickerInput } from "@mantine/dates";
-import type { Indemnization } from "@db/client";
 import { Form, useNavigate } from "@remix-run/react";
 import dayjs from "dayjs";
 import { AuthenticityTokenInput } from "remix-utils/csrf/react";
@@ -37,7 +37,7 @@ const prepIndemization = (indemnizations: Indemnization[]) => {
         new Date(
           dayjs(startDate)
             .add(days - 1, "day")
-            .toDate()
+            .toDate(),
         ),
       ],
     };
@@ -94,7 +94,7 @@ const PaymentForm = ({
               onClick={() =>
                 form.insertListItem("indemnizations", {
                   period: [null, null],
-                  perDay: Number.parseInt(perDay) ?? 0,
+                  perDay: Number.parseInt(perDay, 10) ?? 0,
                   avans: 0,
                   delegation: false,
                 })

@@ -19,7 +19,7 @@ import PaymentForm from "~/components/forms/PaymentForm";
 import bnrRate from "~/utils/bnrRate.server";
 import { csrf } from "~/utils/csrf.server";
 import db from "~/utils/db.server";
-import { DEFAULT_REDIRECT, authenticator } from "~/utils/session.server";
+import { authenticator, DEFAULT_REDIRECT } from "~/utils/session.server";
 
 const schema = zfd.formData({
   month: zfd.text(z.string().datetime()),
@@ -32,7 +32,7 @@ const schema = zfd.formData({
         perDay: zfd.numeric(),
         avans: zfd.numeric(),
         delegation: zfd.checkbox(),
-      })
+      }),
     )
     .optional(),
 });
@@ -116,10 +116,10 @@ export const action: ActionFunction = async ({
         total: new Decimal(0),
       };
       indemnization.total = new Decimal(indemnization.perDay).times(
-        indemnization.days
+        indemnization.days,
       );
       indemnization.rest = new Decimal(indemnization.total).minus(
-        indemnization.avans
+        indemnization.avans,
       );
 
       return indemnization;
@@ -131,9 +131,7 @@ export const action: ActionFunction = async ({
       data: {
         ...data,
         salaryEur: new Decimal(data.salaryRon).dividedBy(
-          (
-            await bnrRate(data.month, "EUR")
-          ).rate
+          (await bnrRate(data.month, "EUR")).rate,
         ),
         indemnizations: {
           deleteMany: {},
@@ -145,7 +143,7 @@ export const action: ActionFunction = async ({
     if (payment) {
       return redirectWithSuccess(
         `/employees/${employeeId}/payments`,
-        "Payment updated successfully."
+        "Payment updated successfully.",
       );
     }
     return jsonWithError(null, "Payment could not be updated.");
