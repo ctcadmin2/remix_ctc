@@ -9907,7 +9907,7 @@ __metadata:
     vitest: "npm:^4.1.10"
     xml2js: "npm:^0.6.2"
     zod: "npm:^3.25.76"
-    zod-form-data: "npm:^2.0.10"
+    zod-form-data: "npm:^3.0.0"
     zodix: "npm:^0.4.4"
   languageName: unknown
   linkType: soft
@@ -12009,14 +12009,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-form-data@npm:^2.0.10":
-  version: 2.0.10
-  resolution: "zod-form-data@npm:2.0.10"
+"zod-form-data@npm:^3.0.0":
+  version: 3.0.3
+  resolution: "zod-form-data@npm:3.0.3"
   dependencies:
     "@rvf/set-get": "npm:^7.0.3"
   peerDependencies:
-    zod: ">= 3.11.0"
-  checksum: 10/d68720947df0e2479eaa8cc6c38142be5b327f3d249a5c0d6a04b03d9f84d05596789414cda7cee9f6b02c3cb117f58a8a66c92c068a2a74b8b24e4a36f44508
+    zod: ">= 3.25.0"
+  checksum: 10/eaa9bdf89a6ef69a7b61d984b5779dcf1e740d613812356c83d114c64257292b1d72dea2d28602558f74a537bdce9961fe5f6935f921a88b210f7149e5b6115a
   languageName: node
   linkType: hard
 
