@@ -29,7 +29,7 @@
     "@mantine/hooks": "^7.17.8",
     "@mantine/modals": "^7.17.8",
     "@mantine/notifications": "^7.17.8",
-    "@paralleldrive/cuid2": "^2.3.1",
+    "@paralleldrive/cuid2": "^3.0.0",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@remix-run/node": "^2.17.5",
