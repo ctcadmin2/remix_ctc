@@ -3255,10 +3255,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rvf/set-get@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "@rvf/set-get@npm:7.0.3"
-  checksum: 10/acaa96573b1a62e3f0622a0e97bf6da1fd7c2e994a0bd6fc1788a4592016657aef327c53e4a044021086e0f05031a05737a295f2a1e55396ce550ac3590d2a9c
+"@rvf/set-get@npm:^7.0.4":
+  version: 7.0.4
+  resolution: "@rvf/set-get@npm:7.0.4"
+  checksum: 10/4a87a88d02c7939762b41d9a014552265c9aaa474952612b36da51d66d1f3db6a2ecdc12955cf49ef12c2cff49edefcb4ee8398f01f96f92b16d4f8790c455aa
   languageName: node
   linkType: hard
 
@@ -9907,7 +9907,7 @@ __metadata:
     vitest: "npm:^4.1.10"
     xml2js: "npm:^0.6.2"
     zod: "npm:^3.25.76"
-    zod-form-data: "npm:^2.0.10"
+    zod-form-data: "npm:^3.0.0"
     zodix: "npm:^0.4.4"
   languageName: unknown
   linkType: soft
@@ -12009,14 +12009,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-form-data@npm:^2.0.10":
-  version: 2.0.10
-  resolution: "zod-form-data@npm:2.0.10"
+"zod-form-data@npm:^3.0.0":
+  version: 3.0.4
+  resolution: "zod-form-data@npm:3.0.4"
   dependencies:
-    "@rvf/set-get": "npm:^7.0.3"
+    "@rvf/set-get": "npm:^7.0.4"
   peerDependencies:
-    zod: ">= 3.11.0"
-  checksum: 10/d68720947df0e2479eaa8cc6c38142be5b327f3d249a5c0d6a04b03d9f84d05596789414cda7cee9f6b02c3cb117f58a8a66c92c068a2a74b8b24e4a36f44508
+    zod: ">= 3.25.0"
+  checksum: 10/7ee57679d537421578c51b9c32b4c9e4be4eccc96decaba5a044cd1122aa436e1a879dc0c9417689b3168337217ef238bcc5b640bc876ff3462144dfaace3d5e
   languageName: node
   linkType: hard
 
